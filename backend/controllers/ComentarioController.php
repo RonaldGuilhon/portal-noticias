@@ -1,0 +1,644 @@
+<?php
+/**
+ * Controlador de Comentários
+ * Portal de Notícias
+ */
+
+require_once __DIR__ . '/../models/Comentario.php';
+require_once __DIR__ . '/../models/Usuario.php';
+require_once __DIR__ . '/../models/Noticia.php';
+
+class ComentarioController {
+    private $comentario;
+    private $usuario;
+    private $noticia;
+    
+    public function __construct() {
+        $this->comentario = new Comentario();
+        $this->usuario = new Usuario();
+        $this->noticia = new Noticia();
+    }
+    
+    /**
+     * Processar requisições
+     */
+    public function processarRequisicao() {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $action = $_GET['action'] ?? 'list';
+        
+        try {
+            switch($method) {
+                case 'GET':
+                    $this->handleGet($action);
+                    break;
+                case 'POST':
+                    $this->handlePost($action);
+                    break;
+                case 'PUT':
+                    $this->handlePut($action);
+                    break;
+                case 'DELETE':
+                    $this->handleDelete($action);
+                    break;
+                default:
+                    jsonResponse(['erro' => 'Método não permitido'], 405);
+            }
+        } catch(Exception $e) {
+            logError('Erro no ComentarioController: ' . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+    
+    /**
+     * Lidar com requisições GET
+     */
+    private function handleGet($action) {
+        switch($action) {
+            case 'list':
+                $this->listar();
+                break;
+            case 'get':
+                $this->obter();
+                break;
+            case 'by-news':
+                $this->obterPorNoticia();
+                break;
+            case 'pending':
+                $this->pendentes();
+                break;
+            case 'stats':
+                $this->estatisticas();
+                break;
+            default:
+                jsonResponse(['erro' => 'Ação não encontrada'], 404);
+        }
+    }
+    
+    /**
+     * Lidar com requisições POST
+     */
+    private function handlePost($action) {
+        switch($action) {
+            case 'create':
+                $this->criar();
+                break;
+            case 'like':
+                $this->curtir();
+                break;
+            case 'dislike':
+                $this->descurtir();
+                break;
+            default:
+                jsonResponse(['erro' => 'Ação não encontrada'], 404);
+        }
+    }
+    
+    /**
+     * Lidar com requisições PUT
+     */
+    private function handlePut($action) {
+        switch($action) {
+            case 'update':
+                $this->atualizar();
+                break;
+            case 'approve':
+                $this->aprovar();
+                break;
+            case 'reject':
+                $this->rejeitar();
+                break;
+            default:
+                jsonResponse(['erro' => 'Ação não encontrada'], 404);
+        }
+    }
+    
+    /**
+     * Lidar com requisições DELETE
+     */
+    private function handleDelete($action) {
+        switch($action) {
+            case 'delete':
+                $this->excluir();
+                break;
+            default:
+                jsonResponse(['erro' => 'Ação não encontrada'], 404);
+        }
+    }
+    
+    /**
+     * Listar comentários
+     */
+    public function listar() {
+        $page = (int)($_GET['page'] ?? 1);
+        $limit = (int)($_GET['limit'] ?? 20);
+        $search = $_GET['search'] ?? '';
+        $status = $_GET['status'] ?? null;
+        $noticia_id = $_GET['noticia_id'] ?? null;
+        $usuario_id = $_GET['usuario_id'] ?? null;
+        $data_inicio = $_GET['data_inicio'] ?? null;
+        $data_fim = $_GET['data_fim'] ?? null;
+        $order = $_GET['order'] ?? 'criado_em';
+        $direction = $_GET['direction'] ?? 'DESC';
+        
+        $filtros = [
+            'search' => $search,
+            'status' => $status,
+            'noticia_id' => $noticia_id,
+            'usuario_id' => $usuario_id,
+            'data_inicio' => $data_inicio,
+            'data_fim' => $data_fim,
+            'order' => $order,
+            'direction' => $direction
+        ];
+        
+        $comentarios = $this->comentario->listar($page, $limit, $filtros);
+        $total = $this->comentario->contar($filtros);
+        
+        jsonResponse([
+            'comentarios' => $comentarios,
+            'paginacao' => [
+                'pagina_atual' => $page,
+                'total_itens' => $total,
+                'itens_por_pagina' => $limit,
+                'total_paginas' => ceil($total / $limit)
+            ]
+        ]);
+    }
+    
+    /**
+     * Obter comentário por ID
+     */
+    public function obter() {
+        $id = $_GET['id'] ?? null;
+        
+        if(!$id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        $comentario = $this->comentario->obterPorId($id);
+        
+        if(!$comentario) {
+            jsonResponse(['erro' => 'Comentário não encontrado'], 404);
+            return;
+        }
+        
+        jsonResponse(['comentario' => $comentario]);
+    }
+    
+    /**
+     * Obter comentários por notícia
+     */
+    public function obterPorNoticia() {
+        $noticia_id = $_GET['noticia_id'] ?? $_GET['id'] ?? null;
+        $status = $_GET['status'] ?? 'aprovado';
+        $limit = (int)($_GET['limit'] ?? 50);
+        
+        if(!$noticia_id) {
+            jsonResponse(['erro' => 'ID da notícia é obrigatório'], 400);
+            return;
+        }
+        
+        // Verificar se notícia existe
+        $noticia = $this->noticia->obterPorId($noticia_id);
+        if(!$noticia) {
+            jsonResponse(['erro' => 'Notícia não encontrada'], 404);
+            return;
+        }
+        
+        $comentarios = $this->comentario->obterPorNoticia($noticia_id, $status, $limit);
+        
+        jsonResponse([
+            'comentarios' => $comentarios,
+            'total' => count($comentarios)
+        ]);
+    }
+    
+    /**
+     * Criar novo comentário
+     */
+    public function criar() {
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados) {
+            jsonResponse(['erro' => 'Dados inválidos'], 400);
+            return;
+        }
+        
+        // Verificar se notícia existe
+        if(empty($dados['noticia_id'])) {
+            jsonResponse(['erro' => 'ID da notícia é obrigatório'], 400);
+            return;
+        }
+        
+        $noticia = $this->noticia->obterPorId($dados['noticia_id']);
+        if(!$noticia) {
+            jsonResponse(['erro' => 'Notícia não encontrada'], 404);
+            return;
+        }
+        
+        // Verificar se comentários estão habilitados para a notícia
+        if(!$noticia['comentarios_habilitados']) {
+            jsonResponse(['erro' => 'Comentários desabilitados para esta notícia'], 403);
+            return;
+        }
+        
+        // Preparar dados do comentário
+        $dados_comentario = [
+            'noticia_id' => (int)$dados['noticia_id'],
+            'usuario_id' => $_SESSION['usuario_id'] ?? null,
+            'comentario_pai_id' => !empty($dados['comentario_pai_id']) ? (int)$dados['comentario_pai_id'] : null,
+            'conteudo' => sanitizeInput($dados['conteudo']),
+            'autor_nome' => null,
+            'autor_email' => null,
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? '',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? ''
+        ];
+        
+        // Se usuário não está logado, pegar dados do autor
+        if(!$dados_comentario['usuario_id']) {
+            $dados_comentario['autor_nome'] = sanitizeInput($dados['autor_nome'] ?? '');
+            $dados_comentario['autor_email'] = sanitizeInput($dados['autor_email'] ?? '');
+        }
+        
+        // Validar dados
+        $validacao = $this->comentario->validarDados($dados_comentario);
+        if(!$validacao['valido']) {
+            jsonResponse(['erro' => 'Dados inválidos', 'detalhes' => $validacao['erros']], 400);
+            return;
+        }
+        
+        // Verificar se é resposta a um comentário existente
+        if($dados_comentario['comentario_pai_id']) {
+            $comentario_pai = $this->comentario->obterPorId($dados_comentario['comentario_pai_id']);
+            if(!$comentario_pai || $comentario_pai['noticia_id'] !== $dados_comentario['noticia_id']) {
+                jsonResponse(['erro' => 'Comentário pai não encontrado ou inválido'], 400);
+                return;
+            }
+        }
+        
+        // Verificar rate limiting (máximo 5 comentários por hora por IP)
+        if(!$this->verificarRateLimit()) {
+            jsonResponse(['erro' => 'Muitos comentários em pouco tempo. Tente novamente mais tarde.'], 429);
+            return;
+        }
+        
+        $comentario_id = $this->comentario->criar($dados_comentario);
+        
+        if($comentario_id) {
+            $comentario = $this->comentario->obterPorId($comentario_id);
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário criado com sucesso. Aguardando moderação.',
+                'comentario' => $comentario
+            ], 201);
+        } else {
+            jsonResponse(['erro' => 'Erro ao criar comentário'], 500);
+        }
+    }
+    
+    /**
+     * Atualizar comentário
+     */
+    public function atualizar() {
+        $id = $_GET['id'] ?? null;
+        if(!$id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        // Verificar se comentário existe
+        $comentario_existente = $this->comentario->obterPorId($id);
+        if(!$comentario_existente) {
+            jsonResponse(['erro' => 'Comentário não encontrado'], 404);
+            return;
+        }
+        
+        // Verificar permissões
+        if(!$this->verificarPermissaoEdicao($comentario_existente)) {
+            return;
+        }
+        
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados) {
+            jsonResponse(['erro' => 'Dados inválidos'], 400);
+            return;
+        }
+        
+        // Preparar dados para atualização
+        $dados_atualizacao = [];
+        if(isset($dados['conteudo'])) {
+            $dados_atualizacao['conteudo'] = sanitizeInput($dados['conteudo']);
+        }
+        
+        // Validar dados
+        if(!empty($dados_atualizacao['conteudo'])) {
+            $validacao = $this->comentario->validarDados(array_merge($comentario_existente, $dados_atualizacao), $id);
+            if(!$validacao['valido']) {
+                jsonResponse(['erro' => 'Dados inválidos', 'detalhes' => $validacao['erros']], 400);
+                return;
+            }
+        }
+        
+        $sucesso = $this->comentario->atualizar($id, $dados_atualizacao);
+        
+        if($sucesso) {
+            $comentario = $this->comentario->obterPorId($id);
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário atualizado com sucesso',
+                'comentario' => $comentario
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao atualizar comentário'], 500);
+        }
+    }
+    
+    /**
+     * Excluir comentário
+     */
+    public function excluir() {
+        $id = $_GET['id'] ?? null;
+        if(!$id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        // Verificar se comentário existe
+        $comentario = $this->comentario->obterPorId($id);
+        if(!$comentario) {
+            jsonResponse(['erro' => 'Comentário não encontrado'], 404);
+            return;
+        }
+        
+        // Verificar permissões
+        if(!$this->verificarPermissaoExclusao($comentario)) {
+            return;
+        }
+        
+        $sucesso = $this->comentario->excluir($id);
+        
+        if($sucesso) {
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário excluído com sucesso'
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao excluir comentário'], 500);
+        }
+    }
+    
+    /**
+     * Aprovar comentário
+     */
+    public function aprovar() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $id = $_GET['id'] ?? null;
+        if(!$id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        $sucesso = $this->comentario->moderar($id, 'aprovado', $_SESSION['usuario_id']);
+        
+        if($sucesso) {
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário aprovado com sucesso'
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao aprovar comentário'], 500);
+        }
+    }
+    
+    /**
+     * Rejeitar comentário
+     */
+    public function rejeitar() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $id = $_GET['id'] ?? null;
+        if(!$id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        $sucesso = $this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id']);
+        
+        if($sucesso) {
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário rejeitado com sucesso'
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao rejeitar comentário'], 500);
+        }
+    }
+    
+    /**
+     * Curtir comentário
+     */
+    public function curtir() {
+        if(!isset($_SESSION['usuario_id'])) {
+            jsonResponse(['erro' => 'Login necessário para curtir comentários'], 401);
+            return;
+        }
+        
+        $comentario_id = $_GET['id'] ?? null;
+        if(!$comentario_id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'like');
+        
+        if($sucesso) {
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário curtido'
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao curtir comentário'], 500);
+        }
+    }
+    
+    /**
+     * Descurtir comentário
+     */
+    public function descurtir() {
+        if(!isset($_SESSION['usuario_id'])) {
+            jsonResponse(['erro' => 'Login necessário para descurtir comentários'], 401);
+            return;
+        }
+        
+        $comentario_id = $_GET['id'] ?? null;
+        if(!$comentario_id) {
+            jsonResponse(['erro' => 'ID do comentário é obrigatório'], 400);
+            return;
+        }
+        
+        $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'dislike');
+        
+        if($sucesso) {
+            jsonResponse([
+                'sucesso' => true,
+                'mensagem' => 'Comentário descurtido'
+            ]);
+        } else {
+            jsonResponse(['erro' => 'Erro ao descurtir comentário'], 500);
+        }
+    }
+    
+    /**
+     * Listar comentários pendentes
+     */
+    public function pendentes() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $page = (int)($_GET['page'] ?? 1);
+        $limit = (int)($_GET['limit'] ?? 20);
+        
+        $filtros = ['status' => 'pendente'];
+        
+        $comentarios = $this->comentario->listar($page, $limit, $filtros);
+        $total = $this->comentario->contar($filtros);
+        
+        jsonResponse([
+            'comentarios' => $comentarios,
+            'paginacao' => [
+                'pagina_atual' => $page,
+                'total_itens' => $total,
+                'itens_por_pagina' => $limit,
+                'total_paginas' => ceil($total / $limit)
+            ]
+        ]);
+    }
+    
+    /**
+     * Obter estatísticas de comentários
+     */
+    public function estatisticas() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $stats = $this->comentario->obterEstatisticas();
+        
+        jsonResponse(['estatisticas' => $stats]);
+    }
+    
+    /**
+     * Verificar rate limit para comentários
+     */
+    private function verificarRateLimit() {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $cache_key = "comment_rate_limit_$ip";
+        
+        // Implementação simples usando sessão (em produção, usar Redis ou Memcached)
+        if(!isset($_SESSION['comment_timestamps'])) {
+            $_SESSION['comment_timestamps'] = [];
+        }
+        
+        $agora = time();
+        $uma_hora_atras = $agora - 3600;
+        
+        // Remover timestamps antigos
+        $_SESSION['comment_timestamps'] = array_filter(
+            $_SESSION['comment_timestamps'], 
+            function($timestamp) use ($uma_hora_atras) {
+                return $timestamp > $uma_hora_atras;
+            }
+        );
+        
+        // Verificar limite
+        if(count($_SESSION['comment_timestamps']) >= 5) {
+            return false;
+        }
+        
+        // Adicionar timestamp atual
+        $_SESSION['comment_timestamps'][] = $agora;
+        
+        return true;
+    }
+    
+    /**
+     * Verificar permissão de edição
+     */
+    private function verificarPermissaoEdicao($comentario) {
+        if(!isset($_SESSION['usuario_id'])) {
+            jsonResponse(['erro' => 'Login necessário'], 401);
+            return false;
+        }
+        
+        $usuario = $this->usuario->obterPorId($_SESSION['usuario_id']);
+        
+        // Admin ou moderador pode editar qualquer comentário
+        if($usuario && in_array($usuario['tipo'], ['admin', 'moderador'])) {
+            return true;
+        }
+        
+        // Usuário pode editar apenas seus próprios comentários
+        if($comentario['usuario_id'] && $comentario['usuario_id'] == $_SESSION['usuario_id']) {
+            // Verificar se comentário não foi moderado ainda
+            if($comentario['status'] === 'pendente') {
+                return true;
+            }
+        }
+        
+        jsonResponse(['erro' => 'Sem permissão para editar este comentário'], 403);
+        return false;
+    }
+    
+    /**
+     * Verificar permissão de exclusão
+     */
+    private function verificarPermissaoExclusao($comentario) {
+        if(!isset($_SESSION['usuario_id'])) {
+            jsonResponse(['erro' => 'Login necessário'], 401);
+            return false;
+        }
+        
+        $usuario = $this->usuario->obterPorId($_SESSION['usuario_id']);
+        
+        // Admin ou moderador pode excluir qualquer comentário
+        if($usuario && in_array($usuario['tipo'], ['admin', 'moderador'])) {
+            return true;
+        }
+        
+        // Usuário pode excluir apenas seus próprios comentários
+        if($comentario['usuario_id'] && $comentario['usuario_id'] == $_SESSION['usuario_id']) {
+            return true;
+        }
+        
+        jsonResponse(['erro' => 'Sem permissão para excluir este comentário'], 403);
+        return false;
+    }
+    
+    /**
+     * Verificar permissão de moderador
+     */
+    private function verificarPermissaoModerador() {
+        if(!isset($_SESSION['usuario_id'])) {
+            jsonResponse(['erro' => 'Login necessário'], 401);
+            return false;
+        }
+        
+        $usuario = $this->usuario->obterPorId($_SESSION['usuario_id']);
+        
+        if(!$usuario || !in_array($usuario['tipo'], ['admin', 'moderador'])) {
+            jsonResponse(['erro' => 'Permissão de moderador necessária'], 403);
+            return false;
+        }
+        
+        return true;
+    }
+}
+?>

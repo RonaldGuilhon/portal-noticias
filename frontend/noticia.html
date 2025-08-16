@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Portal de Notícias">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    <meta property="article:published_time" content="">
+    <meta property="article:modified_time" content="">
+    <meta property="article:author" content="">
+    <meta property="article:section" content="">
+    <meta property="article:tag" content="">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="">
+    <meta property="twitter:description" content="">
+    <meta property="twitter:image" content="">
+    
+    <title>Portal de Notícias</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json" id="article-schema">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": "",
+        "description": "",
+        "image": "",
+        "datePublished": "",
+        "dateModified": "",
+        "author": {
+            "@type": "Person",
+            "name": ""
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "Portal de Notícias",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "/assets/img/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": ""
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <!-- Header Top -->
+        <div class="header-top">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                <span id="current-date"></span>
+                            </span>
+                            <span>
+                                <i class="fas fa-thermometer-half me-1"></i>
+                                <span id="weather-info">Carregando...</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="social-links me-3">
+                                <a href="#" class="me-2" aria-label="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="me-2" aria-label="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="me-2" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" aria-label="YouTube">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                            <div class="user-actions">
+                                <div class="logged-out-only">
+                                    <a href="/login.html" class="btn btn-sm btn-outline-primary me-2">Entrar</a>
+                                    <a href="/cadastro.html" class="btn btn-sm btn-primary">Cadastrar</a>
+                                </div>
+                                <div class="logged-in-only" style="display: none;">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fas fa-user me-1"></i>
+                                            <span data-user-info="nome">Usuário</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="/perfil.html">
+                                                <i class="fas fa-user me-2"></i>Meu Perfil
+                                            </a>
+                                            <a class="dropdown-item" href="/favoritos.html">
+                                                <i class="fas fa-heart me-2"></i>Favoritos
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" onclick="logout()">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="theme-toggle ms-3" aria-label="Alternar tema">
+                                🌙
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Header Main -->
+        <div class="header-main">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <a href="/" class="logo">
+                            <i class="fas fa-newspaper me-2"></i>
+                            Portal Notícias
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <form class="search-form mx-auto">
+                            <div class="position-relative">
+                                <input type="text" class="form-control search-input" placeholder="Buscar notícias..." autocomplete="off">
+                                <button type="submit" class="search-btn" aria-label="Buscar">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <div class="search-suggestions" style="display: none;"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <a href="/newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
+                                <i class="fas fa-envelope me-1"></i>
+                                Newsletter
+                            </a>
+                            <a href="/rss" class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="fas fa-rss me-1"></i>
+                                RSS
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">
+                                <i class="fas fa-home me-1"></i>
+                                Início
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/politica" class="nav-link">Política</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/economia" class="nav-link">Economia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/esportes" class="nav-link">Esportes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/tecnologia" class="nav-link">Tecnologia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/saude" class="nav-link">Saúde</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/cultura" class="nav-link">Cultura</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/internacional" class="nav-link">Internacional</a>
+                        </li>
+                    </ul>
+                    
+                    <button class="mobile-menu-toggle d-lg-none" aria-label="Menu" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav bg-light py-2">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="/">Início</a></li>
+                <li class="breadcrumb-item"><a href="#" id="breadcrumb-category">Categoria</a></li>
+                <li class="breadcrumb-item active" id="breadcrumb-title">Título da Notícia</li>
+            </ol>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container mt-4">
+            <div class="row">
+                <!-- Article Content -->
+                <div class="col-lg-8">
+                    <article class="article-content">
+                        <!-- Article Header -->
+                        <header class="article-header mb-4">
+                            <div class="article-category mb-2">
+                                <a href="#" class="badge bg-primary text-decoration-none" id="article-category">Categoria</a>
+                            </div>
+                            
+                            <h1 class="article-title mb-3" id="article-title">Título da Notícia</h1>
+                            
+                            <div class="article-subtitle mb-3" id="article-subtitle" style="display: none;">
+                                <p class="lead text-muted"></p>
+                            </div>
+                            
+                            <div class="article-meta d-flex flex-wrap align-items-center justify-content-between mb-4">
+                                <div class="author-info d-flex align-items-center">
+                                    <img src="/assets/img/default-avatar.png" alt="Autor" class="author-avatar me-2" id="author-avatar">
+                                    <div>
+                                        <div class="author-name fw-bold" id="author-name">Nome do Autor</div>
+                                        <div class="article-date text-muted small" id="article-date">Data de publicação</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="article-stats d-flex align-items-center">
+                                    <span class="stat-item me-3">
+                                        <i class="fas fa-eye text-muted me-1"></i>
+                                        <span id="article-views">0</span>
+                                    </span>
+                                    <span class="stat-item me-3">
+                                        <i class="fas fa-heart text-muted me-1"></i>
+                                        <span id="article-likes">0</span>
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="fas fa-comment text-muted me-1"></i>
+                                        <span id="article-comments">0</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </header>
+                        
+                        <!-- Article Image -->
+                        <div class="article-image mb-4" id="article-image-container" style="display: none;">
+                            <img src="" alt="" class="img-fluid rounded" id="article-image">
+                            <div class="image-caption mt-2 text-muted small" id="image-caption" style="display: none;"></div>
+                        </div>
+                        
+                        <!-- Article Actions -->
+                        <div class="article-actions mb-4">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-danger like-btn me-2" data-news-id="" id="like-button">
+                                        <i class="fas fa-heart me-1"></i>
+                                        <span class="like-count">0</span> Curtir
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-primary share-btn me-2" data-url="" data-title="" id="share-button">
+                                        <i class="fas fa-share-alt me-1"></i>
+                                        Compartilhar
+                                    </button>
+                                    
+                                    <button class="btn btn-outline-warning favorite-btn me-2" data-news-id="" id="favorite-button">
+                                        <i class="fas fa-bookmark me-1"></i>
+                                        Favoritar
+                                    </button>
+                                </div>
+                                
+                                <div class="text-size-controls">
+                                    <span class="me-2 small text-muted">Tamanho do texto:</span>
+                                    <button class="btn btn-sm btn-outline-secondary me-1" onclick="changeTextSize('small')" title="Texto pequeno">
+                                        <i class="fas fa-font" style="font-size: 0.8em;"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary me-1" onclick="changeTextSize('normal')" title="Texto normal">
+                                        <i class="fas fa-font"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="changeTextSize('large')" title="Texto grande">
+                                        <i class="fas fa-font" style="font-size: 1.2em;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Article Body -->
+                        <div class="article-body" id="article-content">
+                            <!-- Conteúdo da notícia será carregado via JavaScript -->
+                            <div class="text-center py-5">
+                                <div class="loading"></div>
+                                <p class="mt-3 text-muted">Carregando conteúdo...</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Article Tags -->
+                        <div class="article-tags mt-4" id="article-tags-container" style="display: none;">
+                            <h6 class="mb-2">Tags:</h6>
+                            <div class="tags" id="article-tags"></div>
+                        </div>
+                        
+                        <!-- Social Share -->
+                        <div class="social-share mt-4 p-3 bg-light rounded">
+                            <h6 class="mb-3">Compartilhe esta notícia:</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="#" class="btn btn-primary btn-sm" id="share-facebook" target="_blank">
+                                    <i class="fab fa-facebook-f me-1"></i> Facebook
+                                </a>
+                                <a href="#" class="btn btn-info btn-sm" id="share-twitter" target="_blank">
+                                    <i class="fab fa-twitter me-1"></i> Twitter
+                                </a>
+                                <a href="#" class="btn btn-success btn-sm" id="share-whatsapp" target="_blank">
+                                    <i class="fab fa-whatsapp me-1"></i> WhatsApp
+                                </a>
+                                <a href="#" class="btn btn-primary btn-sm" id="share-linkedin" target="_blank">
+                                    <i class="fab fa-linkedin-in me-1"></i> LinkedIn
+                                </a>
+                                <a href="#" class="btn btn-danger btn-sm" id="share-pinterest" target="_blank">
+                                    <i class="fab fa-pinterest me-1"></i> Pinterest
+                                </a>
+                                <button class="btn btn-secondary btn-sm" onclick="copyToClipboard()">
+                                    <i class="fas fa-link me-1"></i> Copiar Link
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Author Bio -->
+                        <div class="author-bio mt-4 p-3 bg-light rounded" id="author-bio-container" style="display: none;">
+                            <div class="d-flex">
+                                <img src="/assets/img/default-avatar.png" alt="Autor" class="author-bio-avatar me-3" id="author-bio-avatar">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1" id="author-bio-name">Nome do Autor</h6>
+                                    <p class="mb-2 text-muted small" id="author-bio-description">Descrição do autor</p>
+                                    <div class="author-social">
+                                        <a href="#" class="me-2" id="author-twitter" style="display: none;">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="#" class="me-2" id="author-linkedin" style="display: none;">
+                                            <i class="fab fa-linkedin-in"></i>
+                                        </a>
+                                        <a href="#" id="author-email" style="display: none;">
+                                            <i class="fas fa-envelope"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <!-- Comments Section -->
+                    <section class="comments-section mt-5">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h3>
+                                <i class="fas fa-comments me-2"></i>
+                                Comentários (<span id="comments-count">0</span>)
+                            </h3>
+                            <div class="comments-sort">
+                                <select class="form-control form-control-sm" id="comments-sort">
+                                    <option value="newest">Mais Recentes</option>
+                                    <option value="oldest">Mais Antigos</option>
+                                    <option value="popular">Mais Populares</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Comment Form -->
+                        <div class="comment-form mb-4">
+                            <div class="logged-out-only">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <a href="/login.html">Faça login</a> ou <a href="/cadastro.html">cadastre-se</a> para comentar.
+                                </div>
+                            </div>
+                            
+                            <div class="logged-in-only" style="display: none;">
+                                <form class="ajax-form" action="/backend/comentarios" method="POST" id="comment-form">
+                                    <input type="hidden" name="noticia_id" id="comment-news-id">
+                                    <div class="form-group mb-3">
+                                        <textarea name="conteudo" class="form-control" rows="4" placeholder="Escreva seu comentário..." required></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Seja respeitoso e construtivo em seus comentários.</small>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane me-1"></i>
+                                            Comentar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <!-- Comments List -->
+                        <div class="comments-list" id="comments-list">
+                            <!-- Comentários serão carregados via JavaScript -->
+                            <div class="text-center py-4">
+                                <div class="loading"></div>
+                                <p class="mt-3 text-muted">Carregando comentários...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <button class="btn btn-outline-primary load-more-comments" id="load-more-comments" style="display: none;">
+                                Carregar mais comentários
+                            </button>
+                        </div>
+                    </section>
+                    
+                    <!-- Related News -->
+                    <section class="related-news mt-5">
+                        <h3 class="mb-4">
+                            <i class="fas fa-newspaper me-2"></i>
+                            Notícias Relacionadas
+                        </h3>
+                        <div class="row" id="related-news">
+                            <!-- Notícias relacionadas serão carregadas via JavaScript -->
+                            <div class="col-12 text-center py-4">
+                                <div class="loading"></div>
+                                <p class="mt-3 text-muted">Carregando notícias relacionadas...</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Popular News -->
+                    <aside class="sidebar">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-fire text-danger me-2"></i>
+                            Mais Lidas
+                        </h3>
+                        <div class="popular-news">
+                            <!-- Notícias populares serão carregadas via JavaScript -->
+                            <div class="text-center py-3">
+                                <div class="loading"></div>
+                            </div>
+                        </div>
+                    </aside>
+                    
+                    <!-- Categories -->
+                    <aside class="sidebar">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-folder text-info me-2"></i>
+                            Categorias
+                        </h3>
+                        <ul class="sidebar-list categories-list">
+                            <!-- Categorias serão carregadas via JavaScript -->
+                            <li class="text-center py-3">
+                                <div class="loading"></div>
+                            </li>
+                        </ul>
+                    </aside>
+                    
+                    <!-- Advertisement -->
+                    <aside class="sidebar text-center">
+                        <h4 class="sidebar-title">Publicidade</h4>
+                        <div class="ad-banner">
+                            <div class="bg-light p-4 border rounded">
+                                <p class="text-muted mb-2">Espaço Publicitário</p>
+                                <p class="small text-muted">300x250</p>
+                            </div>
+                        </div>
+                    </aside>
+                    
+                    <!-- Newsletter Signup -->
+                    <aside class="sidebar bg-primary text-white">
+                        <h3 class="sidebar-title text-white">
+                            <i class="fas fa-envelope me-2"></i>
+                            Newsletter
+                        </h3>
+                        <p class="mb-3">Receba as principais notícias diretamente no seu e-mail!</p>
+                        <form class="newsletter-form ajax-form" action="/backend/newsletter/subscribe" method="POST">
+                            <div class="form-group mb-3">
+                                <input type="email" name="email" class="form-control" placeholder="Seu e-mail" required>
+                            </div>
+                            <button type="submit" class="btn btn-light btn-block w-100">
+                                <i class="fas fa-paper-plane me-1"></i>
+                                Inscrever-se
+                            </button>
+                        </form>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5>Portal de Notícias</h5>
+                    <p class="mb-3">Seu portal de notícias confiável, trazendo as principais informações do Brasil e do mundo com credibilidade e agilidade.</p>
+                    <div class="social-links">
+                        <a href="#" class="me-3" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="me-3" aria-label="YouTube">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="#" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Categorias</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/categoria/politica">Política</a></li>
+                        <li><a href="/categoria/economia">Economia</a></li>
+                        <li><a href="/categoria/esportes">Esportes</a></li>
+                        <li><a href="/categoria/tecnologia">Tecnologia</a></li>
+                        <li><a href="/categoria/saude">Saúde</a></li>
+                        <li><a href="/categoria/cultura">Cultura</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Institucional</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/sobre">Sobre Nós</a></li>
+                        <li><a href="/contato">Contato</a></li>
+                        <li><a href="/equipe">Nossa Equipe</a></li>
+                        <li><a href="/anuncie">Anuncie Conosco</a></li>
+                        <li><a href="/trabalhe-conosco">Trabalhe Conosco</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Suporte</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/ajuda">Central de Ajuda</a></li>
+                        <li><a href="/privacidade">Política de Privacidade</a></li>
+                        <li><a href="/termos">Termos de Uso</a></li>
+                        <li><a href="/cookies">Política de Cookies</a></li>
+                        <li><a href="/sitemap">Mapa do Site</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h5>Conecte-se</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/newsletter">Newsletter</a></li>
+                        <li><a href="/rss">Feed RSS</a></li>
+                        <li><a href="/app">Aplicativo Mobile</a></li>
+                        <li><a href="/notificacoes">Notificações Push</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0">&copy; 2024 Portal de Notícias. Todos os direitos reservados.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p class="mb-0">
+                            Desenvolvido com <i class="fas fa-heart text-danger"></i> pela equipe Portal de Notícias
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top -->
+    <button class="btn btn-primary back-to-top" id="backToTop" style="display: none;" aria-label="Voltar ao topo">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Article Specific Scripts -->
+    <script>
+        // Carrega dados da notícia
+        document.addEventListener('DOMContentLoaded', function() {
+            loadArticleData();
+        });
+        
+        // Função para carregar dados da notícia
+        async function loadArticleData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = window.location.pathname.split('/').pop().replace('.html', '');
+            
+            try {
+                const response = await fetch(`/backend/noticias/slug/${slug}`);
+                const article = await response.json();
+                
+                if (article.success) {
+                    populateArticleData(article.data);
+                    loadComments(article.data.id);
+                    loadRelatedNews(article.data.id, article.data.categoria_id);
+                    incrementViews(article.data.id);
+                } else {
+                    showError('Notícia não encontrada.');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar notícia:', error);
+                showError('Erro ao carregar notícia.');
+            }
+        }
+        
+        // Popula dados da notícia na página
+        function populateArticleData(article) {
+            // Meta tags
+            document.title = article.titulo + ' - Portal de Notícias';
+            document.querySelector('meta[name="description"]').content = article.resumo;
+            document.querySelector('meta[name="keywords"]').content = article.tags.join(', ');
+            
+            // Open Graph
+            document.querySelector('meta[property="og:title"]').content = article.titulo;
+            document.querySelector('meta[property="og:description"]').content = article.resumo;
+            document.querySelector('meta[property="og:image"]').content = article.imagem;
+            document.querySelector('meta[property="og:url"]').content = window.location.href;
+            
+            // Twitter
+            document.querySelector('meta[property="twitter:title"]').content = article.titulo;
+            document.querySelector('meta[property="twitter:description"]').content = article.resumo;
+            document.querySelector('meta[property="twitter:image"]').content = article.imagem;
+            
+            // Breadcrumb
+            document.getElementById('breadcrumb-category').textContent = article.categoria;
+            document.getElementById('breadcrumb-category').href = `/categoria/${article.categoria_slug}`;
+            document.getElementById('breadcrumb-title').textContent = article.titulo;
+            
+            // Article header
+            document.getElementById('article-category').textContent = article.categoria;
+            document.getElementById('article-category').href = `/categoria/${article.categoria_slug}`;
+            document.getElementById('article-title').textContent = article.titulo;
+            
+            if (article.subtitulo) {
+                document.getElementById('article-subtitle').style.display = 'block';
+                document.getElementById('article-subtitle').querySelector('p').textContent = article.subtitulo;
+            }
+            
+            // Author info
+            document.getElementById('author-name').textContent = article.autor;
+            document.getElementById('author-avatar').src = article.autor_foto || '/assets/img/default-avatar.png';
+            document.getElementById('article-date').textContent = formatDate(article.data_publicacao);
+            
+            // Stats
+            document.getElementById('article-views').textContent = formatNumber(article.visualizacoes);
+            document.getElementById('article-likes').textContent = formatNumber(article.curtidas);
+            document.getElementById('article-comments').textContent = formatNumber(article.total_comentarios);
+            
+            // Image
+            if (article.imagem) {
+                document.getElementById('article-image-container').style.display = 'block';
+                document.getElementById('article-image').src = article.imagem;
+                document.getElementById('article-image').alt = article.titulo;
+                
+                if (article.imagem_legenda) {
+                    document.getElementById('image-caption').style.display = 'block';
+                    document.getElementById('image-caption').textContent = article.imagem_legenda;
+                }
+            }
+            
+            // Content
+            document.getElementById('article-content').innerHTML = article.conteudo;
+            
+            // Tags
+            if (article.tags && article.tags.length > 0) {
+                document.getElementById('article-tags-container').style.display = 'block';
+                const tagsContainer = document.getElementById('article-tags');
+                tagsContainer.innerHTML = article.tags.map(tag => 
+                    `<a href="/tag/${tag.slug}" class="tag">${tag.nome}</a>`
+                ).join('');
+            }
+            
+            // Action buttons
+            document.getElementById('like-button').dataset.newsId = article.id;
+            document.getElementById('share-button').dataset.url = window.location.href;
+            document.getElementById('share-button').dataset.title = article.titulo;
+            document.getElementById('favorite-button').dataset.newsId = article.id;
+            document.getElementById('comment-news-id').value = article.id;
+            
+            // Social share links
+            setupSocialShare(article.titulo, window.location.href, article.resumo);
+            
+            // Author bio
+            if (article.autor_bio) {
+                document.getElementById('author-bio-container').style.display = 'block';
+                document.getElementById('author-bio-name').textContent = article.autor;
+                document.getElementById('author-bio-avatar').src = article.autor_foto || '/assets/img/default-avatar.png';
+                document.getElementById('author-bio-description').textContent = article.autor_bio;
+            }
+            
+            // Schema.org
+            const schema = {
+                "@context": "https://schema.org",
+                "@type": "NewsArticle",
+                "headline": article.titulo,
+                "description": article.resumo,
+                "image": article.imagem,
+                "datePublished": article.data_publicacao,
+                "dateModified": article.data_atualizacao,
+                "author": {
+                    "@type": "Person",
+                    "name": article.autor
+                },
+                "publisher": {
+                    "@type": "Organization",
+                    "name": "Portal de Notícias",
+                    "logo": {
+                        "@type": "ImageObject",
+                        "url": "/assets/img/logo.png"
+                    }
+                },
+                "mainEntityOfPage": {
+                    "@type": "WebPage",
+                    "@id": window.location.href
+                }
+            };
+            
+            document.getElementById('article-schema').textContent = JSON.stringify(schema);
+        }
+        
+        // Configura links de compartilhamento social
+        function setupSocialShare(title, url, description) {
+            const encodedTitle = encodeURIComponent(title);
+            const encodedUrl = encodeURIComponent(url);
+            const encodedDescription = encodeURIComponent(description);
+            
+            document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+            document.getElementById('share-twitter').href = `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`;
+            document.getElementById('share-whatsapp').href = `https://wa.me/?text=${encodedTitle} ${encodedUrl}`;
+            document.getElementById('share-linkedin').href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`;
+            document.getElementById('share-pinterest').href = `https://pinterest.com/pin/create/button/?url=${encodedUrl}&description=${encodedTitle}`;
+        }
+        
+        // Carrega comentários
+        async function loadComments(newsId) {
+            try {
+                const response = await fetch(`/backend/comentarios/noticia/${newsId}`);
+                const comments = await response.json();
+                
+                if (comments.success) {
+                    displayComments(comments.data);
+                    document.getElementById('comments-count').textContent = comments.total;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar comentários:', error);
+            }
+        }
+        
+        // Exibe comentários
+        function displayComments(comments) {
+            const container = document.getElementById('comments-list');
+            
+            if (comments.length === 0) {
+                container.innerHTML = '<p class="text-muted text-center py-4">Nenhum comentário ainda. Seja o primeiro a comentar!</p>';
+                return;
+            }
+            
+            container.innerHTML = comments.map(comment => createCommentHTML(comment)).join('');
+        }
+        
+        // Cria HTML do comentário
+        function createCommentHTML(comment) {
+            return `
+                <div class="comment mb-4 p-3 border rounded">
+                    <div class="comment-header d-flex align-items-center justify-content-between mb-2">
+                        <div class="d-flex align-items-center">
+                            <img src="${comment.usuario_foto || '/assets/img/default-avatar.png'}" alt="${comment.usuario_nome}" class="comment-avatar me-2">
+                            <div>
+                                <div class="comment-author fw-bold">${comment.usuario_nome}</div>
+                                <div class="comment-date text-muted small">${formatDate(comment.data_criacao)}</div>
+                            </div>
+                        </div>
+                        <div class="comment-actions">
+                            <button class="btn btn-sm btn-outline-primary comment-like-btn" data-comment-id="${comment.id}">
+                                <i class="fas fa-thumbs-up me-1"></i>
+                                <span class="like-count">${comment.curtidas}</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="comment-content">
+                        ${comment.conteudo}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Carrega notícias relacionadas
+        async function loadRelatedNews(newsId, categoryId) {
+            try {
+                const response = await fetch(`/backend/noticias/${newsId}/relacionadas`);
+                const news = await response.json();
+                
+                if (news.success && news.data.length > 0) {
+                    displayRelatedNews(news.data);
+                } else {
+                    document.querySelector('.related-news').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar notícias relacionadas:', error);
+            }
+        }
+        
+        // Exibe notícias relacionadas
+        function displayRelatedNews(news) {
+            const container = document.getElementById('related-news');
+            container.innerHTML = news.map(item => `
+                <div class="col-md-6 mb-3">
+                    <div class="card news-card">
+                        ${item.imagem ? `<img src="${item.imagem}" alt="${item.titulo}" class="card-img">` : ''}
+                        <div class="card-body">
+                            <h6 class="news-card-title">
+                                <a href="/noticia/${item.slug}">${item.titulo}</a>
+                            </h6>
+                            <div class="news-card-meta">
+                                <small class="text-muted">${formatDate(item.data_publicacao)}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Incrementa visualizações
+        async function incrementViews(newsId) {
+            try {
+                await fetch(`/backend/noticias/${newsId}/view`, { method: 'POST' });
+            } catch (error) {
+                console.error('Erro ao incrementar visualizações:', error);
+            }
+        }
+        
+        // Altera tamanho do texto
+        function changeTextSize(size) {
+            const content = document.getElementById('article-content');
+            content.classList.remove('text-small', 'text-normal', 'text-large');
+            content.classList.add(`text-${size}`);
+            
+            localStorage.setItem('article-text-size', size);
+        }
+        
+        // Copia link para clipboard
+        function copyToClipboard() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showSuccess('Link copiado para a área de transferência!');
+            }).catch(() => {
+                showError('Erro ao copiar link.');
+            });
+        }
+        
+        // Utilitários
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function showSuccess(message) {
+            // Implementar notificação de sucesso
+            alert(message);
+        }
+        
+        function showError(message) {
+            // Implementar notificação de erro
+            alert(message);
+        }
+        
+        // Carrega tamanho de texto salvo
+        const savedTextSize = localStorage.getItem('article-text-size');
+        if (savedTextSize) {
+            changeTextSize(savedTextSize);
+        }
+        
+        // Atualiza data atual
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Botão voltar ao topo
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('backToTop').addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Função de logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('portal-user');
+                window.location.reload();
+            }
+        }
+        
+        // Carrega informações do clima (simulado)
+        setTimeout(() => {
+            document.getElementById('weather-info').textContent = 'São Paulo: 25°C';
+        }, 1000);
+    </script>
+    
+    <!-- Google Analytics (substitua pelo seu ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+</body>
+</html>

@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Newsletter</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Newsletter</h2>
+                            <p class="page-subtitle">Gerencie assinantes e envie campanhas de email</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportSubscribers()">
+                                <i class="fas fa-download me-2"></i>Exportar Assinantes
+                            </button>
+                            <button class="btn btn-primary" onclick="showCampaignModal()">
+                                <i class="fas fa-paper-plane me-2"></i>Nova Campanha
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-subscribers">0</h3>
+                                <p>Total de Assinantes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="active-subscribers">0</h3>
+                                <p>Assinantes Ativos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-paper-plane"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-campaigns">0</h3>
+                                <p>Campanhas Enviadas</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-envelope-open"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="open-rate">0%</h3>
+                                <p>Taxa de Abertura</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4" id="newsletterTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="subscribers-tab" data-bs-toggle="tab" data-bs-target="#subscribers" type="button" role="tab">
+                            <i class="fas fa-users me-2"></i>Assinantes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="campaigns-tab" data-bs-toggle="tab" data-bs-target="#campaigns" type="button" role="tab">
+                            <i class="fas fa-paper-plane me-2"></i>Campanhas
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates" type="button" role="tab">
+                            <i class="fas fa-file-alt me-2"></i>Templates
+                        </button>
+                    </li>
+                </ul>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="newsletterTabContent">
+                    <!-- Subscribers Tab -->
+                    <div class="tab-pane fade show active" id="subscribers" role="tabpanel">
+                        <!-- Filters -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Buscar</label>
+                                        <div class="input-group">
+                                            <input type="text" id="search-subscribers" class="form-control" placeholder="Nome ou email...">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="searchSubscribers()">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Status</label>
+                                        <select id="status-filter" class="form-select" onchange="filterSubscribers()">
+                                            <option value="">Todos</option>
+                                            <option value="ativo">Ativo</option>
+                                            <option value="inativo">Inativo</option>
+                                            <option value="cancelado">Cancelado</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Período</label>
+                                        <select id="period-filter" class="form-select" onchange="filterSubscribers()">
+                                            <option value="">Todos</option>
+                                            <option value="today">Hoje</option>
+                                            <option value="week">Esta semana</option>
+                                            <option value="month">Este mês</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">Ordenar por</label>
+                                        <select id="sort-subscribers" class="form-select" onchange="sortSubscribers()">
+                                            <option value="data_inscricao-desc">Mais recentes</option>
+                                            <option value="data_inscricao-asc">Mais antigos</option>
+                                            <option value="nome-asc">Nome A-Z</option>
+                                            <option value="nome-desc">Nome Z-A</option>
+                                            <option value="email-asc">Email A-Z</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">&nbsp;</label>
+                                        <button class="btn btn-outline-secondary d-block w-100" onclick="clearSubscriberFilters()">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Subscribers List -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <input type="checkbox" class="form-check-input me-3" onchange="toggleAllSubscribers(this)">
+                                    <span id="subscribers-count">0 assinantes encontrados</span>
+                                </div>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-success" onclick="bulkActivate()">
+                                        <i class="fas fa-check me-1"></i>Ativar
+                                    </button>
+                                    <button class="btn btn-outline-warning" onclick="bulkDeactivate()">
+                                        <i class="fas fa-pause me-1"></i>Desativar
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="bulkDelete()">
+                                        <i class="fas fa-trash me-1"></i>Excluir
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="subscribers-list">
+                                    <!-- Subscribers will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <select id="per-page-subscribers" class="form-select form-select-sm" style="width: auto;" onchange="changeSubscribersPerPage()">
+                                            <option value="25">25 por página</option>
+                                            <option value="50" selected>50 por página</option>
+                                            <option value="100">100 por página</option>
+                                        </select>
+                                    </div>
+                                    <nav id="subscribers-pagination">
+                                        <!-- Pagination will be loaded here -->
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Campaigns Tab -->
+                    <div class="tab-pane fade" id="campaigns" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="card-title mb-0">Campanhas de Email</h6>
+                                <button class="btn btn-primary btn-sm" onclick="showCampaignModal()">
+                                    <i class="fas fa-plus me-2"></i>Nova Campanha
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="campaigns-list">
+                                    <!-- Campaigns will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Templates Tab -->
+                    <div class="tab-pane fade" id="templates" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="card-title mb-0">Templates de Email</h6>
+                                <button class="btn btn-primary btn-sm" onclick="showTemplateModal()">
+                                    <i class="fas fa-plus me-2"></i>Novo Template
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="templates-list">
+                                    <!-- Templates will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Campaign Modal -->
+    <div class="modal fade" id="campaignModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Campanha de Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="campaignForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label">Assunto *</label>
+                                    <input type="text" class="form-control" id="campaign-subject" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Template</label>
+                                    <select class="form-select" id="campaign-template">
+                                        <option value="">Selecione um template</option>
+                                        <!-- Templates will be loaded here -->
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Conteúdo *</label>
+                                    <div id="campaign-editor" style="height: 300px;"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Destinatários</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipients" id="all-subscribers" value="all" checked>
+                                        <label class="form-check-label" for="all-subscribers">
+                                            Todos os assinantes ativos
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="recipients" id="selected-subscribers" value="selected">
+                                        <label class="form-check-label" for="selected-subscribers">
+                                            Assinantes selecionados
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Programar Envio</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="schedule" id="send-now" value="now" checked>
+                                        <label class="form-check-label" for="send-now">
+                                            Enviar agora
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="schedule" id="send-later" value="later">
+                                        <label class="form-check-label" for="send-later">
+                                            Programar para depois
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div id="schedule-datetime" class="mb-3" style="display: none;">
+                                    <label class="form-label">Data e Hora</label>
+                                    <input type="datetime-local" class="form-control" id="campaign-datetime">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Configurações</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="track-opens" checked>
+                                        <label class="form-check-label" for="track-opens">
+                                            Rastrear aberturas
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="track-clicks" checked>
+                                        <label class="form-check-label" for="track-clicks">
+                                            Rastrear cliques
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="previewCampaign()">Visualizar</button>
+                        <button type="submit" class="btn btn-primary">Enviar Campanha</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Quill Editor -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 50;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'data_inscricao-desc';
+        let campaignEditor;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadSubscribers();
+            loadCampaigns();
+            loadTemplates();
+            setupEventListeners();
+            initializeEditor();
+        });
+        
+        function initializeEditor() {
+            campaignEditor = new Quill('#campaign-editor', {
+                theme: 'snow',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
+                        ['link', 'image'],
+                        ['clean']
+                    ]
+                }
+            });
+        }
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/newsletter/stats');
+                if (result.success) {
+                    document.getElementById('total-subscribers').textContent = result.data.total_assinantes || 0;
+                    document.getElementById('active-subscribers').textContent = result.data.assinantes_ativos || 0;
+                    document.getElementById('total-campaigns').textContent = result.data.total_campanhas || 0;
+                    document.getElementById('open-rate').textContent = (result.data.taxa_abertura || 0) + '%';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadSubscribers() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/newsletter/assinantes?${params}`);
+                
+                if (result.success) {
+                    displaySubscribers(result.data.items);
+                    updateSubscribersPagination(result.data.pagination);
+                    updateSubscribersCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar assinantes', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar assinantes:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function displaySubscribers(subscribers) {
+            const subscribersList = document.getElementById('subscribers-list');
+            
+            if (subscribers.length === 0) {
+                subscribersList.innerHTML = '<div class="text-center py-5"><i class="fas fa-users fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum assinante encontrado</p></div>';
+                return;
+            }
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" class="form-check-input" onchange="toggleAllSubscribers(this)">
+                            </th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th width="100">Status</th>
+                            <th width="120">Data Inscrição</th>
+                            <th width="120">Última Atividade</th>
+                            <th width="100">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${subscribers.map(subscriber => `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input subscriber-checkbox" value="${subscriber.id}">
+                                </td>
+                                <td>
+                                    <div class="fw-medium">${subscriber.nome || 'N/A'}</div>
+                                </td>
+                                <td>
+                                    <div>${subscriber.email}</div>
+                                </td>
+                                <td>
+                                    <span class="badge ${subscriber.status === 'ativo' ? 'bg-success' : subscriber.status === 'inativo' ? 'bg-warning' : 'bg-danger'}">
+                                        ${subscriber.status === 'ativo' ? 'Ativo' : subscriber.status === 'inativo' ? 'Inativo' : 'Cancelado'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small>${new Date(subscriber.data_inscricao).toLocaleDateString('pt-BR')}</small>
+                                </td>
+                                <td>
+                                    <small>${subscriber.ultima_atividade ? new Date(subscriber.ultima_atividade).toLocaleDateString('pt-BR') : 'N/A'}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        ${subscriber.status === 'ativo' ? `
+                                            <button class="btn btn-outline-warning" onclick="deactivateSubscriber(${subscriber.id})" title="Desativar">
+                                                <i class="fas fa-pause"></i>
+                                            </button>
+                                        ` : `
+                                            <button class="btn btn-outline-success" onclick="activateSubscriber(${subscriber.id})" title="Ativar">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        `}
+                                        <button class="btn btn-outline-danger" onclick="deleteSubscriber(${subscriber.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            subscribersList.innerHTML = table;
+        }
+        
+        async function loadCampaigns() {
+            try {
+                const result = await adminPanel.apiGet('admin/newsletter/campanhas');
+                
+                if (result.success) {
+                    displayCampaigns(result.data.items);
+                } else {
+                    console.error('Erro ao carregar campanhas');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar campanhas:', error);
+            }
+        }
+        
+        function displayCampaigns(campaigns) {
+            const campaignsList = document.getElementById('campaigns-list');
+            
+            if (campaigns.length === 0) {
+                campaignsList.innerHTML = '<div class="text-center py-5"><i class="fas fa-paper-plane fa-3x text-muted mb-3"></i><p class="text-muted">Nenhuma campanha encontrada</p></div>';
+                return;
+            }
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Assunto</th>
+                            <th width="100">Status</th>
+                            <th width="100">Enviados</th>
+                            <th width="100">Abertos</th>
+                            <th width="120">Data Envio</th>
+                            <th width="100">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${campaigns.map(campaign => `
+                            <tr>
+                                <td>
+                                    <div class="fw-medium">${campaign.assunto}</div>
+                                </td>
+                                <td>
+                                    <span class="badge ${campaign.status === 'enviada' ? 'bg-success' : campaign.status === 'programada' ? 'bg-info' : 'bg-warning'}">
+                                        ${campaign.status === 'enviada' ? 'Enviada' : campaign.status === 'programada' ? 'Programada' : 'Rascunho'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="fw-medium">${campaign.total_enviados || 0}</span>
+                                </td>
+                                <td>
+                                    <span class="fw-medium">${campaign.total_abertos || 0}</span>
+                                    <small class="text-muted d-block">${campaign.taxa_abertura || 0}%</small>
+                                </td>
+                                <td>
+                                    <small>${campaign.data_envio ? new Date(campaign.data_envio).toLocaleDateString('pt-BR') : 'N/A'}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" onclick="viewCampaign(${campaign.id})" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        ${campaign.status === 'rascunho' ? `
+                                            <button class="btn btn-outline-primary" onclick="editCampaign(${campaign.id})" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn btn-outline-danger" onclick="deleteCampaign(${campaign.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            campaignsList.innerHTML = table;
+        }
+        
+        async function loadTemplates() {
+            try {
+                const result = await adminPanel.apiGet('admin/newsletter/templates');
+                
+                if (result.success) {
+                    displayTemplates(result.data.items);
+                    populateTemplateSelect(result.data.items);
+                } else {
+                    console.error('Erro ao carregar templates');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar templates:', error);
+            }
+        }
+        
+        function displayTemplates(templates) {
+            const templatesList = document.getElementById('templates-list');
+            
+            if (templates.length === 0) {
+                templatesList.innerHTML = '<div class="text-center py-5"><i class="fas fa-file-alt fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum template encontrado</p></div>';
+                return;
+            }
+            
+            const cards = `
+                <div class="row g-3 p-3">
+                    ${templates.map(template => `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">${template.nome}</h6>
+                                    <p class="card-text text-muted small">${template.descricao || 'Sem descrição'}</p>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group btn-group-sm w-100">
+                                        <button class="btn btn-outline-info" onclick="previewTemplate(${template.id})" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="editTemplate(${template.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteTemplate(${template.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            templatesList.innerHTML = cards;
+        }
+        
+        function populateTemplateSelect(templates) {
+            const select = document.getElementById('campaign-template');
+            select.innerHTML = '<option value="">Selecione um template</option>';
+            
+            templates.forEach(template => {
+                const option = document.createElement('option');
+                option.value = template.id;
+                option.textContent = template.nome;
+                select.appendChild(option);
+            });
+        }
+        
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-subscribers');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchSubscribers();
+                }
+            });
+            
+            // Campaign form
+            document.getElementById('campaignForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitCampaign();
+            });
+            
+            // Schedule radio buttons
+            document.querySelectorAll('input[name="schedule"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const datetimeDiv = document.getElementById('schedule-datetime');
+                    if (this.value === 'later') {
+                        datetimeDiv.style.display = 'block';
+                    } else {
+                        datetimeDiv.style.display = 'none';
+                    }
+                });
+            });
+        }
+        
+        function showCampaignModal() {
+            document.getElementById('campaignForm').reset();
+            campaignEditor.setContents([]);
+            
+            const modal = new bootstrap.Modal(document.getElementById('campaignModal'));
+            modal.show();
+        }
+        
+        async function submitCampaign() {
+            const subject = document.getElementById('campaign-subject').value.trim();
+            const content = campaignEditor.root.innerHTML;
+            const recipients = document.querySelector('input[name="recipients"]:checked').value;
+            const schedule = document.querySelector('input[name="schedule"]:checked').value;
+            const datetime = document.getElementById('campaign-datetime').value;
+            const trackOpens = document.getElementById('track-opens').checked;
+            const trackClicks = document.getElementById('track-clicks').checked;
+            
+            if (!subject || !content) {
+                adminPanel.showNotification('Preencha todos os campos obrigatórios', 'warning');
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiPost('admin/newsletter/campanhas', {
+                    assunto: subject,
+                    conteudo: content,
+                    destinatarios: recipients,
+                    programacao: schedule,
+                    data_programada: datetime,
+                    rastrear_aberturas: trackOpens,
+                    rastrear_cliques: trackClicks
+                });
+                
+                if (result.success) {
+                    adminPanel.showNotification('Campanha criada com sucesso!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('campaignModal')).hide();
+                    loadCampaigns();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao criar campanha', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao criar campanha:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        // Utility functions
+        function updateSubscribersPagination(pagination) {
+            // Implementation similar to other pages
+        }
+        
+        function updateSubscribersCount(total) {
+            const subscribersCount = document.getElementById('subscribers-count');
+            subscribersCount.textContent = `${total} assinante${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`;
+        }
+        
+        function toggleAllSubscribers(checkbox) {
+            const checkboxes = document.querySelectorAll('.subscriber-checkbox');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+        
+        function searchSubscribers() {
+            const searchTerm = document.getElementById('search-subscribers').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadSubscribers();
+        }
+        
+        function filterSubscribers() {
+            const status = document.getElementById('status-filter').value;
+            const period = document.getElementById('period-filter').value;
+            
+            currentFilters = {};
+            if (status) currentFilters.status = status;
+            if (period) currentFilters.periodo = period;
+            
+            currentPage = 1;
+            loadSubscribers();
+        }
+        
+        function clearSubscriberFilters() {
+            document.getElementById('search-subscribers').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('period-filter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadSubscribers();
+        }
+        
+        function sortSubscribers() {
+            currentSort = document.getElementById('sort-subscribers').value;
+            currentPage = 1;
+            loadSubscribers();
+        }
+        
+        function changeSubscribersPerPage() {
+            perPage = parseInt(document.getElementById('per-page-subscribers').value);
+            currentPage = 1;
+            loadSubscribers();
+        }
+        
+        // Placeholder functions for subscriber actions
+        function activateSubscriber(id) {
+            alert('Funcionalidade de ativar assinante será implementada');
+        }
+        
+        function deactivateSubscriber(id) {
+            alert('Funcionalidade de desativar assinante será implementada');
+        }
+        
+        function deleteSubscriber(id) {
+            if (confirm('Tem certeza que deseja excluir este assinante?')) {
+                alert('Funcionalidade de excluir assinante será implementada');
+            }
+        }
+        
+        function bulkActivate() {
+            alert('Funcionalidade de ativação em lote será implementada');
+        }
+        
+        function bulkDeactivate() {
+            alert('Funcionalidade de desativação em lote será implementada');
+        }
+        
+        function bulkDelete() {
+            alert('Funcionalidade de exclusão em lote será implementada');
+        }
+        
+        function exportSubscribers() {
+            alert('Funcionalidade de exportação será implementada');
+        }
+        
+        function viewCampaign(id) {
+            alert('Funcionalidade de visualizar campanha será implementada');
+        }
+        
+        function editCampaign(id) {
+            alert('Funcionalidade de editar campanha será implementada');
+        }
+        
+        function deleteCampaign(id) {
+            if (confirm('Tem certeza que deseja excluir esta campanha?')) {
+                alert('Funcionalidade de excluir campanha será implementada');
+            }
+        }
+        
+        function previewCampaign() {
+            alert('Funcionalidade de preview será implementada');
+        }
+        
+        function showTemplateModal() {
+            alert('Funcionalidade de criar template será implementada');
+        }
+        
+        function previewTemplate(id) {
+            alert('Funcionalidade de preview de template será implementada');
+        }
+        
+        function editTemplate(id) {
+            alert('Funcionalidade de editar template será implementada');
+        }
+        
+        function deleteTemplate(id) {
+            if (confirm('Tem certeza que deseja excluir este template?')) {
+                alert('Funcionalidade de excluir template será implementada');
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

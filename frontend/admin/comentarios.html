@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Comentários - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Gerenciar Comentários</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Comentários</h2>
+                            <p class="page-subtitle">Modere e gerencie comentários das notícias</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportComments()">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="bulkActions()">
+                                <i class="fas fa-tasks me-2"></i>Ações em Lote
+                            </button>
+                            <button class="btn btn-outline-warning" onclick="moderationQueue()">
+                                <i class="fas fa-clock me-2"></i>Fila de Moderação
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-comments">0</h3>
+                                <p>Total de Comentários</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="pending-comments">0</h3>
+                                <p>Aguardando Moderação</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="approved-comments">0</h3>
+                                <p>Aprovados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-danger">
+                                <i class="fas fa-ban"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="spam-comments">0</h3>
+                                <p>Spam/Rejeitados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Moderation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">Moderação Rápida</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <button class="btn btn-success w-100" onclick="bulkApprove()">
+                                    <i class="fas fa-check me-2"></i>Aprovar Selecionados
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-warning w-100" onclick="bulkReject()">
+                                    <i class="fas fa-times me-2"></i>Rejeitar Selecionados
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-danger w-100" onclick="bulkSpam()">
+                                    <i class="fas fa-ban me-2"></i>Marcar como Spam
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-outline-danger w-100" onclick="bulkDelete()">
+                                    <i class="fas fa-trash me-2"></i>Excluir Selecionados
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <div class="input-group">
+                                    <input type="text" id="search-input" class="form-control" placeholder="Conteúdo, autor, email...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchComments()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select id="status-filter" class="form-select" onchange="filterComments()">
+                                    <option value="">Todos</option>
+                                    <option value="pendente">Pendente</option>
+                                    <option value="aprovado">Aprovado</option>
+                                    <option value="rejeitado">Rejeitado</option>
+                                    <option value="spam">Spam</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Notícia</label>
+                                <select id="news-filter" class="form-select" onchange="filterComments()">
+                                    <option value="">Todas</option>
+                                    <!-- Options will be loaded dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Período</label>
+                                <select id="period-filter" class="form-select" onchange="filterComments()">
+                                    <option value="">Todos</option>
+                                    <option value="today">Hoje</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mês</option>
+                                    <option value="custom">Personalizado</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Ordenar por</label>
+                                <select id="sort-select" class="form-select" onchange="sortComments()">
+                                    <option value="data_criacao-desc">Mais recentes</option>
+                                    <option value="data_criacao-asc">Mais antigos</option>
+                                    <option value="autor-asc">Autor A-Z</option>
+                                    <option value="autor-desc">Autor Z-A</option>
+                                    <option value="status-asc">Status</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-secondary d-block w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Custom Date Range -->
+                        <div id="custom-date-range" class="row g-3 mt-2" style="display: none;">
+                            <div class="col-md-3">
+                                <label class="form-label">Data Inicial</label>
+                                <input type="date" id="start-date" class="form-control" onchange="filterComments()">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Data Final</label>
+                                <input type="date" id="end-date" class="form-control" onchange="filterComments()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comments List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <input type="checkbox" class="form-check-input me-3" onchange="toggleAllComments(this)">
+                            <span id="comments-count">0 comentários encontrados</span>
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="view-mode" id="list-view" checked>
+                            <label class="btn btn-outline-secondary" for="list-view">
+                                <i class="fas fa-list"></i>
+                            </label>
+                            <input type="radio" class="btn-check" name="view-mode" id="card-view">
+                            <label class="btn btn-outline-secondary" for="card-view">
+                                <i class="fas fa-th-large"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="comments-list">
+                            <!-- Comments will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <select id="per-page-select" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage()">
+                                    <option value="25">25 por página</option>
+                                    <option value="50" selected>50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                            <nav id="pagination-nav">
+                                <!-- Pagination will be loaded here -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 50;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'data_criacao-desc';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadComments();
+            loadStats();
+            loadNewsOptions();
+            setupEventListeners();
+        });
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/comentarios/stats');
+                if (result.success) {
+                    document.getElementById('total-comments').textContent = result.data.total || 0;
+                    document.getElementById('pending-comments').textContent = result.data.pendentes || 0;
+                    document.getElementById('approved-comments').textContent = result.data.aprovados || 0;
+                    document.getElementById('spam-comments').textContent = result.data.spam || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadComments() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/comentarios?${params}`);
+                
+                if (result.success) {
+                    displayComments(result.data.items);
+                    updatePagination(result.data.pagination);
+                    updateCommentsCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar comentários', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar comentários:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function displayComments(comments) {
+            const commentsList = document.getElementById('comments-list');
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="text-center py-5"><i class="fas fa-comments fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum comentário encontrado</p></div>';
+                return;
+            }
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" class="form-check-input" onchange="toggleAllComments(this)">
+                            </th>
+                            <th>Autor</th>
+                            <th>Comentário</th>
+                            <th width="150">Notícia</th>
+                            <th width="100">Status</th>
+                            <th width="120">Data</th>
+                            <th width="150">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${comments.map(comment => `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input comment-checkbox" value="${comment.id}">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="${comment.avatar || '../assets/images/default-avatar.png'}" alt="${comment.autor}" class="rounded-circle me-2" width="32" height="32">
+                                        <div>
+                                            <div class="fw-medium">${comment.autor}</div>
+                                            <small class="text-muted">${comment.email}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="comment-preview">
+                                        <p class="mb-1">${comment.conteudo.substring(0, 100)}${comment.conteudo.length > 100 ? '...' : ''}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="../noticia.html?id=${comment.noticia_id}" target="_blank" class="text-decoration-none">
+                                        ${comment.noticia_titulo.substring(0, 30)}${comment.noticia_titulo.length > 30 ? '...' : ''}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span class="badge ${comment.status === 'aprovado' ? 'bg-success' : comment.status === 'pendente' ? 'bg-warning' : 'bg-danger'}">
+                                        ${comment.status === 'aprovado' ? 'Aprovado' : comment.status === 'pendente' ? 'Pendente' : 'Rejeitado'}
+                                    </span>
+                                </td>
+                                <td>
+                                    <small>${new Date(comment.data_criacao).toLocaleDateString('pt-BR')}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        ${comment.status === 'pendente' ? `
+                                            <button class="btn btn-outline-success" onclick="approveComment(${comment.id})" title="Aprovar">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                            <button class="btn btn-outline-warning" onclick="rejectComment(${comment.id})" title="Rejeitar">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        ` : ''}
+                                        <button class="btn btn-outline-danger" onclick="deleteComment(${comment.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            commentsList.innerHTML = table;
+        }
+        
+        function updatePagination(pagination) {
+            totalPages = pagination.pages;
+            currentPage = pagination.current_page;
+            
+            const paginationNav = document.getElementById('pagination-nav');
+            
+            if (totalPages <= 1) {
+                paginationNav.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '<ul class="pagination pagination-sm mb-0">';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            paginationHTML += '</ul>';
+            paginationNav.innerHTML = paginationHTML;
+        }
+        
+        function updateCommentsCount(total) {
+            const commentsCount = document.getElementById('comments-count');
+            commentsCount.textContent = `${total} comentário${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`;
+        }
+        
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchComments();
+                }
+            });
+            
+            // Period filter
+            document.getElementById('period-filter').addEventListener('change', function() {
+                const customDateRange = document.getElementById('custom-date-range');
+                if (this.value === 'custom') {
+                    customDateRange.style.display = 'block';
+                } else {
+                    customDateRange.style.display = 'none';
+                }
+            });
+        }
+        
+        async function approveComment(id) {
+            try {
+                const result = await adminPanel.apiPost(`admin/comentarios/${id}/approve`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Comentário aprovado!', 'success');
+                    loadComments();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao aprovar comentário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao aprovar comentário:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function rejectComment(id) {
+            try {
+                const result = await adminPanel.apiPost(`admin/comentarios/${id}/reject`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Comentário rejeitado!', 'success');
+                    loadComments();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao rejeitar comentário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao rejeitar comentário:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        function deleteComment(id) {
+            if (confirm('Tem certeza que deseja excluir este comentário?')) {
+                adminPanel.apiDelete(`admin/comentarios/${id}`).then(result => {
+                    if (result.success) {
+                        adminPanel.showNotification('Comentário excluído!', 'success');
+                        loadComments();
+                        loadStats();
+                    } else {
+                        adminPanel.showNotification(result.message || 'Erro ao excluir comentário', 'error');
+                    }
+                }).catch(error => {
+                    console.error('Erro ao excluir comentário:', error);
+                    adminPanel.showNotification('Erro de conexão', 'error');
+                });
+            }
+        }
+        
+        function searchComments() {
+            const searchTerm = document.getElementById('search-input').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function filterComments() {
+            const status = document.getElementById('status-filter').value;
+            const newsId = document.getElementById('news-filter').value;
+            const period = document.getElementById('period-filter').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            currentFilters = {};
+            if (status) currentFilters.status = status;
+            if (newsId) currentFilters.noticia_id = newsId;
+            if (period && period !== 'custom') currentFilters.periodo = period;
+            if (period === 'custom' && startDate) currentFilters.data_inicio = startDate;
+            if (period === 'custom' && endDate) currentFilters.data_fim = endDate;
+            
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('news-filter').value = '';
+            document.getElementById('period-filter').value = '';
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            document.getElementById('custom-date-range').style.display = 'none';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function sortComments() {
+            currentSort = document.getElementById('sort-select').value;
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                loadComments();
+            }
+        }
+        
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('per-page-select').value);
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function toggleAllComments(checkbox) {
+            const checkboxes = document.querySelectorAll('.comment-checkbox');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+        
+        function getSelectedComments() {
+            const checkboxes = document.querySelectorAll('.comment-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        function bulkActions() {
+            const selectedComments = getSelectedComments();
+            if (selectedComments.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos um comentário', 'warning');
+                return;
+            }
+            
+            // Show bulk actions menu
+            alert('Funcionalidade de ações em lote será implementada');
+        }
+        
+        function moderationQueue() {
+            currentFilters = { status: 'pendente' };
+            document.getElementById('status-filter').value = 'pendente';
+            currentPage = 1;
+            loadComments();
+        }
+        
+        function exportComments() {
+            alert('Funcionalidade de exportação será implementada');
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

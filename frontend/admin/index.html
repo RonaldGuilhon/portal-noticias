@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Portal de Notícias</title>
+    
+    <!-- Meta Tags -->
+    <meta name="description" content="Painel administrativo do Portal de Notícias">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/images/apple-touch-icon.png">
+    
+    <!-- External CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-header-content">
+            <div class="admin-header-left">
+                <button class="btn btn-link sidebar-toggle" id="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="admin-title">Painel Administrativo</h1>
+            </div>
+            
+            <div class="admin-header-right">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link notification-btn" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-count">0</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end notification-dropdown">
+                        <li class="dropdown-header">Notificações</li>
+                        <div id="notifications-list">
+                            <li><span class="dropdown-item-text text-muted">Nenhuma notificação</span></li>
+                        </div>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link user-menu-btn" type="button" data-bs-toggle="dropdown">
+                        <img src="../assets/images/default-avatar.png" alt="Avatar" class="user-avatar" id="admin-avatar">
+                        <span class="user-name" id="admin-name">Administrador</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Meu Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="../index.html" target="_blank"><i class="fas fa-external-link-alt me-2"></i>Ver Site</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">Conteúdo</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                            <span class="nav-badge" id="noticias-pendentes">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">Interação</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                            <span class="nav-badge" id="comentarios-pendentes">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">Usuários</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">Mídia</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    
+                    <li class="nav-section">Sistema</li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-content">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <h2 class="page-title">Dashboard</h2>
+                        <p class="page-subtitle">Visão geral do portal de notícias</p>
+                    </div>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" onclick="window.open('../index.html', '_blank')">
+                            <i class="fas fa-external-link-alt me-2"></i>Ver Site
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="stats-card stats-primary">
+                            <div class="stats-card-body">
+                                <div class="stats-icon">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number" id="total-noticias">0</div>
+                                    <div class="stats-label">Total de Notícias</div>
+                                    <div class="stats-change positive" id="noticias-change">+0% este mês</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="stats-card stats-success">
+                            <div class="stats-card-body">
+                                <div class="stats-icon">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number" id="total-visualizacoes">0</div>
+                                    <div class="stats-label">Visualizações</div>
+                                    <div class="stats-change positive" id="visualizacoes-change">+0% hoje</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="stats-card stats-info">
+                            <div class="stats-card-body">
+                                <div class="stats-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number" id="total-usuarios">0</div>
+                                    <div class="stats-label">Usuários Ativos</div>
+                                    <div class="stats-change positive" id="usuarios-change">+0% este mês</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="stats-card stats-warning">
+                            <div class="stats-card-body">
+                                <div class="stats-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <div class="stats-number" id="total-comentarios">0</div>
+                                    <div class="stats-label">Comentários</div>
+                                    <div class="stats-change neutral" id="comentarios-change">0 pendentes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <div class="col-xl-8 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Visualizações nos Últimos 30 Dias</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="views-chart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Categorias Mais Populares</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="categories-chart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="row">
+                    <div class="col-xl-8 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Notícias Recentes</h5>
+                                <a href="noticias.html" class="btn btn-sm btn-outline-primary">Ver Todas</a>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Título</th>
+                                                <th>Autor</th>
+                                                <th>Status</th>
+                                                <th>Visualizações</th>
+                                                <th>Data</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recent-news-table">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    <i class="fas fa-spinner fa-spin me-2"></i>Carregando...
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-xl-4 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Atividade Recente</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="activity-feed" id="activity-feed">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Carregando...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Ações Rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <a href="noticias.html?action=create" class="quick-action-card">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Nova Notícia</h6>
+                                                <p>Criar uma nova notícia</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <a href="comentarios.html?filter=pending" class="quick-action-card">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Comentários Pendentes</h6>
+                                                <p>Moderar comentários</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <a href="uploads.html" class="quick-action-card">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Upload de Mídia</h6>
+                                                <p>Enviar imagens/vídeos</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="col-md-3 mb-3">
+                                        <a href="estatisticas.html" class="quick-action-card">
+                                            <div class="quick-action-icon">
+                                                <i class="fas fa-chart-line"></i>
+                                            </div>
+                                            <div class="quick-action-content">
+                                                <h6>Relatórios</h6>
+                                                <p>Ver estatísticas detalhadas</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+    
+    <!-- External JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check admin authentication
+            if (!isAdminLoggedIn()) {
+                window.location.href = '../login.html?admin=1';
+                return;
+            }
+            
+            // Load dashboard data
+            loadDashboardData();
+            loadRecentNews();
+            loadActivityFeed();
+            loadNotifications();
+            
+            // Initialize charts
+            initializeCharts();
+            
+            // Setup real-time updates
+            setupRealTimeUpdates();
+        });
+        
+        async function loadDashboardData() {
+            try {
+                const response = await fetch('/backend/admin/dashboard', {
+                    headers: {
+                        'Authorization': 'Bearer ' + getAuthToken()
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    updateDashboardStats(result.data);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do dashboard:', error);
+            }
+        }
+        
+        function updateDashboardStats(data) {
+            // Update stats cards
+            document.getElementById('total-noticias').textContent = formatNumber(data.total_noticias || 0);
+            document.getElementById('total-visualizacoes').textContent = formatNumber(data.total_visualizacoes || 0);
+            document.getElementById('total-usuarios').textContent = formatNumber(data.total_usuarios || 0);
+            document.getElementById('total-comentarios').textContent = formatNumber(data.total_comentarios || 0);
+            
+            // Update change indicators
+            updateChangeIndicator('noticias-change', data.noticias_change || 0, 'este mês');
+            updateChangeIndicator('visualizacoes-change', data.visualizacoes_change || 0, 'hoje');
+            updateChangeIndicator('usuarios-change', data.usuarios_change || 0, 'este mês');
+            
+            // Update pending counts
+            document.getElementById('comentarios-change').textContent = `${data.comentarios_pendentes || 0} pendentes`;
+            document.getElementById('comentarios-pendentes').textContent = data.comentarios_pendentes || 0;
+            document.getElementById('noticias-pendentes').textContent = data.noticias_pendentes || 0;
+        }
+        
+        function updateChangeIndicator(elementId, change, period) {
+            const element = document.getElementById(elementId);
+            const isPositive = change > 0;
+            const isNegative = change < 0;
+            
+            element.textContent = `${isPositive ? '+' : ''}${change}% ${period}`;
+            element.className = `stats-change ${isPositive ? 'positive' : isNegative ? 'negative' : 'neutral'}`;
+        }
+        
+        async function loadRecentNews() {
+            try {
+                const response = await fetch('/backend/admin/noticias?limit=5&sort=created_at&order=desc', {
+                    headers: {
+                        'Authorization': 'Bearer ' + getAuthToken()
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderRecentNews(result.data.noticias || []);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar notícias recentes:', error);
+                document.getElementById('recent-news-table').innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-danger py-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Erro ao carregar dados
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        function renderRecentNews(news) {
+            const tbody = document.getElementById('recent-news-table');
+            
+            if (news.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="fas fa-newspaper me-2"></i>Nenhuma notícia encontrada
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = news.map(noticia => `
+                <tr>
+                    <td>
+                        <div class="news-title">
+                            <a href="noticias.html?id=${noticia.id}" class="text-decoration-none">
+                                ${noticia.titulo}
+                            </a>
+                        </div>
+                    </td>
+                    <td>${noticia.autor_nome || 'N/A'}</td>
+                    <td>
+                        <span class="badge bg-${getStatusColor(noticia.status)}">
+                            ${getStatusText(noticia.status)}
+                        </span>
+                    </td>
+                    <td>${formatNumber(noticia.visualizacoes || 0)}</td>
+                    <td>${formatDate(noticia.data_criacao)}</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="noticias.html?action=edit&id=${noticia.id}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="../noticia.html?id=${noticia.id}" class="btn btn-outline-info btn-sm" target="_blank">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        async function loadActivityFeed() {
+            try {
+                const response = await fetch('/backend/admin/activity?limit=10', {
+                    headers: {
+                        'Authorization': 'Bearer ' + getAuthToken()
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderActivityFeed(result.data.activities || []);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar feed de atividades:', error);
+                document.getElementById('activity-feed').innerHTML = `
+                    <div class="text-center text-danger py-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Erro ao carregar atividades
+                    </div>
+                `;
+            }
+        }
+        
+        function renderActivityFeed(activities) {
+            const container = document.getElementById('activity-feed');
+            
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-history me-2"></i>Nenhuma atividade recente
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = activities.map(activity => `
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-${getActivityIcon(activity.tipo)}"></i>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">${getActivityText(activity)}</p>
+                        <small class="activity-time text-muted">${formatTimeAgo(activity.data_atividade)}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function initializeCharts() {
+            // Views Chart
+            const viewsCtx = document.getElementById('views-chart').getContext('2d');
+            new Chart(viewsCtx, {
+                type: 'line',
+                data: {
+                    labels: [], // Will be populated with data
+                    datasets: [{
+                        label: 'Visualizações',
+                        data: [],
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Categories Chart
+            const categoriesCtx = document.getElementById('categories-chart').getContext('2d');
+            new Chart(categoriesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [], // Will be populated with data
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            '#007bff',
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545',
+                            '#6f42c1',
+                            '#fd7e14'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function setupRealTimeUpdates() {
+            // Update dashboard every 5 minutes
+            setInterval(loadDashboardData, 5 * 60 * 1000);
+            
+            // Update activity feed every 2 minutes
+            setInterval(loadActivityFeed, 2 * 60 * 1000);
+            
+            // Update notifications every minute
+            setInterval(loadNotifications, 60 * 1000);
+        }
+        
+        // Utility functions
+        function isAdminLoggedIn() {
+            const token = getAuthToken();
+            const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+            return token && userData.tipo === 'admin';
+        }
+        
+        function getAuthToken() {
+            return localStorage.getItem('auth_token');
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diff = now - date;
+            
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (days > 0) return `${days}d atrás`;
+            if (hours > 0) return `${hours}h atrás`;
+            if (minutes > 0) return `${minutes}m atrás`;
+            return 'Agora';
+        }
+        
+        function getStatusColor(status) {
+            const colors = {
+                'publicado': 'success',
+                'rascunho': 'secondary',
+                'pendente': 'warning',
+                'arquivado': 'dark'
+            };
+            return colors[status] || 'secondary';
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'publicado': 'Publicado',
+                'rascunho': 'Rascunho',
+                'pendente': 'Pendente',
+                'arquivado': 'Arquivado'
+            };
+            return texts[status] || status;
+        }
+        
+        function getActivityIcon(tipo) {
+            const icons = {
+                'noticia_criada': 'plus',
+                'noticia_editada': 'edit',
+                'noticia_publicada': 'check',
+                'comentario_aprovado': 'comment-check',
+                'usuario_registrado': 'user-plus',
+                'login': 'sign-in-alt'
+            };
+            return icons[tipo] || 'circle';
+        }
+        
+        function getActivityText(activity) {
+            const texts = {
+                'noticia_criada': `Nova notícia "${activity.detalhes}" criada`,
+                'noticia_editada': `Notícia "${activity.detalhes}" editada`,
+                'noticia_publicada': `Notícia "${activity.detalhes}" publicada`,
+                'comentario_aprovado': `Comentário aprovado em "${activity.detalhes}"`,
+                'usuario_registrado': `Novo usuário registrado: ${activity.detalhes}`,
+                'login': `Login realizado por ${activity.detalhes}`
+            };
+            return texts[activity.tipo] || activity.detalhes;
+        }
+        
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_data');
+                window.location.href = '../login.html';
+            }
+        }
+    </script>
+</body>
+</html>

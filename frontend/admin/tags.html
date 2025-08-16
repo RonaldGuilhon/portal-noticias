@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Tags - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Gerenciar Tags</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Tags</h2>
+                            <p class="page-subtitle">Gerencie as tags das notícias</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportTags()">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="bulkActions()">
+                                <i class="fas fa-tasks me-2"></i>Ações em Lote
+                            </button>
+                            <button class="btn btn-primary" onclick="showCreateModal()">
+                                <i class="fas fa-plus me-2"></i>Nova Tag
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-tags"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-tags">0</h3>
+                                <p>Total de Tags</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="tags-with-news">0</h3>
+                                <p>Tags com Notícias</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="popular-tags">0</h3>
+                                <p>Tags Populares</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="recent-tags">0</h3>
+                                <p>Tags Recentes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Add Tag -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h6 class="card-title">Adicionar Tag Rapidamente</h6>
+                        <div class="row g-3 align-items-end">
+                            <div class="col-md-4">
+                                <label class="form-label">Nome da Tag</label>
+                                <input type="text" id="quick-tag-name" class="form-control" placeholder="Digite o nome da tag">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Cor</label>
+                                <input type="color" id="quick-tag-color" class="form-control form-control-color" value="#007bff">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Descrição</label>
+                                <input type="text" id="quick-tag-description" class="form-control" placeholder="Descrição opcional">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary w-100" onclick="quickAddTag()">
+                                    <i class="fas fa-plus me-2"></i>Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Buscar</label>
+                                <div class="input-group">
+                                    <input type="text" id="search-input" class="form-control" placeholder="Nome, descrição...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchTags()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Cor</label>
+                                <select id="color-filter" class="form-select" onchange="filterTags()">
+                                    <option value="">Todas</option>
+                                    <option value="blue">Azul</option>
+                                    <option value="green">Verde</option>
+                                    <option value="red">Vermelho</option>
+                                    <option value="yellow">Amarelo</option>
+                                    <option value="purple">Roxo</option>
+                                    <option value="orange">Laranja</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Uso</label>
+                                <select id="usage-filter" class="form-select" onchange="filterTags()">
+                                    <option value="">Todas</option>
+                                    <option value="used">Com Notícias</option>
+                                    <option value="unused">Sem Notícias</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Ordenar por</label>
+                                <select id="sort-select" class="form-select" onchange="sortTags()">
+                                    <option value="nome-asc">Nome A-Z</option>
+                                    <option value="nome-desc">Nome Z-A</option>
+                                    <option value="data_criacao-desc">Mais recentes</option>
+                                    <option value="data_criacao-asc">Mais antigas</option>
+                                    <option value="uso-desc">Mais usadas</option>
+                                    <option value="uso-asc">Menos usadas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-secondary d-block w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tags List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="tags-count">0 tags encontradas</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="view-mode" id="list-view" checked>
+                            <label class="btn btn-outline-secondary" for="list-view">
+                                <i class="fas fa-list"></i>
+                            </label>
+                            <input type="radio" class="btn-check" name="view-mode" id="grid-view">
+                            <label class="btn btn-outline-secondary" for="grid-view">
+                                <i class="fas fa-th"></i>
+                            </label>
+                            <input type="radio" class="btn-check" name="view-mode" id="cloud-view">
+                            <label class="btn btn-outline-secondary" for="cloud-view">
+                                <i class="fas fa-cloud"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="tags-list">
+                            <!-- Tags will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <select id="per-page-select" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage()">
+                                    <option value="25">25 por página</option>
+                                    <option value="50" selected>50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                            <nav id="pagination-nav">
+                                <!-- Pagination will be loaded here -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Create/Edit Tag Modal -->
+    <div class="modal fade" id="tagModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="tagModalTitle">Nova Tag</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="tagForm" class="admin-form" data-action="admin/tags" data-method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="tag-id" name="id">
+                        
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <label for="tag-name" class="form-label">Nome *</label>
+                            <input type="text" class="form-control" id="tag-name" name="nome" required>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="tag-description" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="tag-description" name="descricao" rows="2" placeholder="Descrição da tag"></textarea>
+                        </div>
+                        
+                        <!-- Slug -->
+                        <div class="mb-3">
+                            <label for="tag-slug" class="form-label">Slug</label>
+                            <input type="text" class="form-control" id="tag-slug" name="slug">
+                            <small class="form-text text-muted">URL amigável (será gerada automaticamente se vazia)</small>
+                        </div>
+                        
+                        <!-- Color -->
+                        <div class="mb-3">
+                            <label for="tag-color" class="form-label">Cor</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input type="color" class="form-control form-control-color" id="tag-color" name="cor" value="#007bff">
+                                <span id="color-preview" class="badge" style="background-color: #007bff;">Preview</span>
+                            </div>
+                        </div>
+                        
+                        <!-- SEO Section -->
+                        <div class="mt-4">
+                            <h6 class="border-bottom pb-2 mb-3">SEO</h6>
+                            <div class="mb-3">
+                                <label for="tag-meta-title" class="form-label">Meta Título</label>
+                                <input type="text" class="form-control" id="tag-meta-title" name="meta_titulo" maxlength="60">
+                                <small class="form-text text-muted">Máximo 60 caracteres</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tag-meta-description" class="form-label">Meta Descrição</label>
+                                <textarea class="form-control" id="tag-meta-description" name="meta_descricao" rows="2" maxlength="160"></textarea>
+                                <small class="form-text text-muted">Máximo 160 caracteres</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bulk Actions Modal -->
+    <div class="modal fade" id="bulkModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ações em Lote</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Selecione uma ação para aplicar às tags selecionadas:</p>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="bulkMerge()">
+                            <i class="fas fa-compress-arrows-alt me-2"></i>Mesclar Tags
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="bulkChangeColor()">
+                            <i class="fas fa-palette me-2"></i>Alterar Cor
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="bulkDelete()">
+                            <i class="fas fa-trash me-2"></i>Excluir Tags
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 50;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'nome-asc';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTags();
+            loadStats();
+            setupEventListeners();
+        });
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/tags/stats');
+                if (result.success) {
+                    document.getElementById('total-tags').textContent = result.data.total || 0;
+                    document.getElementById('tags-with-news').textContent = result.data.com_noticias || 0;
+                    document.getElementById('popular-tags').textContent = result.data.populares || 0;
+                    document.getElementById('recent-tags').textContent = result.data.recentes || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadTags() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/tags?${params}`);
+                
+                if (result.success) {
+                    displayTags(result.data.items);
+                    updatePagination(result.data.pagination);
+                    updateTagsCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar tags', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar tags:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function displayTags(tags) {
+            const tagsList = document.getElementById('tags-list');
+            const isGridView = document.getElementById('grid-view').checked;
+            const isCloudView = document.getElementById('cloud-view').checked;
+            
+            if (tags.length === 0) {
+                tagsList.innerHTML = '<div class="text-center py-5"><i class="fas fa-tags fa-3x text-muted mb-3"></i><p class="text-muted">Nenhuma tag encontrada</p></div>';
+                return;
+            }
+            
+            if (isCloudView) {
+                displayTagsCloud(tags);
+            } else if (isGridView) {
+                displayTagsGrid(tags);
+            } else {
+                displayTagsList(tags);
+            }
+        }
+        
+        function displayTagsList(tags) {
+            const tagsList = document.getElementById('tags-list');
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="50">
+                                <input type="checkbox" class="form-check-input" onchange="toggleAllTags(this)">
+                            </th>
+                            <th>Nome</th>
+                            <th width="150">Slug</th>
+                            <th width="100">Cor</th>
+                            <th width="100">Notícias</th>
+                            <th width="120">Data</th>
+                            <th width="120">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tags.map(tag => `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input tag-checkbox" value="${tag.id}">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge me-2" style="background-color: ${tag.cor || '#007bff'}; color: white;">
+                                            ${tag.nome}
+                                        </span>
+                                        ${tag.descricao ? `<small class="text-muted">${AdminUtils.truncateText(tag.descricao, 40)}</small>` : ''}
+                                    </div>
+                                </td>
+                                <td>
+                                    <code class="small">${tag.slug}</code>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="color-swatch me-2" style="width: 20px; height: 20px; background-color: ${tag.cor || '#007bff'}; border-radius: 3px;"></div>
+                                        <small>${tag.cor || '#007bff'}</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">${tag.total_noticias || 0}</span>
+                                </td>
+                                <td>
+                                    <small>${AdminUtils.formatDate(tag.data_criacao, 'short')}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary" onclick="editTag(${tag.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="viewTag('${tag.slug}')" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteTag(${tag.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            tagsList.innerHTML = table;
+        }
+        
+        function displayTagsGrid(tags) {
+            const tagsList = document.getElementById('tags-list');
+            
+            const grid = `
+                <div class="row g-3 p-3">
+                    ${tags.map(tag => `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge me-2" style="background-color: ${tag.cor || '#007bff'}; color: white; font-size: 0.9em;">
+                                                ${tag.nome}
+                                            </span>
+                                        </div>
+                                        <input type="checkbox" class="form-check-input tag-checkbox" value="${tag.id}">
+                                    </div>
+                                    
+                                    ${tag.descricao ? `<p class="card-text text-muted small">${AdminUtils.truncateText(tag.descricao, 80)}</p>` : ''}
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <div class="d-flex align-items-center">
+                                            <div class="color-swatch me-2" style="width: 16px; height: 16px; background-color: ${tag.cor || '#007bff'}; border-radius: 3px;"></div>
+                                            <small class="text-muted">${tag.cor || '#007bff'}</small>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-newspaper me-1"></i>${tag.total_noticias || 0}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">${AdminUtils.formatDate(tag.data_criacao, 'short')}</small>
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-primary" onclick="editTag(${tag.id})" title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info" onclick="viewTag('${tag.slug}')" title="Visualizar">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger" onclick="deleteTag(${tag.id})" title="Excluir">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            tagsList.innerHTML = grid;
+        }
+        
+        function displayTagsCloud(tags) {
+            const tagsList = document.getElementById('tags-list');
+            
+            // Calculate font sizes based on usage
+            const maxUsage = Math.max(...tags.map(tag => tag.total_noticias || 0));
+            const minUsage = Math.min(...tags.map(tag => tag.total_noticias || 0));
+            
+            const cloud = `
+                <div class="p-4 text-center" style="line-height: 2.5;">
+                    ${tags.map(tag => {
+                        const usage = tag.total_noticias || 0;
+                        const fontSize = maxUsage > 0 ? 0.8 + (usage / maxUsage) * 1.5 : 1;
+                        return `
+                            <span class="tag-cloud-item d-inline-block me-2 mb-2 position-relative" 
+                                  style="cursor: pointer;" 
+                                  onclick="viewTag('${tag.slug}')" 
+                                  title="${tag.nome} (${usage} notícias)">
+                                <span class="badge" 
+                                      style="background-color: ${tag.cor || '#007bff'}; color: white; font-size: ${fontSize}em;">
+                                    ${tag.nome}
+                                </span>
+                                <input type="checkbox" class="form-check-input position-absolute top-0 start-0 tag-checkbox" 
+                                       value="${tag.id}" 
+                                       style="transform: scale(0.8); margin: -2px;" 
+                                       onclick="event.stopPropagation();">
+                            </span>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            tagsList.innerHTML = cloud;
+        }
+        
+        function updatePagination(pagination) {
+            totalPages = pagination.pages;
+            currentPage = pagination.current_page;
+            
+            const paginationNav = document.getElementById('pagination-nav');
+            
+            if (totalPages <= 1) {
+                paginationNav.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '<ul class="pagination pagination-sm mb-0">';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+            
+            if (startPage > 1) {
+                paginationHTML += '<li class="page-item"><a class="page-link" href="#" onclick="changePage(1)">1</a></li>';
+                if (startPage > 2) {
+                    paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                }
+                paginationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="changePage(${totalPages})">${totalPages}</a></li>`;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${currentPage + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            paginationHTML += '</ul>';
+            paginationNav.innerHTML = paginationHTML;
+        }
+        
+        function updateTagsCount(total) {
+            const tagsCount = document.getElementById('tags-count');
+            tagsCount.textContent = `${total} tag${total !== 1 ? 's' : ''} encontrada${total !== 1 ? 's' : ''}`;
+        }
+        
+        function setupEventListeners() {
+            // View mode toggle
+            document.querySelectorAll('input[name="view-mode"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    loadTags();
+                });
+            });
+            
+            // Search input
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchTags();
+                }
+            });
+            
+            // Quick add tag input
+            const quickTagInput = document.getElementById('quick-tag-name');
+            quickTagInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    quickAddTag();
+                }
+            });
+            
+            // Color preview
+            document.getElementById('tag-color').addEventListener('input', function() {
+                const colorPreview = document.getElementById('color-preview');
+                colorPreview.style.backgroundColor = this.value;
+            });
+            
+            // Auto-generate slug from name
+            document.getElementById('tag-name').addEventListener('input', function() {
+                const slugInput = document.getElementById('tag-slug');
+                if (!slugInput.value) {
+                    slugInput.value = AdminUtils.generateSlug(this.value);
+                }
+            });
+        }
+        
+        async function quickAddTag() {
+            const name = document.getElementById('quick-tag-name').value.trim();
+            const color = document.getElementById('quick-tag-color').value;
+            const description = document.getElementById('quick-tag-description').value.trim();
+            
+            if (!name) {
+                adminPanel.showNotification('Digite o nome da tag', 'warning');
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiPost('admin/tags', {
+                    nome: name,
+                    cor: color,
+                    descricao: description,
+                    slug: AdminUtils.generateSlug(name)
+                });
+                
+                if (result.success) {
+                    adminPanel.showNotification('Tag criada com sucesso!', 'success');
+                    document.getElementById('quick-tag-name').value = '';
+                    document.getElementById('quick-tag-description').value = '';
+                    document.getElementById('quick-tag-color').value = '#007bff';
+                    loadTags();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao criar tag', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao criar tag:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        function showCreateModal() {
+            document.getElementById('tagModalTitle').textContent = 'Nova Tag';
+            document.getElementById('tagForm').reset();
+            document.getElementById('tag-id').value = '';
+            document.getElementById('color-preview').style.backgroundColor = '#007bff';
+            
+            const modal = new bootstrap.Modal(document.getElementById('tagModal'));
+            modal.show();
+        }
+        
+        async function editTag(id) {
+            try {
+                adminPanel.showLoading(true);
+                
+                const result = await adminPanel.apiGet(`admin/tags/${id}`);
+                
+                if (result.success) {
+                    const tag = result.data;
+                    
+                    document.getElementById('tagModalTitle').textContent = 'Editar Tag';
+                    document.getElementById('tag-id').value = tag.id;
+                    document.getElementById('tag-name').value = tag.nome;
+                    document.getElementById('tag-description').value = tag.descricao || '';
+                    document.getElementById('tag-slug').value = tag.slug || '';
+                    document.getElementById('tag-color').value = tag.cor || '#007bff';
+                    document.getElementById('tag-meta-title').value = tag.meta_titulo || '';
+                    document.getElementById('tag-meta-description').value = tag.meta_descricao || '';
+                    
+                    // Update color preview
+                    document.getElementById('color-preview').style.backgroundColor = tag.cor || '#007bff';
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('tagModal'));
+                    modal.show();
+                } else {
+                    adminPanel.showNotification('Erro ao carregar tag', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar tag:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function viewTag(slug) {
+            window.open(`../index.html?tag=${slug}`, '_blank');
+        }
+        
+        function deleteTag(id) {
+            AdminUtils.confirmAction('Tem certeza que deseja excluir esta tag?', async () => {
+                try {
+                    const result = await adminPanel.apiDelete(`admin/tags/${id}`);
+                    
+                    if (result.success) {
+                        adminPanel.showNotification('Tag excluída com sucesso!', 'success');
+                        loadTags();
+                        loadStats();
+                    } else {
+                        adminPanel.showNotification(result.message || 'Erro ao excluir tag', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir tag:', error);
+                    adminPanel.showNotification('Erro de conexão', 'error');
+                }
+            });
+        }
+        
+        function searchTags() {
+            const searchTerm = document.getElementById('search-input').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadTags();
+        }
+        
+        function filterTags() {
+            const color = document.getElementById('color-filter').value;
+            const usage = document.getElementById('usage-filter').value;
+            
+            currentFilters = {};
+            if (color) currentFilters.cor = color;
+            if (usage) currentFilters.uso = usage;
+            
+            currentPage = 1;
+            loadTags();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('color-filter').value = '';
+            document.getElementById('usage-filter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadTags();
+        }
+        
+        function sortTags() {
+            currentSort = document.getElementById('sort-select').value;
+            currentPage = 1;
+            loadTags();
+        }
+        
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                loadTags();
+            }
+        }
+        
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('per-page-select').value);
+            currentPage = 1;
+            loadTags();
+        }
+        
+        function toggleAllTags(checkbox) {
+            const checkboxes = document.querySelectorAll('.tag-checkbox');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+        
+        function getSelectedTags() {
+            const checkboxes = document.querySelectorAll('.tag-checkbox:checked');
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        function bulkActions() {
+            const selectedTags = getSelectedTags();
+            if (selectedTags.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos uma tag', 'warning');
+                return;
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('bulkModal'));
+            modal.show();
+        }
+        
+        function bulkMerge() {
+            const selectedTags = getSelectedTags();
+            if (selectedTags.length < 2) {
+                adminPanel.showNotification('Selecione pelo menos duas tags para mesclar', 'warning');
+                return;
+            }
+            
+            AdminUtils.confirmAction(`Tem certeza que deseja mesclar ${selectedTags.length} tags?`, async () => {
+                try {
+                    const result = await adminPanel.apiPost('admin/tags/merge', {
+                        tags: selectedTags
+                    });
+                    
+                    if (result.success) {
+                        adminPanel.showNotification('Tags mescladas com sucesso!', 'success');
+                        loadTags();
+                        loadStats();
+                        bootstrap.Modal.getInstance(document.getElementById('bulkModal')).hide();
+                    } else {
+                        adminPanel.showNotification(result.message || 'Erro ao mesclar tags', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao mesclar tags:', error);
+                    adminPanel.showNotification('Erro de conexão', 'error');
+                }
+            });
+        }
+        
+        function bulkChangeColor() {
+            const selectedTags = getSelectedTags();
+            if (selectedTags.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos uma tag', 'warning');
+                return;
+            }
+            
+            const color = prompt('Digite a nova cor (formato hex):');
+            if (color && /^#[0-9A-F]{6}$/i.test(color)) {
+                AdminUtils.confirmAction(`Alterar cor de ${selectedTags.length} tags?`, async () => {
+                    try {
+                        const result = await adminPanel.apiPost('admin/tags/bulk-update', {
+                            tags: selectedTags,
+                            cor: color
+                        });
+                        
+                        if (result.success) {
+                            adminPanel.showNotification('Cores alteradas com sucesso!', 'success');
+                            loadTags();
+                            bootstrap.Modal.getInstance(document.getElementById('bulkModal')).hide();
+                        } else {
+                            adminPanel.showNotification(result.message || 'Erro ao alterar cores', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao alterar cores:', error);
+                        adminPanel.showNotification('Erro de conexão', 'error');
+                    }
+                });
+            } else {
+                adminPanel.showNotification('Cor inválida. Use formato #RRGGBB', 'warning');
+            }
+        }
+        
+        function bulkDelete() {
+            const selectedTags = getSelectedTags();
+            if (selectedTags.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos uma tag', 'warning');
+                return;
+            }
+            
+            AdminUtils.confirmAction(`Tem certeza que deseja excluir ${selectedTags.length} tags?`, async () => {
+                try {
+                    const result = await adminPanel.apiPost('admin/tags/bulk-delete', {
+                        tags: selectedTags
+                    });
+                    
+                    if (result.success) {
+                        adminPanel.showNotification('Tags excluídas com sucesso!', 'success');
+                        loadTags();
+                        loadStats();
+                        bootstrap.Modal.getInstance(document.getElementById('bulkModal')).hide();
+                    } else {
+                        adminPanel.showNotification(result.message || 'Erro ao excluir tags', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao excluir tags:', error);
+                    adminPanel.showNotification('Erro de conexão', 'error');
+                }
+            });
+        }
+        
+        async function exportTags() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    export: 'csv',
+                    ...currentFilters
+                });
+                
+                const response = await fetch(`/backend/admin/tags/export?${params}`, {
+                    headers: {
+                        'Authorization': `Bearer ${adminPanel.authToken}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    AdminUtils.downloadFile(url, 'tags.csv');
+                    adminPanel.showNotification('Exportação realizada com sucesso!', 'success');
+                } else {
+                    adminPanel.showNotification('Erro ao exportar tags', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao exportar tags:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_data');
+            window.location.href = '../login.html';
+        }
+    </script>
+</body>
+</html>

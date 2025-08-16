@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cadastre-se no Portal de Notícias e tenha acesso a conteúdo exclusivo, comente nas notícias e personalize sua experiência.">
+    <meta name="keywords" content="cadastro, registro, portal notícias, criar conta">
+    <meta name="author" content="Portal de Notícias">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Cadastro - Portal de Notícias">
+    <meta property="og:description" content="Cadastre-se no Portal de Notícias e tenha acesso a conteúdo exclusivo.">
+    <meta property="og:image" content="/assets/img/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Cadastro - Portal de Notícias">
+    <meta property="twitter:description" content="Cadastre-se no Portal de Notícias e tenha acesso a conteúdo exclusivo.">
+    <meta property="twitter:image" content="/assets/img/og-image.jpg">
+    
+    <title>Cadastro - Portal de Notícias</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Cadastro - Portal de Notícias",
+        "description": "Página de cadastro do Portal de Notícias",
+        "url": ""
+    }
+    </script>
+</head>
+<body class="auth-page">
+    <!-- Header Minimal -->
+    <header class="header-minimal">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between py-3">
+                <a href="/" class="logo">
+                    <i class="fas fa-newspaper me-2"></i>
+                    Portal Notícias
+                </a>
+                <div class="d-flex align-items-center">
+                    <button class="theme-toggle me-3" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="/" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-home me-1"></i>
+                        Voltar ao Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="auth-card">
+                        <!-- Header -->
+                        <div class="auth-header text-center mb-4">
+                            <div class="auth-icon mb-3">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h1 class="auth-title">Crie sua conta</h1>
+                            <p class="auth-subtitle text-muted">Junte-se à nossa comunidade de leitores</p>
+                        </div>
+                        
+                        <!-- Social Login -->
+                        <div class="social-login mb-4">
+                            <button type="button" class="btn btn-google btn-block w-100 mb-2" id="google-signup">
+                                <i class="fab fa-google me-2"></i>
+                                Cadastrar com Google
+                            </button>
+                            <button type="button" class="btn btn-facebook btn-block w-100" id="facebook-signup">
+                                <i class="fab fa-facebook-f me-2"></i>
+                                Cadastrar com Facebook
+                            </button>
+                        </div>
+                        
+                        <!-- Divider -->
+                        <div class="auth-divider mb-4">
+                            <span>ou</span>
+                        </div>
+                        
+                        <!-- Registration Form -->
+                        <form class="auth-form" id="register-form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="nome" class="form-label">
+                                            <i class="fas fa-user me-1"></i>
+                                            Nome *
+                                        </label>
+                                        <input type="text" class="form-control" id="nome" name="nome" required autocomplete="given-name">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="sobrenome" class="form-label">
+                                            <i class="fas fa-user me-1"></i>
+                                            Sobrenome *
+                                        </label>
+                                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" required autocomplete="family-name">
+                                        <div class="invalid-feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    E-mail *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+                                <div class="invalid-feedback"></div>
+                                <div class="form-text">Você receberá um e-mail de confirmação</div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>
+                                    Senha *
+                                </label>
+                                <div class="password-input">
+                                    <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                                <div class="password-strength" id="password-strength" style="display: none;">
+                                    <div class="strength-bar">
+                                        <div class="strength-fill"></div>
+                                    </div>
+                                    <div class="strength-text"></div>
+                                </div>
+                                <div class="form-text">Mínimo de 8 caracteres, incluindo letras e números</div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="password-confirm" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>
+                                    Confirmar Senha *
+                                </label>
+                                <div class="password-input">
+                                    <input type="password" class="form-control" id="password-confirm" name="password_confirm" required autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="data-nascimento" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Data de Nascimento
+                                </label>
+                                <input type="date" class="form-control" id="data-nascimento" name="data_nascimento" autocomplete="bday">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="genero" class="form-label">
+                                    <i class="fas fa-venus-mars me-1"></i>
+                                    Gênero
+                                </label>
+                                <select class="form-control" id="genero" name="genero">
+                                    <option value="">Selecione...</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="feminino">Feminino</option>
+                                    <option value="outro">Outro</option>
+                                    <option value="prefiro-nao-informar">Prefiro não informar</option>
+                                </select>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <!-- Preferences -->
+                            <div class="form-group mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-heart me-1"></i>
+                                    Categorias de Interesse (opcional)
+                                </label>
+                                <div class="preferences-grid">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-politica" name="preferencias[]" value="politica">
+                                        <label class="form-check-label" for="pref-politica">Política</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-economia" name="preferencias[]" value="economia">
+                                        <label class="form-check-label" for="pref-economia">Economia</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-esportes" name="preferencias[]" value="esportes">
+                                        <label class="form-check-label" for="pref-esportes">Esportes</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-tecnologia" name="preferencias[]" value="tecnologia">
+                                        <label class="form-check-label" for="pref-tecnologia">Tecnologia</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-saude" name="preferencias[]" value="saude">
+                                        <label class="form-check-label" for="pref-saude">Saúde</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="pref-cultura" name="preferencias[]" value="cultura">
+                                        <label class="form-check-label" for="pref-cultura">Cultura</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Terms and Privacy -->
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        Eu concordo com os 
+                                        <a href="/termos" target="_blank">Termos de Uso</a> 
+                                        e 
+                                        <a href="/privacidade" target="_blank">Política de Privacidade</a> *
+                                    </label>
+                                    <div class="invalid-feedback"></div>
+                                </div>
+                                
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" id="newsletter" name="newsletter" checked>
+                                    <label class="form-check-label" for="newsletter">
+                                        Quero receber newsletter com as principais notícias
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" id="marketing" name="marketing">
+                                    <label class="form-check-label" for="marketing">
+                                        Aceito receber comunicações promocionais
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block w-100 mb-3" id="register-btn">
+                                <span class="btn-text">
+                                    <i class="fas fa-user-plus me-1"></i>
+                                    Criar Conta
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-1"></i>
+                                    Criando conta...
+                                </span>
+                            </button>
+                        </form>
+                        
+                        <!-- Footer -->
+                        <div class="auth-footer text-center">
+                            <p class="mb-0">
+                                Já tem uma conta?
+                                <a href="/login.html" class="auth-link">Faça login aqui</a>
+                            </p>
+                        </div>
+                        
+                        <!-- Alert Messages -->
+                        <div class="alert alert-success" id="success-alert" style="display: none;">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span class="alert-message"></span>
+                        </div>
+                        
+                        <div class="alert alert-danger" id="error-alert" style="display: none;">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span class="alert-message"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    <div class="auth-benefits mt-4">
+                        <h5 class="text-center mb-3">Por que se cadastrar?</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="benefit-item">
+                                    <i class="fas fa-comments text-primary mb-2"></i>
+                                    <h6>Participe das Discussões</h6>
+                                    <small class="text-muted">Comente e interaja com outros leitores</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="benefit-item">
+                                    <i class="fas fa-heart text-danger mb-2"></i>
+                                    <h6>Salve seus Favoritos</h6>
+                                    <small class="text-muted">Marque notícias para ler depois</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="benefit-item">
+                                    <i class="fas fa-bell text-warning mb-2"></i>
+                                    <h6>Receba Notificações</h6>
+                                    <small class="text-muted">Seja o primeiro a saber das novidades</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="benefit-item">
+                                    <i class="fas fa-user-cog text-success mb-2"></i>
+                                    <h6>Personalize sua Experiência</h6>
+                                    <small class="text-muted">Conteúdo baseado em seus interesses</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer Minimal -->
+    <footer class="footer-minimal">
+        <div class="container">
+            <div class="row align-items-center py-3">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted small">
+                        &copy; 2024 Portal de Notícias. Todos os direitos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-links">
+                        <a href="/privacidade" class="text-muted small me-3">Privacidade</a>
+                        <a href="/termos" class="text-muted small me-3">Termos</a>
+                        <a href="/ajuda" class="text-muted small">Ajuda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Register Specific Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initRegisterPage();
+        });
+        
+        function initRegisterPage() {
+            // Verifica se já está logado
+            if (isLoggedIn()) {
+                window.location.href = '/';
+                return;
+            }
+            
+            setupEventListeners();
+        }
+        
+        function setupEventListeners() {
+            // Form submission
+            document.getElementById('register-form').addEventListener('submit', handleRegister);
+            
+            // Password toggles
+            document.querySelectorAll('.password-toggle').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    togglePassword(this);
+                });
+            });
+            
+            // Social signup
+            document.getElementById('google-signup').addEventListener('click', () => handleSocialSignup('google'));
+            document.getElementById('facebook-signup').addEventListener('click', () => handleSocialSignup('facebook'));
+            
+            // Input validation
+            document.getElementById('nome').addEventListener('blur', () => validateField('nome'));
+            document.getElementById('sobrenome').addEventListener('blur', () => validateField('sobrenome'));
+            document.getElementById('email').addEventListener('blur', validateEmail);
+            document.getElementById('password').addEventListener('input', validatePassword);
+            document.getElementById('password-confirm').addEventListener('blur', validatePasswordConfirm);
+            document.getElementById('data-nascimento').addEventListener('blur', validateBirthDate);
+            
+            // Real-time email check
+            let emailTimeout;
+            document.getElementById('email').addEventListener('input', function() {
+                clearTimeout(emailTimeout);
+                emailTimeout = setTimeout(() => {
+                    checkEmailAvailability(this.value);
+                }, 500);
+            });
+        }
+        
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Coleta preferências
+            const preferencias = Array.from(form.querySelectorAll('input[name="preferencias[]"]:checked'))
+                .map(cb => cb.value);
+            data.preferencias = preferencias;
+            
+            // Validação completa
+            if (!validateForm(data)) {
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/backend/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess('Conta criada com sucesso! Verifique seu e-mail para ativar sua conta.');
+                    
+                    // Redireciona para login após 3 segundos
+                    setTimeout(() => {
+                        window.location.href = '/login.html?registered=true';
+                    }, 3000);
+                } else {
+                    showError(result.message || 'Erro ao criar conta. Tente novamente.');
+                    
+                    // Destaca campos com erro
+                    if (result.errors) {
+                        highlightErrors(result.errors);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro no cadastro:', error);
+                showError('Erro de conexão. Tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        }
+        
+        async function handleSocialSignup(provider) {
+            try {
+                window.location.href = `/backend/auth/social/${provider}?action=register`;
+            } catch (error) {
+                console.error('Erro no cadastro social:', error);
+                showError('Erro ao conectar com ' + provider + '. Tente novamente.');
+            }
+        }
+        
+        function validateForm(data) {
+            let isValid = true;
+            
+            // Limpa erros anteriores
+            clearErrors();
+            
+            // Valida nome
+            if (!data.nome || data.nome.trim().length < 2) {
+                showFieldError('nome', 'Nome deve ter pelo menos 2 caracteres.');
+                isValid = false;
+            }
+            
+            // Valida sobrenome
+            if (!data.sobrenome || data.sobrenome.trim().length < 2) {
+                showFieldError('sobrenome', 'Sobrenome deve ter pelo menos 2 caracteres.');
+                isValid = false;
+            }
+            
+            // Valida email
+            if (!data.email || !isValidEmail(data.email)) {
+                showFieldError('email', 'Por favor, insira um e-mail válido.');
+                isValid = false;
+            }
+            
+            // Valida senha
+            if (!data.password || !isStrongPassword(data.password)) {
+                showFieldError('password', 'Senha deve ter pelo menos 8 caracteres, incluindo letras e números.');
+                isValid = false;
+            }
+            
+            // Valida confirmação de senha
+            if (data.password !== data.password_confirm) {
+                showFieldError('password-confirm', 'As senhas não coincidem.');
+                isValid = false;
+            }
+            
+            // Valida data de nascimento
+            if (data.data_nascimento && !isValidBirthDate(data.data_nascimento)) {
+                showFieldError('data-nascimento', 'Data de nascimento inválida.');
+                isValid = false;
+            }
+            
+            // Valida termos
+            if (!data.terms) {
+                showFieldError('terms', 'Você deve aceitar os termos de uso.');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        function validateField(fieldName) {
+            const field = document.getElementById(fieldName);
+            const value = field.value.trim();
+            
+            if (value.length < 2) {
+                showFieldError(fieldName, 'Este campo deve ter pelo menos 2 caracteres.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError(fieldName);
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        }
+        
+        function validateEmail() {
+            const email = document.getElementById('email').value;
+            const field = document.getElementById('email');
+            
+            if (email && !isValidEmail(email)) {
+                showFieldError('email', 'Por favor, insira um e-mail válido.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError('email');
+                field.classList.remove('is-invalid');
+                if (email) field.classList.add('is-valid');
+            }
+        }
+        
+        async function checkEmailAvailability(email) {
+            if (!email || !isValidEmail(email)) return;
+            
+            try {
+                const response = await fetch(`/backend/auth/check-email?email=${encodeURIComponent(email)}`);
+                const result = await response.json();
+                
+                if (!result.available) {
+                    showFieldError('email', 'Este e-mail já está em uso.');
+                    document.getElementById('email').classList.add('is-invalid');
+                } else {
+                    clearFieldError('email');
+                    document.getElementById('email').classList.remove('is-invalid');
+                    document.getElementById('email').classList.add('is-valid');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar e-mail:', error);
+            }
+        }
+        
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const field = document.getElementById('password');
+            const strengthIndicator = document.getElementById('password-strength');
+            
+            if (password) {
+                strengthIndicator.style.display = 'block';
+                const strength = calculatePasswordStrength(password);
+                updatePasswordStrength(strength);
+                
+                if (!isStrongPassword(password)) {
+                    showFieldError('password', 'Senha deve ter pelo menos 8 caracteres, incluindo letras e números.');
+                    field.classList.add('is-invalid');
+                } else {
+                    clearFieldError('password');
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                }
+            } else {
+                strengthIndicator.style.display = 'none';
+            }
+            
+            // Revalida confirmação se já foi preenchida
+            const confirmField = document.getElementById('password-confirm');
+            if (confirmField.value) {
+                validatePasswordConfirm();
+            }
+        }
+        
+        function validatePasswordConfirm() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('password-confirm').value;
+            const field = document.getElementById('password-confirm');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                showFieldError('password-confirm', 'As senhas não coincidem.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError('password-confirm');
+                field.classList.remove('is-invalid');
+                if (confirmPassword) field.classList.add('is-valid');
+            }
+        }
+        
+        function validateBirthDate() {
+            const birthDate = document.getElementById('data-nascimento').value;
+            const field = document.getElementById('data-nascimento');
+            
+            if (birthDate && !isValidBirthDate(birthDate)) {
+                showFieldError('data-nascimento', 'Data de nascimento inválida.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError('data-nascimento');
+                field.classList.remove('is-invalid');
+                if (birthDate) field.classList.add('is-valid');
+            }
+        }
+        
+        function calculatePasswordStrength(password) {
+            let score = 0;
+            
+            // Comprimento
+            if (password.length >= 8) score += 25;
+            if (password.length >= 12) score += 25;
+            
+            // Caracteres
+            if (/[a-z]/.test(password)) score += 10;
+            if (/[A-Z]/.test(password)) score += 10;
+            if (/[0-9]/.test(password)) score += 15;
+            if (/[^A-Za-z0-9]/.test(password)) score += 15;
+            
+            return Math.min(100, score);
+        }
+        
+        function updatePasswordStrength(strength) {
+            const strengthBar = document.querySelector('.strength-fill');
+            const strengthText = document.querySelector('.strength-text');
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength < 30) {
+                strengthBar.className = 'strength-fill weak';
+                strengthText.textContent = 'Fraca';
+            } else if (strength < 60) {
+                strengthBar.className = 'strength-fill medium';
+                strengthText.textContent = 'Média';
+            } else if (strength < 80) {
+                strengthBar.className = 'strength-fill good';
+                strengthText.textContent = 'Boa';
+            } else {
+                strengthBar.className = 'strength-fill strong';
+                strengthText.textContent = 'Forte';
+            }
+        }
+        
+        function togglePassword(button) {
+            const passwordField = button.parentNode.querySelector('input');
+            const icon = button.querySelector('i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                passwordField.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+        
+        function setLoading(loading) {
+            const btn = document.getElementById('register-btn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoading = btn.querySelector('.btn-loading');
+            
+            if (loading) {
+                btn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+            } else {
+                btn.disabled = false;
+                btnText.style.display = 'inline-block';
+                btnLoading.style.display = 'none';
+            }
+        }
+        
+        function showSuccess(message) {
+            const alert = document.getElementById('success-alert');
+            alert.querySelector('.alert-message').textContent = message;
+            alert.style.display = 'block';
+            
+            // Oculta alert de erro se estiver visível
+            document.getElementById('error-alert').style.display = 'none';
+            
+            // Scroll para o topo
+            alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        function showError(message) {
+            const alert = document.getElementById('error-alert');
+            alert.querySelector('.alert-message').textContent = message;
+            alert.style.display = 'block';
+            
+            // Oculta alert de sucesso se estiver visível
+            document.getElementById('success-alert').style.display = 'none';
+            
+            // Scroll para o topo
+            alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        function showFieldError(fieldName, message) {
+            const field = document.getElementById(fieldName);
+            const feedback = field.closest('.form-group').querySelector('.invalid-feedback');
+            
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+            feedback.textContent = message;
+        }
+        
+        function clearFieldError(fieldName) {
+            const field = document.getElementById(fieldName);
+            const feedback = field.closest('.form-group').querySelector('.invalid-feedback');
+            
+            field.classList.remove('is-invalid');
+            if (feedback) feedback.textContent = '';
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.form-control').forEach(field => {
+                field.classList.remove('is-invalid', 'is-valid');
+            });
+            
+            document.querySelectorAll('.invalid-feedback').forEach(feedback => {
+                feedback.textContent = '';
+            });
+        }
+        
+        function highlightErrors(errors) {
+            Object.keys(errors).forEach(fieldName => {
+                showFieldError(fieldName, errors[fieldName]);
+            });
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function isStrongPassword(password) {
+            return password.length >= 8 && 
+                   /[a-zA-Z]/.test(password) && 
+                   /[0-9]/.test(password);
+        }
+        
+        function isValidBirthDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const age = now.getFullYear() - date.getFullYear();
+            
+            return date <= now && age >= 13 && age <= 120;
+        }
+        
+        function isLoggedIn() {
+            return localStorage.getItem('portal-user') !== null;
+        }
+        
+        // Auto-focus no primeiro campo
+        document.getElementById('nome').focus();
+    </script>
+    
+    <!-- Google Analytics (substitua pelo seu ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+</body>
+</html>

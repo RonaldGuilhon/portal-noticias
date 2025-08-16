@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Faça login no Portal de Notícias e acesse conteúdo exclusivo, comente nas notícias e personalize sua experiência.">
+    <meta name="keywords" content="login, entrar, portal notícias, acesso, conta">
+    <meta name="author" content="Portal de Notícias">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Login - Portal de Notícias">
+    <meta property="og:description" content="Faça login no Portal de Notícias e acesse conteúdo exclusivo.">
+    <meta property="og:image" content="/assets/img/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Login - Portal de Notícias">
+    <meta property="twitter:description" content="Faça login no Portal de Notícias e acesse conteúdo exclusivo.">
+    <meta property="twitter:image" content="/assets/img/og-image.jpg">
+    
+    <title>Login - Portal de Notícias</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Login - Portal de Notícias",
+        "description": "Página de login do Portal de Notícias",
+        "url": ""
+    }
+    </script>
+</head>
+<body class="auth-page">
+    <!-- Header Minimal -->
+    <header class="header-minimal">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between py-3">
+                <a href="/" class="logo">
+                    <i class="fas fa-newspaper me-2"></i>
+                    Portal Notícias
+                </a>
+                <div class="d-flex align-items-center">
+                    <button class="theme-toggle me-3" aria-label="Alternar tema">
+                        🌙
+                    </button>
+                    <a href="/" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-home me-1"></i>
+                        Voltar ao Site
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="auth-main">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 col-md-7">
+                    <div class="auth-card">
+                        <!-- Header -->
+                        <div class="auth-header text-center mb-4">
+                            <div class="auth-icon mb-3">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <h1 class="auth-title">Bem-vindo de volta!</h1>
+                            <p class="auth-subtitle text-muted">Faça login para acessar sua conta</p>
+                        </div>
+                        
+                        <!-- Social Login -->
+                        <div class="social-login mb-4">
+                            <button type="button" class="btn btn-google btn-block w-100 mb-2" id="google-login">
+                                <i class="fab fa-google me-2"></i>
+                                Continuar com Google
+                            </button>
+                            <button type="button" class="btn btn-facebook btn-block w-100" id="facebook-login">
+                                <i class="fab fa-facebook-f me-2"></i>
+                                Continuar com Facebook
+                            </button>
+                        </div>
+                        
+                        <!-- Divider -->
+                        <div class="auth-divider mb-4">
+                            <span>ou</span>
+                        </div>
+                        
+                        <!-- Login Form -->
+                        <form class="auth-form" id="login-form">
+                            <div class="form-group mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>
+                                    E-mail
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock me-1"></i>
+                                    Senha
+                                </label>
+                                <div class="password-input">
+                                    <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+                                    <button type="button" class="password-toggle" aria-label="Mostrar/ocultar senha">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="invalid-feedback"></div>
+                            </div>
+                            
+                            <div class="form-group mb-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                                        <label class="form-check-label" for="remember">
+                                            Lembrar de mim
+                                        </label>
+                                    </div>
+                                    <a href="/recuperar-senha.html" class="forgot-password">
+                                        Esqueceu a senha?
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-block w-100 mb-3" id="login-btn">
+                                <span class="btn-text">
+                                    <i class="fas fa-sign-in-alt me-1"></i>
+                                    Entrar
+                                </span>
+                                <span class="btn-loading" style="display: none;">
+                                    <i class="fas fa-spinner fa-spin me-1"></i>
+                                    Entrando...
+                                </span>
+                            </button>
+                        </form>
+                        
+                        <!-- Footer -->
+                        <div class="auth-footer text-center">
+                            <p class="mb-0">
+                                Não tem uma conta?
+                                <a href="/cadastro.html" class="auth-link">Cadastre-se aqui</a>
+                            </p>
+                        </div>
+                        
+                        <!-- Alert Messages -->
+                        <div class="alert alert-success" id="success-alert" style="display: none;">
+                            <i class="fas fa-check-circle me-2"></i>
+                            <span class="alert-message"></span>
+                        </div>
+                        
+                        <div class="alert alert-danger" id="error-alert" style="display: none;">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <span class="alert-message"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="auth-info mt-4">
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-3">
+                                <div class="info-item">
+                                    <i class="fas fa-shield-alt text-success mb-2"></i>
+                                    <h6>Seguro</h6>
+                                    <small class="text-muted">Seus dados estão protegidos</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="info-item">
+                                    <i class="fas fa-comments text-primary mb-2"></i>
+                                    <h6>Interativo</h6>
+                                    <small class="text-muted">Comente e participe</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="info-item">
+                                    <i class="fas fa-star text-warning mb-2"></i>
+                                    <h6>Personalizado</h6>
+                                    <small class="text-muted">Conteúdo sob medida</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer Minimal -->
+    <footer class="footer-minimal">
+        <div class="container">
+            <div class="row align-items-center py-3">
+                <div class="col-md-6">
+                    <p class="mb-0 text-muted small">
+                        &copy; 2024 Portal de Notícias. Todos os direitos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="footer-links">
+                        <a href="/privacidade" class="text-muted small me-3">Privacidade</a>
+                        <a href="/termos" class="text-muted small me-3">Termos</a>
+                        <a href="/ajuda" class="text-muted small">Ajuda</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/assets/js/main.js"></script>
+    
+    <!-- Login Specific Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initLoginPage();
+        });
+        
+        function initLoginPage() {
+            // Verifica se já está logado
+            if (isLoggedIn()) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || '/';
+                window.location.href = redirect;
+                return;
+            }
+            
+            setupEventListeners();
+            checkUrlParams();
+        }
+        
+        function setupEventListeners() {
+            // Form submission
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            
+            // Password toggle
+            document.querySelector('.password-toggle').addEventListener('click', togglePassword);
+            
+            // Social login
+            document.getElementById('google-login').addEventListener('click', () => handleSocialLogin('google'));
+            document.getElementById('facebook-login').addEventListener('click', () => handleSocialLogin('facebook'));
+            
+            // Input validation
+            document.getElementById('email').addEventListener('blur', validateEmail);
+            document.getElementById('password').addEventListener('input', validatePassword);
+            
+            // Enter key on password field
+            document.getElementById('password').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    document.getElementById('login-form').dispatchEvent(new Event('submit'));
+                }
+            });
+        }
+        
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Mensagem de sucesso (ex: após cadastro)
+            if (urlParams.get('registered') === 'true') {
+                showSuccess('Cadastro realizado com sucesso! Faça login para continuar.');
+            }
+            
+            // Mensagem de verificação de email
+            if (urlParams.get('verified') === 'true') {
+                showSuccess('E-mail verificado com sucesso! Agora você pode fazer login.');
+            }
+            
+            // Mensagem de senha alterada
+            if (urlParams.get('password-reset') === 'true') {
+                showSuccess('Senha alterada com sucesso! Faça login com sua nova senha.');
+            }
+            
+            // Mensagem de logout
+            if (urlParams.get('logout') === 'true') {
+                showSuccess('Logout realizado com sucesso!');
+            }
+            
+            // Mensagem de erro de acesso
+            if (urlParams.get('error') === 'access-denied') {
+                showError('Acesso negado. Faça login para continuar.');
+            }
+        }
+        
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            // Validação básica
+            if (!validateForm(data)) {
+                return;
+            }
+            
+            setLoading(true);
+            
+            try {
+                const response = await fetch('/backend/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Salva dados do usuário
+                    localStorage.setItem('portal-user', JSON.stringify(result.user));
+                    localStorage.setItem('portal-token', result.token);
+                    
+                    showSuccess('Login realizado com sucesso!');
+                    
+                    // Redireciona após 1 segundo
+                    setTimeout(() => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const redirect = urlParams.get('redirect') || '/';
+                        window.location.href = redirect;
+                    }, 1000);
+                } else {
+                    showError(result.message || 'Erro ao fazer login. Verifique suas credenciais.');
+                    
+                    // Destaca campos com erro
+                    if (result.errors) {
+                        highlightErrors(result.errors);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                showError('Erro de conexão. Tente novamente.');
+            } finally {
+                setLoading(false);
+            }
+        }
+        
+        async function handleSocialLogin(provider) {
+            try {
+                // Redireciona para o endpoint de autenticação social
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirect = urlParams.get('redirect') || '/';
+                
+                window.location.href = `/backend/auth/social/${provider}?redirect=${encodeURIComponent(redirect)}`;
+            } catch (error) {
+                console.error('Erro no login social:', error);
+                showError('Erro ao conectar com ' + provider + '. Tente novamente.');
+            }
+        }
+        
+        function validateForm(data) {
+            let isValid = true;
+            
+            // Limpa erros anteriores
+            clearErrors();
+            
+            // Valida email
+            if (!data.email || !isValidEmail(data.email)) {
+                showFieldError('email', 'Por favor, insira um e-mail válido.');
+                isValid = false;
+            }
+            
+            // Valida senha
+            if (!data.password || data.password.length < 6) {
+                showFieldError('password', 'A senha deve ter pelo menos 6 caracteres.');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+        
+        function validateEmail() {
+            const email = document.getElementById('email').value;
+            const field = document.getElementById('email');
+            
+            if (email && !isValidEmail(email)) {
+                showFieldError('email', 'Por favor, insira um e-mail válido.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError('email');
+                field.classList.remove('is-invalid');
+                if (email) field.classList.add('is-valid');
+            }
+        }
+        
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const field = document.getElementById('password');
+            
+            if (password && password.length < 6) {
+                showFieldError('password', 'A senha deve ter pelo menos 6 caracteres.');
+                field.classList.add('is-invalid');
+            } else {
+                clearFieldError('password');
+                field.classList.remove('is-invalid');
+                if (password) field.classList.add('is-valid');
+            }
+        }
+        
+        function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleBtn = document.querySelector('.password-toggle i');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                toggleBtn.className = 'fas fa-eye-slash';
+            } else {
+                passwordField.type = 'password';
+                toggleBtn.className = 'fas fa-eye';
+            }
+        }
+        
+        function setLoading(loading) {
+            const btn = document.getElementById('login-btn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoading = btn.querySelector('.btn-loading');
+            
+            if (loading) {
+                btn.disabled = true;
+                btnText.style.display = 'none';
+                btnLoading.style.display = 'inline-block';
+            } else {
+                btn.disabled = false;
+                btnText.style.display = 'inline-block';
+                btnLoading.style.display = 'none';
+            }
+        }
+        
+        function showSuccess(message) {
+            const alert = document.getElementById('success-alert');
+            alert.querySelector('.alert-message').textContent = message;
+            alert.style.display = 'block';
+            
+            // Oculta após 5 segundos
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+            
+            // Oculta alert de erro se estiver visível
+            document.getElementById('error-alert').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const alert = document.getElementById('error-alert');
+            alert.querySelector('.alert-message').textContent = message;
+            alert.style.display = 'block';
+            
+            // Oculta após 5 segundos
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+            
+            // Oculta alert de sucesso se estiver visível
+            document.getElementById('success-alert').style.display = 'none';
+        }
+        
+        function showFieldError(fieldName, message) {
+            const field = document.getElementById(fieldName);
+            const feedback = field.parentNode.querySelector('.invalid-feedback');
+            
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+            feedback.textContent = message;
+        }
+        
+        function clearFieldError(fieldName) {
+            const field = document.getElementById(fieldName);
+            const feedback = field.parentNode.querySelector('.invalid-feedback');
+            
+            field.classList.remove('is-invalid');
+            feedback.textContent = '';
+        }
+        
+        function clearErrors() {
+            document.querySelectorAll('.form-control').forEach(field => {
+                field.classList.remove('is-invalid', 'is-valid');
+            });
+            
+            document.querySelectorAll('.invalid-feedback').forEach(feedback => {
+                feedback.textContent = '';
+            });
+        }
+        
+        function highlightErrors(errors) {
+            Object.keys(errors).forEach(fieldName => {
+                showFieldError(fieldName, errors[fieldName]);
+            });
+        }
+        
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function isLoggedIn() {
+            return localStorage.getItem('portal-user') !== null;
+        }
+        
+        // Auto-focus no primeiro campo
+        document.getElementById('email').focus();
+        
+        // Limpa mensagens de URL após exibição
+        if (window.location.search) {
+            setTimeout(() => {
+                const url = new URL(window.location);
+                url.searchParams.delete('registered');
+                url.searchParams.delete('verified');
+                url.searchParams.delete('password-reset');
+                url.searchParams.delete('logout');
+                url.searchParams.delete('error');
+                window.history.replaceState({}, document.title, url.toString());
+            }, 100);
+        }
+    </script>
+    
+    <!-- Google Analytics (substitua pelo seu ID) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+</body>
+</html>
