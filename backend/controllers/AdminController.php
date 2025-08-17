@@ -118,7 +118,7 @@ class AdminController {
 
         try {
             $payload = $this->jwtHelper->validarToken($token);
-            $resultado = $this->usuario->buscarPorId($payload['user_id']);
+            $resultado = $this->usuario->buscarPorId($payload['id']);
             
             if (!$resultado || !in_array($this->usuario->tipo_usuario, ['admin', 'editor'])) {
                 return false;

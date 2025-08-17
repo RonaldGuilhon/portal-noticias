@@ -19,13 +19,11 @@ class AdminPanel {
         this.userData = JSON.parse(localStorage.getItem('portal-user') || '{}');
         this.notifications = [];
         this.charts = {};
-        
-        this.init();
     }
     
-    init() {
+    async init() {
         this.setupEventListeners();
-        this.checkAuthentication();
+        await this.checkAuthentication();
         this.loadNotifications();
     }
     
@@ -49,10 +47,43 @@ class AdminPanel {
         this.setupKeyboardShortcuts();
     }
     
-    checkAuthentication() {
+    async checkAuthentication() {
         if (!this.authToken || (this.userData.tipo_usuario !== 'admin' && this.userData.tipo_usuario !== 'editor')) {
             this.redirectToLogin();
             return false;
+        }
+        
+        // Verificar se o token ainda é válido no servidor
+        try {
+            const response = await fetch('http://localhost:8001/auth?action=check-auth', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                // Token inválido ou expirado
+                console.log('Token inválido ou expirado, redirecionando para login');
+                localStorage.removeItem('portal-user');
+                this.redirectToLogin();
+                return false;
+            }
+            
+            const result = await response.json();
+            if (!result.logado || !['admin', 'editor'].includes(result.usuario?.tipo)) {
+                console.log('Usuário não autorizado, redirecionando para login');
+                localStorage.removeItem('portal-user');
+                this.redirectToLogin();
+                return false;
+            }
+            
+        } catch (error) {
+            console.error('Erro ao verificar autenticação:', error);
+            // Em caso de erro de rede, não redirecionar imediatamente
+            // mas mostrar um aviso
+            this.showNetworkError();
         }
         
         // Update user info in header
@@ -76,6 +107,27 @@ class AdminPanel {
         if (adminAvatar && this.userData.avatar) {
             adminAvatar.src = this.userData.avatar;
         }
+    }
+    
+    showNetworkError() {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-warning alert-dismissible fade show';
+        errorDiv.style.position = 'fixed';
+        errorDiv.style.top = '20px';
+        errorDiv.style.right = '20px';
+        errorDiv.style.zIndex = '9999';
+        errorDiv.innerHTML = `
+            <strong>Aviso:</strong> Não foi possível verificar a autenticação. Verifique sua conexão.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        // Remove after 5 seconds
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 5000);
     }
     
     toggleSidebar() {
@@ -644,8 +696,9 @@ const AdminUtils = {
 
 // Initialize admin panel when DOM is loaded
 let adminPanel;
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     adminPanel = new AdminPanel();
+    await adminPanel.init();
     
     // Restore sidebar state
     const sidebarCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';

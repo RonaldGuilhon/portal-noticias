@@ -562,25 +562,63 @@ class PortalNoticias {
 
     // Atualiza interface do usuário
     updateUserInterface() {
+        console.log('updateUserInterface chamada, currentUser:', this.currentUser);
+        
+        // Atualizar informações do usuário
         const userElements = document.querySelectorAll('[data-user-info]');
         userElements.forEach(element => {
             const info = element.dataset.userInfo;
             if (this.currentUser && this.currentUser[info]) {
                 element.textContent = this.currentUser[info];
+            } else {
+                element.textContent = 'Usuário';
             }
         });
 
         // Mostra/esconde elementos baseado no login
         const loggedInElements = document.querySelectorAll('.logged-in-only');
         const loggedOutElements = document.querySelectorAll('.logged-out-only');
+        const adminOnlyElements = document.querySelectorAll('.admin-only');
         
+        console.log(`Elementos encontrados: logged-in: ${loggedInElements.length}, logged-out: ${loggedOutElements.length}, admin-only: ${adminOnlyElements.length}`);
+        
+        // Elementos para usuários logados
         loggedInElements.forEach(el => {
-            el.style.display = this.currentUser ? 'block' : 'none';
+            if (this.currentUser) {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
         });
         
+        // Elementos para usuários não logados
         loggedOutElements.forEach(el => {
-            el.style.display = this.currentUser ? 'none' : 'block';
+            if (this.currentUser) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            } else {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+            }
         });
+        
+        // Mostra elementos administrativos apenas para admin/editor
+        adminOnlyElements.forEach(el => {
+            const isAdmin = this.currentUser && 
+                           (this.currentUser.tipo_usuario === 'admin' || 
+                            this.currentUser.tipo_usuario === 'editor');
+            if (isAdmin) {
+                el.style.display = 'block';
+                el.style.visibility = 'visible';
+            } else {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+            }
+        });
+        
+        console.log('updateUserInterface concluída');
     }
 
     // Utilitários de UI

@@ -110,16 +110,18 @@ function generateSecureToken($length = 32) {
 
 /**
  * Função para hash de senha
+ * ATENÇÃO: SHA1 é considerado inseguro para senhas!
+ * Recomenda-se usar PASSWORD_ARGON2ID ou PASSWORD_DEFAULT
  */
 function hashPassword($password) {
-    return password_hash($password, PASSWORD_ARGON2ID);
+    return sha1($password);
 }
 
 /**
  * Função para verificar senha
  */
 function verifyPassword($password, $hash) {
-    return password_verify($password, $hash);
+    return sha1($password) === $hash;
 }
 
 /**

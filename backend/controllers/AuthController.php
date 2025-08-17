@@ -8,6 +8,7 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../services/EmailService.php';
+require_once __DIR__ . '/../utils/JWTHelper.php';
 
 class AuthController {
     private $db;
@@ -205,7 +206,7 @@ class AuthController {
             }
 
             if($this->usuario->criar()) {
-                // Enviar email de verificação (temporariamente desabilitado)
+                // Enviar email de verificação
                 // $this->enviarEmailVerificacao($this->usuario->email, $this->usuario->token_verificacao);
                 
                 jsonResponse([
@@ -416,6 +417,42 @@ class AuthController {
      */
     private function verificarAutenticacao() {
         try {
+            // Primeiro, tentar verificar por token JWT
+            $headers = getallheaders();
+            $token = null;
+
+            // Verificar token no header Authorization
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+                if (preg_match('/Bearer\s+(\S+)/', $authHeader, $matches)) {
+                    $token = $matches[1];
+                }
+            }
+
+            if ($token) {
+                try {
+                    $payload = $this->jwtHelper->validarToken($token);
+                    $resultado = $this->usuario->buscarPorId($payload['id']);
+                    
+                    if ($resultado) {
+                        jsonResponse([
+                            'logado' => true,
+                            'usuario' => [
+                                'id' => $this->usuario->id,
+                                'nome' => $this->usuario->nome,
+                                'email' => $this->usuario->email,
+                                'tipo' => $this->usuario->tipo_usuario,
+                                'foto_perfil' => $this->usuario->foto_perfil
+                            ]
+                        ]);
+                        return;
+                    }
+                } catch (Exception $e) {
+                    // Token inválido, continuar para verificação de sessão
+                }
+            }
+
+            // Fallback para verificação de sessão
             if($this->estaLogado()) {
                 $this->usuario->buscarPorId($_SESSION['usuario_id']);
                 
@@ -443,14 +480,12 @@ class AuthController {
      */
     private function obterPerfil() {
         try {
-            if(!$this->estaLogado()) {
-                jsonResponse(['erro' => 'Não autorizado'], 401);
-            }
-
-            $this->usuario->buscarPorId($_SESSION['usuario_id']);
+            $usuario = $this->verificarToken();
+            if (!$usuario) return;
             
             jsonResponse([
-                'usuario' => [
+                'success' => true,
+                'data' => [
                     'id' => $this->usuario->id,
                     'nome' => $this->usuario->nome,
                     'email' => $this->usuario->email,
@@ -635,19 +670,46 @@ class AuthController {
      * Verificar token de autenticação
      */
     private function verificarToken() {
-        if (!$this->estaLogado()) {
-            jsonResponse(['erro' => 'Não autorizado'], 401);
+        $headers = getallheaders();
+        $token = null;
+
+        // Verificar token no header Authorization
+        if (isset($headers['Authorization'])) {
+            $authHeader = $headers['Authorization'];
+            if (preg_match('/Bearer\s+(\S+)/', $authHeader, $matches)) {
+                $token = $matches[1];
+            }
+        }
+
+        // Verificar token na sessão como fallback
+        if (!$token && isset($_SESSION['token'])) {
+            $token = $_SESSION['token'];
+        }
+
+        if (!$token) {
+            jsonResponse(['erro' => 'Token não fornecido'], 401);
             return false;
         }
-        
-        // Buscar dados do usuário
-        $this->usuario->buscarPorId($_SESSION['usuario_id']);
-        
-        return [
-            'id' => $this->usuario->id,
-            'nome' => $this->usuario->nome,
-            'email' => $this->usuario->email
-        ];
+
+        try {
+            $payload = $this->jwtHelper->validarToken($token);
+            $resultado = $this->usuario->buscarPorId($payload['id']);
+            
+            if (!$resultado) {
+                jsonResponse(['erro' => 'Usuário não encontrado'], 401);
+                return false;
+            }
+
+            return [
+                'id' => $this->usuario->id,
+                'nome' => $this->usuario->nome,
+                'email' => $this->usuario->email,
+                'tipo_usuario' => $this->usuario->tipo_usuario
+            ];
+        } catch (Exception $e) {
+            jsonResponse(['erro' => 'Token inválido'], 401);
+            return false;
+        }
     }
 
     /**

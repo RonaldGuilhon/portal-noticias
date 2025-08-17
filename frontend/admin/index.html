@@ -429,7 +429,7 @@
         
         async function loadDashboardData() {
             try {
-                const response = await fetch('/backend/admin/dashboard', {
+                const response = await fetch('http://localhost:8001/admin/dashboard', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -437,8 +437,8 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
-                    updateDashboardStats(result.data);
+                if (result.sucesso) {
+                    updateDashboardStats(result.dados);
                 }
             } catch (error) {
                 console.error('Erro ao carregar dados do dashboard:', error);
