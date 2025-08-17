@@ -1,0 +1,17 @@
+{
+    "name": "portal-noticias/backend",
+    "description": "Portal de Notícias - Sistema de gerenciamento de conteúdo",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "backend/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

@@ -5,7 +5,15 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
+
+// Tentar carregar o autoload do Composer
+if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+    require_once __DIR__ . '/../../vendor/autoload.php';
+}
+
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 class EmailService {
     private $smtp_host;
