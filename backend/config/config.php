@@ -21,6 +21,7 @@ ini_set('session.cookie_secure', 0); // Mudar para 1 em HTTPS
 define('AMBIENTE', 'desenvolvimento'); // desenvolvimento, producao
 define('SITE_NAME', 'Portal de Notícias');
 define('BASE_URL', 'http://localhost/portal-noticias');
+define('SITE_URL', BASE_URL); // Alias para BASE_URL para compatibilidade
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('UPLOAD_URL', BASE_URL . '/backend/uploads/');
 define('LOGS_PATH', __DIR__ . '/../logs/');
@@ -42,6 +43,12 @@ define('SMTP_FROM_EMAIL', 'noreply@portalnoticias.com');
 define('SMTP_FROM_NAME', 'Portal de Notícias');
 define('FROM_EMAIL', 'noreply@portalnoticias.com');
 define('FROM_NAME', 'Portal de Notícias');
+
+// Configurações de banco de dados
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'portal_noticias');
+define('DB_USER', 'root');
+define('DB_PASS', '');
 
 // Configurações de segurança
 define('JWT_SECRET', 'sua-chave-secreta-jwt-muito-segura-aqui');

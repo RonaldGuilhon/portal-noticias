@@ -4,6 +4,7 @@
  * Portal de Notícias
  */
 
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../../config-dev.php';
 require_once __DIR__ . '/../utils/CacheManager.php';
 

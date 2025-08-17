@@ -79,8 +79,8 @@ self.addEventListener('notificationclick', event => {
     
     event.notification.close();
     
-    const data = event.notification.data;
-    const action = event.action;
+    const { data } = event.notification;
+    const { action } = event;
     
     if (action === 'close') {
         return;
@@ -127,17 +127,17 @@ self.addEventListener('notificationclick', event => {
 self.addEventListener('notificationclose', event => {
     console.log('Notificação fechada:', event);
     
-    const data = event.notification.data;
+    const { data: { notificationId } } = event.notification;
     
     // Registrar fechamento da notificação
-    if (data.notificationId) {
+    if (notificationId) {
         fetch(`${API_BASE}/push/close`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                notificationId: data.notificationId
+                notificationId
             })
         }).catch(err => console.error('Erro ao registrar fechamento:', err));
     }
