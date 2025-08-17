@@ -142,12 +142,12 @@ class AuthController {
                 $_SESSION['usuario_tipo'] = $this->usuario->tipo_usuario;
                 $_SESSION['logado'] = true;
 
-                // Gerar JWT token
+                // Gerar JWT token com expiração de 24 horas
                 $token = $this->jwtHelper->gerarToken([
                     'id' => $this->usuario->id,
                     'email' => $this->usuario->email,
                     'tipo' => $this->usuario->tipo_usuario
-                ]);
+                ], 86400); // 24 horas
 
                 // Cookie de lembrar
                 if($lembrar) {
@@ -363,12 +363,12 @@ class AuthController {
                 $_SESSION['usuario_tipo'] = $this->usuario->tipo_usuario;
                 $_SESSION['logado'] = true;
 
-                // Gerar JWT token
+                // Gerar JWT token com expiração de 24 horas
                 $token = $this->jwtHelper->gerarToken([
                     'id' => $this->usuario->id,
                     'email' => $this->usuario->email,
                     'tipo' => $this->usuario->tipo_usuario
-                ]);
+                ], 86400); // 24 horas
 
                 jsonResponse([
                     'sucesso' => true,

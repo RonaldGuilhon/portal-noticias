@@ -6,7 +6,16 @@
 class AdminPanel {
     constructor() {
         this.apiBase = 'http://localhost:8001';
-        this.authToken = localStorage.getItem('portal-token');
+        const userData = localStorage.getItem('portal-user');
+        this.authToken = null;
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                this.authToken = user.token;
+            } catch (error) {
+                console.error('Erro ao obter token:', error);
+            }
+        }
         this.userData = JSON.parse(localStorage.getItem('portal-user') || '{}');
         this.notifications = [];
         this.charts = {};

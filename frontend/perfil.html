@@ -1574,15 +1574,34 @@
         
         // Utility functions
         function isLoggedIn() {
-            return localStorage.getItem('portal-token') !== null;
+            const userData = localStorage.getItem('portal-user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    return user && user.token;
+                } catch (error) {
+                    console.error('Erro ao verificar login:', error);
+                    return false;
+                }
+            }
+            return false;
         }
         
         function getAuthToken() {
-            return localStorage.getItem('portal-token');
+            const userData = localStorage.getItem('portal-user');
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    return user.token;
+                } catch (error) {
+                    console.error('Erro ao obter token:', error);
+                    return null;
+                }
+            }
+            return null;
         }
         
         function logout() {
-            localStorage.removeItem('portal-token');
             localStorage.removeItem('portal-user');
             window.location.href = '/login.html?logout=1';
         }

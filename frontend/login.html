@@ -332,9 +332,9 @@
                 const result = await response.json();
                 
                 if (result.sucesso) {
-                    // Salva dados do usuário
-                    localStorage.setItem('portal-user', JSON.stringify(result.usuario));
-                    localStorage.setItem('portal-token', result.token);
+                    // Salva dados do usuário com token incluído
+                    const userData = { ...result.usuario, token: result.token };
+                    localStorage.setItem('portal-user', JSON.stringify(userData));
                     
                     showSuccess('Login realizado com sucesso!');
                     
