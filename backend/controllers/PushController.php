@@ -260,7 +260,7 @@ class PushController {
      * Obter informações do sistema de push
      */
     private function getInfo() {
-        $this->responderSucesso([
+        $this->responderSuccess([
             'sistema' => 'Push Notifications',
             'versao' => '1.0.0',
             'status' => 'ativo',
@@ -289,7 +289,7 @@ class PushController {
                 $publicKey = $keys['publicKey'];
             }
             
-            return $this->responderSucesso([
+            return $this->responderSuccess([
                 'publicKey' => $publicKey
             ]);
             
@@ -336,7 +336,7 @@ class PushController {
             );
             
             if ($result) {
-                $this->responderSucesso([
+                $this->responderSuccess([
                     'mensagem' => 'Subscription criada com success',
                     'id' => $result
                 ]);
@@ -366,7 +366,7 @@ class PushController {
             $result = $this->pushService->unsubscribe($this->usuarioAtual['id'], $endpoint);
             
             if ($result) {
-                $this->responderSucesso([
+                $this->responderSuccess([
                     'mensagem' => 'Subscription removida com success'
                 ]);
             } else {
@@ -413,7 +413,7 @@ class PushController {
                 $input['categoryId'] ?? null
             );
             
-            $this->responderSucesso([
+            $this->responderSuccess([
                 'mensagem' => 'Notificação enviada com success',
                 'enviadas' => $result['enviadas'],
                 'erros' => $result['erros']
@@ -437,7 +437,7 @@ class PushController {
             $result = $this->pushService->sendTestNotification($this->usuarioAtual['id']);
             
             if ($result['enviadas'] > 0) {
-                $this->responderSucesso([
+                $this->responderSuccess([
                     'mensagem' => 'Notificação de teste enviada com success'
                 ]);
             } else {
@@ -463,7 +463,7 @@ class PushController {
                 $this->pushService->registerClick($notificationId, $action);
             }
             
-            $this->responderSucesso(['mensagem' => 'Clique registrado']);
+            $this->responderSuccess(['mensagem' => 'Clique registrado']);
             
         } catch (Exception $e) {
             $this->responderErro('Erro ao registrar clique: ' . $e->getMessage(), 500);
@@ -483,7 +483,7 @@ class PushController {
                 $this->pushService->registerClose($notificationId);
             }
             
-            $this->responderSucesso(['mensagem' => 'Fechamento registrado']);
+            $this->responderSuccess(['mensagem' => 'Fechamento registrado']);
             
         } catch (Exception $e) {
             $this->responderErro('Erro ao registrar fechamento: ' . $e->getMessage(), 500);
@@ -501,7 +501,7 @@ class PushController {
         
         try {
             $preferences = $this->pushService->getPreferences($this->usuarioAtual['id']);
-            $this->responderSucesso($preferences);
+            $this->responderSuccess($preferences);
             
         } catch (Exception $e) {
             $this->responderErro('Erro ao obter preferências: ' . $e->getMessage(), 500);
@@ -527,7 +527,7 @@ class PushController {
             );
             
             if ($result) {
-                $this->responderSucesso([
+                $this->responderSuccess([
                     'mensagem' => 'Preferências atualizadas com success'
                 ]);
             } else {
@@ -556,7 +556,7 @@ class PushController {
         
         try {
             $stats = $this->pushService->getStats();
-            $this->responderSucesso($stats);
+            $this->responderSuccess($stats);
             
         } catch (Exception $e) {
             $this->responderErro('Erro ao obter estatísticas: ' . $e->getMessage(), 500);
@@ -569,7 +569,7 @@ class PushController {
     private function syncNotifications($data) {
         try {
             $result = $this->pushService->syncPendingNotifications();
-            $this->responderSucesso([
+            $this->responderSuccess([
                 'mensagem' => 'Sincronização concluída',
                 'processadas' => $result
             ]);
@@ -590,9 +590,9 @@ class PushController {
     }
 
     /**
-     * Responder com sucesso
+     * Responder com success
      */
-    private function responderSucesso($dados, $codigo = 200) {
+    private function responderSuccess($dados, $codigo = 200) {
         return $this->jsonResponse([
             'success' => true,
             'data' => $dados

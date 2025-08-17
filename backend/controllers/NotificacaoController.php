@@ -135,7 +135,7 @@ class NotificacaoController {
             // Contar total não lidas
             $naoLidas = $this->notificacao->contarNaoLidas();
             
-            $this->responderSucesso([
+            $this->responderSuccess([
                 'notificacoes' => $notificacoes,
                 'nao_lidas' => $naoLidas,
                 'pagina' => $pagina,
@@ -153,7 +153,7 @@ class NotificacaoController {
     private function marcarComoLida($id) {
         try {
             if ($this->notificacao->marcarComoLida($id)) {
-                $this->responderSucesso(['mensagem' => 'Notificação marcada como lida com success']);
+                $this->responderSuccess(['mensagem' => 'Notificação marcada como lida com success']);
             } else {
                 $this->responderErro('Erro ao marcar notificação como lida', 500);
             }
@@ -188,7 +188,7 @@ class NotificacaoController {
             $this->notificacao->icone = $input['icone'] ?? null;
             
             if ($this->notificacao->criar()) {
-                $this->responderSucesso([
+                $this->responderSuccess([
                     'mensagem' => 'Notificação criada com success',
                     'id' => $this->notificacao->id
                 ]);
@@ -207,7 +207,7 @@ class NotificacaoController {
     private function deletarNotificacao($id) {
         try {
             if ($this->notificacao->deletar($id)) {
-                $this->responderSucesso(['mensagem' => 'Notificação deletada com success']);
+                $this->responderSuccess(['mensagem' => 'Notificação deletada com success']);
             } else {
                 $this->responderErro('Erro ao deletar notificação', 500);
             }
@@ -217,9 +217,9 @@ class NotificacaoController {
     }
 
     /**
-     * Responder com sucesso
+     * Responder com success
      */
-    private function responderSucesso($data, $codigo = 200) {
+    private function responderSuccess($data, $codigo = 200) {
         http_response_code($codigo);
         echo json_encode([
             'success' => true,

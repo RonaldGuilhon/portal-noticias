@@ -20,3 +20,42 @@ Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-R
     Order Deny,Allow
     Deny from all
 </FilesMatch>
+
+# Habilitar reescrita de URL
+RewriteEngine On
+
+# Roteamento para notícias
+RewriteRule ^noticias/destaques/?$ controllers/NoticiaController.php?action=featured [L,QSA]
+RewriteRule ^noticias/populares/?$ controllers/NoticiaController.php?action=popular [L,QSA]
+RewriteRule ^noticias/recentes/?$ controllers/NoticiaController.php?action=recent [L,QSA]
+RewriteRule ^noticias/([0-9]+)/?$ controllers/NoticiaController.php?action=get&id=$1 [L,QSA]
+RewriteRule ^noticias/([^/]+)/?$ controllers/NoticiaController.php?action=get&slug=$1 [L,QSA]
+RewriteRule ^noticias/?$ controllers/NoticiaController.php?action=list [L,QSA]
+
+# Roteamento para categorias
+RewriteRule ^categorias/([0-9]+)/?$ controllers/CategoriaController.php?action=obter&id=$1 [L,QSA]
+RewriteRule ^categorias/([^/]+)/?$ controllers/CategoriaController.php?action=obter&slug=$1 [L,QSA]
+RewriteRule ^categorias/?$ controllers/CategoriaController.php?action=listar [L,QSA]
+
+# Roteamento para tags
+RewriteRule ^tags/([0-9]+)/?$ controllers/TagController.php?action=obter&id=$1 [L,QSA]
+RewriteRule ^tags/([^/]+)/?$ controllers/TagController.php?action=obter&slug=$1 [L,QSA]
+RewriteRule ^tags/?$ controllers/TagController.php?action=listar [L,QSA]
+
+# Roteamento para comentários
+RewriteRule ^comentarios/noticia/([0-9]+)/?$ controllers/ComentarioController.php?action=listarPorNoticia&noticia_id=$1 [L,QSA]
+RewriteRule ^comentarios/?$ controllers/ComentarioController.php?action=listar [L,QSA]
+
+# Roteamento para autenticação
+RewriteRule ^auth/login/?$ controllers/AuthController.php?action=login [L,QSA]
+RewriteRule ^auth/register/?$ controllers/AuthController.php?action=register [L,QSA]
+RewriteRule ^auth/logout/?$ controllers/AuthController.php?action=logout [L,QSA]
+RewriteRule ^auth/forgot-password/?$ controllers/AuthController.php?action=forgotPassword [L,QSA]
+
+# Roteamento para busca
+RewriteRule ^search/?$ controllers/SearchController.php?action=buscar [L,QSA]
+
+# Roteamento para cache
+RewriteRule ^cache/stats/?$ controllers/CacheController.php?action=stats [L,QSA]
+RewriteRule ^cache/clear/?$ controllers/CacheController.php?action=clear [L,QSA]
+RewriteRule ^cache/?$ controllers/CacheController.php?action=stats [L,QSA]
