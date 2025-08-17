@@ -1,19 +1,48 @@
 <?php
 
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Noticia.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Tag.php';
 
 class SearchController {
+    private $db;
     private $noticiaModel;
     private $categoriaModel;
     private $tagModel;
     
     public function __construct() {
-        $this->noticiaModel = new Noticia();
-        $this->categoriaModel = new Categoria();
-        $this->tagModel = new Tag();
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $this->noticiaModel = new Noticia($this->db);
+        $this->categoriaModel = new Categoria($this->db);
+        $this->tagModel = new Tag($this->db);
+    }
+    
+    /**
+     * Processar requisição baseada na ação
+     */
+    public function processarRequisicao() {
+        $action = $_GET['action'] ?? 'buscar';
+        
+        switch($action) {
+            case 'buscar':
+                $this->buscar();
+                break;
+            case 'avancada':
+                $this->buscaAvancada();
+                break;
+            case 'sugestoes':
+                $this->sugestoes();
+                break;
+            default:
+                http_response_code(400);
+                echo json_encode([
+                    'erro' => true,
+                    'mensagem' => 'Ação não reconhecida'
+                ]);
+        }
     }
     
     /**

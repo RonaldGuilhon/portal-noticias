@@ -28,6 +28,71 @@ class UploadService {
     }
     
     /**
+     * Obter URL de upload
+     */
+    public function getUploadUrl() {
+        return 'uploads';
+    }
+    
+    /**
+     * Deletar arquivo
+     */
+    public function delete($caminho) {
+        try {
+            // Construir caminho completo
+            $caminhoCompleto = $this->uploadPath . '/' . $caminho;
+            
+            // Verificar se o arquivo existe
+            if (!file_exists($caminhoCompleto)) {
+                return false;
+            }
+            
+            // Deletar o arquivo
+            return unlink($caminhoCompleto);
+            
+        } catch (Exception $e) {
+            logError('Erro ao deletar arquivo: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Limpar arquivos temporários antigos
+     */
+    public function cleanupTempFiles($dias = 7) {
+        try {
+            $arquivosRemovidos = 0;
+            $tempoLimite = time() - ($dias * 24 * 60 * 60);
+            
+            // Diretório temporário
+            $tempDir = $this->uploadPath . '/temp';
+            
+            if (!is_dir($tempDir)) {
+                return 0;
+            }
+            
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($tempDir, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::CHILD_FIRST
+            );
+            
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getMTime() < $tempoLimite) {
+                    if (unlink($file->getRealPath())) {
+                        $arquivosRemovidos++;
+                    }
+                }
+            }
+            
+            return $arquivosRemovidos;
+            
+        } catch (Exception $e) {
+            logError('Erro na limpeza de arquivos temporários: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    /**
      * Processar upload de arquivo
      */
     public function processarUpload($arquivo, $tipo = 'images', $redimensionar = true) {
@@ -130,6 +195,69 @@ class UploadService {
         } catch(Exception $e) {
             logError('Erro no upload base64: ' . $e->getMessage());
             throw $e;
+        }
+    }
+    
+    /**
+     * Upload de imagem
+     */
+    public function uploadImagem($file) {
+        try {
+            $resultado = $this->processarUpload($file, 'images', true);
+            
+            return [
+                'sucesso' => true,
+                'url' => $resultado,
+                'nome_arquivo' => basename($resultado)
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'sucesso' => false,
+                'erro' => $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Upload de vídeo
+     */
+    public function uploadVideo($file) {
+        try {
+            $resultado = $this->processarUpload($file, 'videos', false);
+            
+            return [
+                'sucesso' => true,
+                'url' => $resultado,
+                'nome_arquivo' => basename($resultado)
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'sucesso' => false,
+                'erro' => $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Upload de áudio
+     */
+    public function uploadAudio($file) {
+        try {
+            $resultado = $this->processarUpload($file, 'audios', false);
+            
+            return [
+                'sucesso' => true,
+                'url' => $resultado,
+                'nome_arquivo' => basename($resultado)
+            ];
+            
+        } catch (Exception $e) {
+            return [
+                'sucesso' => false,
+                'erro' => $e->getMessage()
+            ];
         }
     }
     

@@ -1,16 +1,20 @@
 <?php
 
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Noticia.php';
 require_once __DIR__ . '/../models/Categoria.php';
 
 class RSSController {
+    private $db;
     private $noticiaModel;
     private $categoriaModel;
     
     public function __construct() {
-        $this->noticiaModel = new Noticia();
-        $this->categoriaModel = new Categoria();
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $this->noticiaModel = new Noticia($this->db);
+        $this->categoriaModel = new Categoria($this->db);
     }
     
     /**

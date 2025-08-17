@@ -441,6 +441,30 @@ class Tag {
     }
     
     /**
+     * Buscar sugestões de tags para autocomplete
+     */
+    public function buscarSugestoes($termo, $limite = 5) {
+        try {
+            $query = "SELECT id, nome, slug
+                      FROM " . $this->table_name . "
+                      WHERE ativo = 1 AND nome LIKE :termo
+                      ORDER BY nome ASC
+                      LIMIT :limite";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(':termo', '%' . $termo . '%');
+            $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch(Exception $e) {
+            logError('Erro ao buscar sugestões de tags: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
      * Criar ou obter tag existente
      */
     public function criarOuObter($nome) {

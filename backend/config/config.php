@@ -133,6 +133,13 @@ function generateSlug($text) {
 }
 
 /**
+ * Alias para generateSlug (compatibilidade)
+ */
+function gerarSlug($text) {
+    return generateSlug($text);
+}
+
+/**
  * Função para formatar data
  */
 function formatDate($date, $format = 'd/m/Y H:i') {
@@ -143,6 +150,15 @@ function formatDate($date, $format = 'd/m/Y H:i') {
  * Função para log de erros personalizado
  */
 function logError($message, $file = 'error.log') {
+    $timestamp = date('Y-m-d H:i:s');
+    $logMessage = "[{$timestamp}] {$message}" . PHP_EOL;
+    file_put_contents(LOGS_PATH . $file, $logMessage, FILE_APPEND | LOCK_EX);
+}
+
+/**
+ * Função para log de informações
+ */
+function logInfo($message, $file = 'info.log') {
     $timestamp = date('Y-m-d H:i:s');
     $logMessage = "[{$timestamp}] {$message}" . PHP_EOL;
     file_put_contents(LOGS_PATH . $file, $logMessage, FILE_APPEND | LOCK_EX);

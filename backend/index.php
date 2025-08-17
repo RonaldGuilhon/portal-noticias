@@ -479,7 +479,7 @@ try {
         case 'busca':
             require_once __DIR__ . '/controllers/SearchController.php';
             $controller = new SearchController();
-            $controller->buscar();
+            $controller->processarRequisicao();
             break;
             
         case 'api':

@@ -620,6 +620,165 @@ class Noticia {
     }
 
     /**
+     * Buscar notícias com filtros avançados
+     */
+    public function buscar($filtros = []) {
+        $where = ["n.status = 'publicado'"];
+        $params = [];
+        
+        // Filtro por termo de busca
+        if (!empty($filtros['termo'])) {
+            $where[] = "MATCH(n.titulo, n.subtitulo, n.conteudo, n.resumo) AGAINST(:termo IN NATURAL LANGUAGE MODE)";
+            $params[':termo'] = $filtros['termo'];
+        }
+        
+        // Filtro por categoria
+        if (!empty($filtros['categoria_id'])) {
+            $where[] = "n.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $filtros['categoria_id'];
+        }
+        
+        // Filtro por tag
+        if (!empty($filtros['tag_id'])) {
+            $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = n.id AND nt.tag_id = :tag_id)";
+            $params[':tag_id'] = $filtros['tag_id'];
+        }
+        
+        // Filtro por data
+        if (!empty($filtros['data_inicio'])) {
+            $where[] = "DATE(n.data_publicacao) >= :data_inicio";
+            $params[':data_inicio'] = $filtros['data_inicio'];
+        }
+        
+        if (!empty($filtros['data_fim'])) {
+            $where[] = "DATE(n.data_publicacao) <= :data_fim";
+            $params[':data_fim'] = $filtros['data_fim'];
+        }
+        
+        // Ordenação
+        $orderBy = "n.data_publicacao DESC";
+        if (!empty($filtros['ordem'])) {
+            switch ($filtros['ordem']) {
+                case 'relevancia':
+                    if (!empty($filtros['termo'])) {
+                        $orderBy = "MATCH(n.titulo, n.subtitulo, n.conteudo, n.resumo) AGAINST(:termo_order IN NATURAL LANGUAGE MODE) DESC, n.data_publicacao DESC";
+                        $params[':termo_order'] = $filtros['termo'];
+                    }
+                    break;
+                case 'data_asc':
+                    $orderBy = "n.data_publicacao ASC";
+                    break;
+                case 'visualizacoes':
+                    $orderBy = "n.visualizacoes DESC";
+                    break;
+                case 'curtidas':
+                    $orderBy = "n.curtidas DESC";
+                    break;
+            }
+        }
+        
+        // Paginação
+        $pagina = max(1, $filtros['pagina'] ?? 1);
+        $limite = min(50, max(1, $filtros['limite'] ?? 10));
+        $offset = ($pagina - 1) * $limite;
+        
+        $whereClause = implode(' AND ', $where);
+        
+        $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug, c.cor as categoria_cor
+                  FROM " . $this->table_name . " n
+                  LEFT JOIN usuarios u ON n.autor_id = u.id
+                  LEFT JOIN categorias c ON n.categoria_id = c.id
+                  WHERE {$whereClause}
+                  ORDER BY {$orderBy}
+                  LIMIT :limite OFFSET :offset";
+        
+        $stmt = $this->conn->prepare($query);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Adicionar tags para cada notícia
+        foreach ($noticias as &$noticia) {
+            $noticia['tags'] = $this->obterTagsPorNoticia($noticia['id']);
+        }
+        
+        return $noticias;
+    }
+    
+    /**
+     * Contar resultados de busca
+     */
+    public function contarBusca($filtros = []) {
+        $where = ["status = 'publicado'"];
+        $params = [];
+        
+        // Aplicar mesmos filtros da busca
+        if (!empty($filtros['termo'])) {
+            $where[] = "MATCH(titulo, subtitulo, conteudo, resumo) AGAINST(:termo IN NATURAL LANGUAGE MODE)";
+            $params[':termo'] = $filtros['termo'];
+        }
+        
+        if (!empty($filtros['categoria_id'])) {
+            $where[] = "categoria_id = :categoria_id";
+            $params[':categoria_id'] = $filtros['categoria_id'];
+        }
+        
+        if (!empty($filtros['tag_id'])) {
+            $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = id AND nt.tag_id = :tag_id)";
+            $params[':tag_id'] = $filtros['tag_id'];
+        }
+        
+        if (!empty($filtros['data_inicio'])) {
+            $where[] = "DATE(data_publicacao) >= :data_inicio";
+            $params[':data_inicio'] = $filtros['data_inicio'];
+        }
+        
+        if (!empty($filtros['data_fim'])) {
+            $where[] = "DATE(data_publicacao) <= :data_fim";
+            $params[':data_fim'] = $filtros['data_fim'];
+        }
+        
+        $whereClause = implode(' AND ', $where);
+        
+        $query = "SELECT COUNT(*) as total FROM " . $this->table_name . " WHERE {$whereClause}";
+        $stmt = $this->conn->prepare($query);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $row['total'];
+    }
+    
+    /**
+     * Buscar sugestões de títulos para autocomplete
+     */
+    public function buscarSugestoesTitulos($termo, $limite = 5) {
+        $query = "SELECT id, titulo, slug
+                  FROM " . $this->table_name . "
+                  WHERE status = 'publicado' AND titulo LIKE :termo
+                  ORDER BY data_publicacao DESC
+                  LIMIT :limite";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindValue(':termo', '%' . $termo . '%');
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Obter estatísticas da notícia
      */
     public function obterEstatisticas() {
@@ -636,6 +795,171 @@ class Noticia {
         $stmt->execute();
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Busca avançada com múltiplos filtros
+     */
+    public function buscaAvancada($filtros = [], $pagina = 1, $limite = 10, $ordem = 'data_publicacao DESC') {
+        $where = ["n.status = 'publicado'"];
+        $params = [];
+        
+        // Filtro por título
+        if (!empty($filtros['titulo'])) {
+            $where[] = "n.titulo LIKE :titulo";
+            $params[':titulo'] = '%' . $filtros['titulo'] . '%';
+        }
+        
+        // Filtro por conteúdo
+        if (!empty($filtros['conteudo'])) {
+            $where[] = "n.conteudo LIKE :conteudo";
+            $params[':conteudo'] = '%' . $filtros['conteudo'] . '%';
+        }
+        
+        // Filtro por autor
+        if (!empty($filtros['autor'])) {
+            $where[] = "u.nome LIKE :autor";
+            $params[':autor'] = '%' . $filtros['autor'] . '%';
+        }
+        
+        // Filtro por categoria
+        if (!empty($filtros['categoria_id'])) {
+            $where[] = "n.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $filtros['categoria_id'];
+        }
+        
+        // Filtro por tags
+        if (!empty($filtros['tags'])) {
+            if (is_array($filtros['tags'])) {
+                $tagPlaceholders = [];
+                foreach ($filtros['tags'] as $index => $tagId) {
+                    $placeholder = ':tag_' . $index;
+                    $tagPlaceholders[] = $placeholder;
+                    $params[$placeholder] = $tagId;
+                }
+                $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = n.id AND nt.tag_id IN (" . implode(',', $tagPlaceholders) . "))";
+            } else {
+                $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = n.id AND nt.tag_id = :tag_id)";
+                $params[':tag_id'] = $filtros['tags'];
+            }
+        }
+        
+        // Filtro por data
+        if (!empty($filtros['data_inicio'])) {
+            $where[] = "DATE(n.data_publicacao) >= :data_inicio";
+            $params[':data_inicio'] = $filtros['data_inicio'];
+        }
+        
+        if (!empty($filtros['data_fim'])) {
+            $where[] = "DATE(n.data_publicacao) <= :data_fim";
+            $params[':data_fim'] = $filtros['data_fim'];
+        }
+        
+        // Paginação
+        $pagina = max(1, $pagina);
+        $limite = min(50, max(1, $limite));
+        $offset = ($pagina - 1) * $limite;
+        
+        $whereClause = implode(' AND ', $where);
+        
+        $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug, c.cor as categoria_cor
+                  FROM " . $this->table_name . " n
+                  LEFT JOIN usuarios u ON n.autor_id = u.id
+                  LEFT JOIN categorias c ON n.categoria_id = c.id
+                  WHERE {$whereClause}
+                  ORDER BY {$ordem}
+                  LIMIT :limite OFFSET :offset";
+        
+        $stmt = $this->conn->prepare($query);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $noticias = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Adicionar tags para cada notícia
+        foreach ($noticias as &$noticia) {
+            $noticia['tags'] = $this->obterTagsPorNoticia($noticia['id']);
+        }
+        
+        return $noticias;
+    }
+    
+    /**
+     * Contar resultados de busca avançada
+     */
+    public function contarBuscaAvancada($filtros = []) {
+        $where = ["n.status = 'publicado'"];
+        $params = [];
+        
+        // Aplicar mesmos filtros da busca avançada
+        if (!empty($filtros['titulo'])) {
+            $where[] = "n.titulo LIKE :titulo";
+            $params[':titulo'] = '%' . $filtros['titulo'] . '%';
+        }
+        
+        if (!empty($filtros['conteudo'])) {
+            $where[] = "n.conteudo LIKE :conteudo";
+            $params[':conteudo'] = '%' . $filtros['conteudo'] . '%';
+        }
+        
+        if (!empty($filtros['autor'])) {
+            $where[] = "u.nome LIKE :autor";
+            $params[':autor'] = '%' . $filtros['autor'] . '%';
+        }
+        
+        if (!empty($filtros['categoria_id'])) {
+            $where[] = "n.categoria_id = :categoria_id";
+            $params[':categoria_id'] = $filtros['categoria_id'];
+        }
+        
+        if (!empty($filtros['tags'])) {
+            if (is_array($filtros['tags'])) {
+                $tagPlaceholders = [];
+                foreach ($filtros['tags'] as $index => $tagId) {
+                    $placeholder = ':tag_' . $index;
+                    $tagPlaceholders[] = $placeholder;
+                    $params[$placeholder] = $tagId;
+                }
+                $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = n.id AND nt.tag_id IN (" . implode(',', $tagPlaceholders) . "))";
+            } else {
+                $where[] = "EXISTS (SELECT 1 FROM noticia_tags nt WHERE nt.noticia_id = n.id AND nt.tag_id = :tag_id)";
+                $params[':tag_id'] = $filtros['tags'];
+            }
+        }
+        
+        if (!empty($filtros['data_inicio'])) {
+            $where[] = "DATE(n.data_publicacao) >= :data_inicio";
+            $params[':data_inicio'] = $filtros['data_inicio'];
+        }
+        
+        if (!empty($filtros['data_fim'])) {
+            $where[] = "DATE(n.data_publicacao) <= :data_fim";
+            $params[':data_fim'] = $filtros['data_fim'];
+        }
+        
+        $whereClause = implode(' AND ', $where);
+        
+        $query = "SELECT COUNT(*) as total 
+                  FROM " . $this->table_name . " n
+                  LEFT JOIN usuarios u ON n.autor_id = u.id
+                  WHERE {$whereClause}";
+        
+        $stmt = $this->conn->prepare($query);
+        
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $row['total'];
     }
 }
 ?>
