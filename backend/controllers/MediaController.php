@@ -53,7 +53,7 @@ class MediaController {
             // Fazer upload
             $resultado = $this->uploadService->processarUpload($arquivo, $diretorio);
 
-            if ($resultado['sucesso']) {
+            if ($resultado['success']) {
                 $caminhoCompleto = $resultado['caminho'];
 
                 // Se for imagem e solicitado redimensionamento
@@ -74,7 +74,7 @@ class MediaController {
                 $info = $this->obterInfoArquivo($caminhoCompleto);
 
                 echo json_encode([
-                    'sucesso' => true,
+                    'success' => true,
                     'arquivo' => [
                         'nome' => $resultado['nome'],
                         'nome_original' => $arquivo['name'],
@@ -138,10 +138,10 @@ class MediaController {
                 if ($arquivo['error'] === UPLOAD_ERR_OK) {
                     $resultado = $this->uploadService->processarUpload($arquivo, $tipo);
                     
-                    if ($resultado['sucesso']) {
+                    if ($resultado['success']) {
                         $info = $this->obterInfoArquivo($resultado['caminho']);
                         $resultados[] = [
-                            'sucesso' => true,
+                            'success' => true,
                             'arquivo' => [
                                 'nome' => $resultado['nome'],
                                 'nome_original' => $arquivo['name'],
@@ -153,14 +153,14 @@ class MediaController {
                         ];
                     } else {
                         $resultados[] = [
-                            'sucesso' => false,
+                            'success' => false,
                             'erro' => $resultado['erro'],
                             'arquivo' => $arquivo['name']
                         ];
                     }
                 } else {
                     $resultados[] = [
-                        'sucesso' => false,
+                        'success' => false,
                         'erro' => 'Erro no upload: ' . $arquivo['error'],
                         'arquivo' => $arquivo['name']
                     ];
@@ -168,7 +168,7 @@ class MediaController {
             }
 
             echo json_encode([
-                'sucesso' => true,
+                'success' => true,
                 'resultados' => $resultados
             ]);
 
@@ -297,7 +297,7 @@ class MediaController {
             $resultado = $this->uploadService->delete($caminho);
 
             if ($resultado) {
-                echo json_encode(['sucesso' => true, 'mensagem' => 'Arquivo deletado com sucesso']);
+                echo json_encode(['success' => true, 'mensagem' => 'Arquivo deletado com sucesso']);
             } else {
                 http_response_code(400);
                 echo json_encode(['erro' => 'Erro ao deletar arquivo']);
@@ -357,7 +357,7 @@ class MediaController {
             if ($resultado) {
                 $info = $this->obterInfoArquivo($caminhoCompleto);
                 echo json_encode([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Imagem redimensionada com sucesso',
                     'dimensoes' => $info['dimensoes']
                 ]);
@@ -429,7 +429,7 @@ class MediaController {
             $resultado = $this->uploadService->cleanupTempFiles($dias);
 
             echo json_encode([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => "Limpeza concluída. {$resultado} arquivos removidos.",
                 'arquivos_removidos' => $resultado
             ]);

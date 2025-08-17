@@ -243,7 +243,7 @@ class TagController {
         if($tag_id) {
             $tag = $this->tag->obterPorId($tag_id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Tag criada com sucesso',
                 'tag' => $tag
             ], 201);
@@ -294,7 +294,7 @@ class TagController {
         }
         
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'tags_criadas' => count($tags_criadas),
             'tags' => $tags_criadas,
             'erros' => $erros
@@ -349,7 +349,7 @@ class TagController {
         if($sucesso) {
             $tag = $this->tag->obterPorId($id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Tag atualizada com sucesso',
                 'tag' => $tag
             ]);
@@ -384,7 +384,7 @@ class TagController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Tag excluída com sucesso'
             ]);
         } else {
@@ -420,7 +420,7 @@ class TagController {
         if($sucesso) {
             $status_texto = $ativo ? 'ativada' : 'desativada';
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => "Tag $status_texto com sucesso"
             ]);
         } else {

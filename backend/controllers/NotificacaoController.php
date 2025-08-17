@@ -222,7 +222,7 @@ class NotificacaoController {
     private function responderSucesso($data, $codigo = 200) {
         http_response_code($codigo);
         echo json_encode([
-            'sucesso' => true,
+            'success' => true,
             'data' => $data
         ], JSON_UNESCAPED_UNICODE);
     }
@@ -233,7 +233,7 @@ class NotificacaoController {
     private function responderErro($mensagem, $codigo = 400) {
         http_response_code($codigo);
         echo json_encode([
-            'sucesso' => false,
+            'success' => false,
             'mensagem' => $mensagem
         ], JSON_UNESCAPED_UNICODE);
     }

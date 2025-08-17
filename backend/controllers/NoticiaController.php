@@ -552,7 +552,7 @@ class NoticiaController {
 
             if($this->noticia->criar()) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Notícia criada com sucesso',
                     'noticia_id' => $this->noticia->id
                 ], 201);
@@ -621,7 +621,7 @@ class NoticiaController {
 
             if($this->noticia->atualizar()) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Notícia atualizada com sucesso'
                 ]);
             } else {
@@ -648,7 +648,7 @@ class NoticiaController {
 
             if($this->noticia->excluir($id)) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Notícia excluída com sucesso'
                 ]);
             } else {
@@ -680,7 +680,7 @@ class NoticiaController {
             
             if($this->noticia->curtir($_SESSION['usuario_id'], $tipo)) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Ação realizada com sucesso'
                 ]);
             } else {
@@ -714,7 +714,7 @@ class NoticiaController {
             $stmt->bindParam(':referer', $referer);
             $stmt->execute();
 
-            jsonResponse(['sucesso' => true]);
+            jsonResponse(['success' => true]);
         } catch(Exception $e) {
             logError('Erro ao registrar visualização: ' . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
@@ -735,7 +735,7 @@ class NoticiaController {
             $stmt->bindParam(':id', $id);
             
             if($stmt->execute()) {
-                jsonResponse(['sucesso' => true, 'mensagem' => 'Notícia publicada com sucesso']);
+                jsonResponse(['success' => true, 'mensagem' => 'Notícia publicada com sucesso']);
             } else {
                 jsonResponse(['erro' => 'Erro ao publicar notícia'], 500);
             }
@@ -759,7 +759,7 @@ class NoticiaController {
             $stmt->bindParam(':id', $id);
             
             if($stmt->execute()) {
-                jsonResponse(['sucesso' => true, 'mensagem' => 'Notícia despublicada com sucesso']);
+                jsonResponse(['success' => true, 'mensagem' => 'Notícia despublicada com sucesso']);
             } else {
                 jsonResponse(['erro' => 'Erro ao despublicar notícia'], 500);
             }
@@ -788,7 +788,7 @@ class NoticiaController {
             
             if($stmt->execute()) {
                 $mensagem = $destaque ? 'Notícia destacada com sucesso' : 'Destaque removido com sucesso';
-                jsonResponse(['sucesso' => true, 'mensagem' => $mensagem]);
+                jsonResponse(['success' => true, 'mensagem' => $mensagem]);
             } else {
                 jsonResponse(['erro' => 'Erro ao alterar destaque'], 500);
             }

@@ -335,7 +335,7 @@ class EmailService {
             $mail->smtpConnect();
             $mail->smtpClose();
             
-            return ['sucesso' => 'Conexão SMTP estabelecida com sucesso'];
+            return ['success' => 'Conexão SMTP estabelecida com sucesso'];
         } catch (Exception $e) {
             return ['erro' => 'Erro na conexão SMTP: ' . $e->getMessage()];
         }

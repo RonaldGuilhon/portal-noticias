@@ -156,7 +156,7 @@ class AuthController {
                 }
 
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Login realizado com sucesso',
                     'usuario' => [
                         'id' => $this->usuario->id,
@@ -210,7 +210,7 @@ class AuthController {
                 // $this->enviarEmailVerificacao($this->usuario->email, $this->usuario->token_verificacao);
                 
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Usuário criado com sucesso.',
                     'usuario_id' => $this->usuario->id
                 ], 201);
@@ -240,7 +240,7 @@ class AuthController {
             if($token) {
                 $this->enviarEmailRecuperacao($email, $token);
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Email de recuperação enviado com sucesso'
                 ]);
             } else {
@@ -277,7 +277,7 @@ class AuthController {
 
             if($this->usuario->recuperarSenha($token, $nova_senha)) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Senha redefinida com sucesso'
                 ]);
             } else {
@@ -303,7 +303,7 @@ class AuthController {
 
             if($this->usuario->verificarEmail($token)) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Email verificado com sucesso'
                 ]);
             } else {
@@ -328,7 +328,7 @@ class AuthController {
             }
 
             if($this->usuario->verificarEmail($token)) {
-                header('Location: /login.html?sucesso=email_verificado');
+                header('Location: /login.html?success=email_verificado');
             } else {
                 header('Location: /login.html?erro=token_invalido');
             }
@@ -372,7 +372,7 @@ class AuthController {
                 ], 86400); // 24 horas
 
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Login social realizado com sucesso',
                     'usuario' => [
                         'id' => $this->usuario->id,
@@ -403,7 +403,7 @@ class AuthController {
             setcookie('auth_token', '', time() - 3600, '/');
             
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Logout realizado com sucesso'
             ]);
         } catch(Exception $e) {
@@ -528,7 +528,7 @@ class AuthController {
                 $_SESSION['usuario_nome'] = $this->usuario->nome;
                 
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Perfil atualizado com sucesso'
                 ]);
             } else {
@@ -571,7 +571,7 @@ class AuthController {
             
             if($this->usuario->alterarSenha($senha_atual, $nova_senha)) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Senha alterada com sucesso'
                 ]);
             } else {
@@ -749,7 +749,7 @@ class AuthController {
             $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'data' => [
                     'stats' => $stats,
                     'activities' => $activities

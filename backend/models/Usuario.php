@@ -150,7 +150,7 @@ class Usuario {
     }
 
     /**
-     * Buscar usuário por ID
+     * Buscar usuário por ID (preenche propriedades do objeto)
      */
     public function buscarPorId($id) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
@@ -174,6 +174,22 @@ class Usuario {
         }
         
         return false;
+    }
+
+    /**
+     * Obter usuário por ID (retorna array associativo)
+     */
+    public function obterPorId($id) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0) {
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+        
+        return null;
     }
 
     /**

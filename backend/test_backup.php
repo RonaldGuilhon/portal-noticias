@@ -91,9 +91,9 @@ class BackupTester {
             echo "  → Criando backup completo de teste...\n";
             $result = $this->backup_manager->createFullBackup('teste_backup_' . date('Y-m-d_H-i-s') . '.sql');
             
-            $this->addResult('backup_completo', $result['sucesso'], 'Backup completo criado');
+            $this->addResult('backup_completo', $result['success'], 'Backup completo criado');
             
-            if ($result['sucesso']) {
+            if ($result['success']) {
                 echo "    ✓ Backup criado: {$result['arquivo']} ({$result['tamanho']})\n";
                 
                 // Verificar se o arquivo existe
@@ -151,17 +151,17 @@ class BackupTester {
             ];
             
             $result = $this->backup_scheduler->setSchedule($config);
-            $this->addResult('configuracao_agendamento', $result['sucesso'], 'Configuração de agendamento funciona');
+            $this->addResult('configuracao_agendamento', $result['success'], 'Configuração de agendamento funciona');
             
             // Testar obtenção de configuração
             echo "  → Testando obtenção de configuração...\n";
             $schedule = $this->backup_scheduler->getSchedule();
-            $this->addResult('obtencao_configuracao', $schedule['sucesso'], 'Obtenção de configuração funciona');
+            $this->addResult('obtencao_configuracao', $schedule['success'], 'Obtenção de configuração funciona');
             
             // Testar verificação de agendamento
             echo "  → Testando verificação de agendamento...\n";
             $check_result = $this->backup_scheduler->checkSchedule();
-            $this->addResult('verificacao_agendamento', $check_result['sucesso'], 'Verificação de agendamento funciona');
+            $this->addResult('verificacao_agendamento', $check_result['success'], 'Verificação de agendamento funciona');
             
             // Testar status
             echo "  → Testando status do agendador...\n";
@@ -187,17 +187,17 @@ class BackupTester {
             echo "  → Testando endpoint de status...\n";
             $response = $this->backup_controller->handleRequest('GET', 'status');
             $data = json_decode($response, true);
-            $this->addResult('controller_status', $data['sucesso'] ?? false, 'Endpoint de status funciona');
+            $this->addResult('controller_status', $data['success'] ?? false, 'Endpoint de status funciona');
             
             echo "  → Testando endpoint de verificação...\n";
             $response = $this->backup_controller->handleRequest('GET', 'check');
             $data = json_decode($response, true);
-            $this->addResult('controller_check', $data['sucesso'] ?? false, 'Endpoint de verificação funciona');
+            $this->addResult('controller_check', $data['success'] ?? false, 'Endpoint de verificação funciona');
             
             echo "  → Testando endpoint de listagem...\n";
             $response = $this->backup_controller->handleRequest('GET', 'list');
             $data = json_decode($response, true);
-            $this->addResult('controller_list', $data['sucesso'] ?? false, 'Endpoint de listagem funciona');
+            $this->addResult('controller_list', $data['success'] ?? false, 'Endpoint de listagem funciona');
             
         } catch (Exception $e) {
             $this->addResult('backup_controller_erro', false, 'BackupController sem erros');
@@ -263,7 +263,7 @@ class BackupTester {
      */
     private function addResult($key, $success, $description) {
         $this->test_results[$key] = [
-            'sucesso' => $success,
+            'success' => $success,
             'descricao' => $description
         ];
         
@@ -281,7 +281,7 @@ class BackupTester {
         echo "\n=== RESULTADOS DOS TESTES ===\n\n";
         
         $total_tests = count($this->test_results);
-        $passed_tests = array_sum(array_column($this->test_results, 'sucesso'));
+        $passed_tests = array_sum(array_column($this->test_results, 'success'));
         $failed_tests = $total_tests - $passed_tests;
         
         echo "Total de testes: {$total_tests}\n";
@@ -291,7 +291,7 @@ class BackupTester {
         if ($failed_tests > 0) {
             echo "\033[31mTestes que falharam:\033[0m\n";
             foreach ($this->test_results as $key => $result) {
-                if (!$result['sucesso']) {
+                if (!$result['success']) {
                     echo "  ✗ {$result['descricao']}\n";
                 }
             }

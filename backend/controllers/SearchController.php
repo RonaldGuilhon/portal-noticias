@@ -102,7 +102,7 @@ class SearchController {
             
             // Preparar resposta
             $resposta = [
-                'sucesso' => true,
+                'success' => true,
                 'dados' => [
                     'resultados' => $resultados,
                     'total' => $total,
@@ -152,7 +152,7 @@ class SearchController {
             
             if (strlen($termo) < 2) {
                 echo json_encode([
-                    'sucesso' => true,
+                    'success' => true,
                     'dados' => []
                 ]);
                 return;
@@ -168,7 +168,7 @@ class SearchController {
             $sugestoesTags = $this->tagModel->buscarSugestoes($termo, 3);
             
             $resposta = [
-                'sucesso' => true,
+                'success' => true,
                 'dados' => [
                     'noticias' => $sugestoesTitulos,
                     'categorias' => $sugestoesCategorias,
@@ -215,7 +215,7 @@ class SearchController {
             $termosPopulares = array_slice($termosPopulares, 0, $limite);
             
             $resposta = [
-                'sucesso' => true,
+                'success' => true,
                 'dados' => [
                     'termos' => $termosPopulares,
                     'periodo' => $periodo . ' dias'
@@ -276,7 +276,7 @@ class SearchController {
             $totalPaginas = ceil($total / $limite);
             
             $resposta = [
-                'sucesso' => true,
+                'success' => true,
                 'dados' => [
                     'resultados' => $resultados,
                     'total' => $total,

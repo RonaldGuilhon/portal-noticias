@@ -146,13 +146,13 @@ class UploadService {
             try {
                 $resultado = $this->processarUpload($arquivo, $tipo);
                 $resultados[] = [
-                    'sucesso' => true,
+                    'success' => true,
                     'arquivo' => $resultado,
                     'nome_original' => $nome
                 ];
             } catch(Exception $e) {
                 $resultados[] = [
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => $e->getMessage(),
                     'nome_original' => $nome
                 ];
@@ -206,14 +206,14 @@ class UploadService {
             $resultado = $this->processarUpload($file, 'images', true);
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'url' => $resultado,
                 'nome_arquivo' => basename($resultado)
             ];
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }
@@ -227,14 +227,14 @@ class UploadService {
             $resultado = $this->processarUpload($file, 'videos', false);
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'url' => $resultado,
                 'nome_arquivo' => basename($resultado)
             ];
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }
@@ -248,14 +248,14 @@ class UploadService {
             $resultado = $this->processarUpload($file, 'audios', false);
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'url' => $resultado,
                 'nome_arquivo' => basename($resultado)
             ];
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }

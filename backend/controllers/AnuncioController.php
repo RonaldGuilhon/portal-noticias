@@ -154,8 +154,8 @@ class AnuncioController {
         // Processar upload de imagem se fornecida
         $imagem_url = null;
         if(isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
-            $resultado_upload = $this->uploadService->uploadImagem($_FILES['imagem'], 'anuncios');
-            if($resultado_upload['sucesso']) {
+            $resultado_upload = $this->uploadService->uploadImagem($_FILES['imagem']);
+            if($resultado_upload['success']) {
                 $imagem_url = $resultado_upload['url'];
             } else {
                 jsonResponse(['erro' => $resultado_upload['erro']], 400);
@@ -183,7 +183,7 @@ class AnuncioController {
         
         if($id) {
             jsonResponse([
-                'sucesso' => 'Anúncio criado com sucesso',
+                'success' => 'Anúncio criado com sucesso',
                 'id' => $id
             ]);
         } else {
@@ -261,11 +261,11 @@ class AnuncioController {
         
         // Processar nova imagem se fornecida
         if(isset($_FILES['imagem']) && $_FILES['imagem']['error'] === UPLOAD_ERR_OK) {
-            $resultado_upload = $this->uploadService->uploadImagem($_FILES['imagem'], 'anuncios');
-            if($resultado_upload['sucesso']) {
+            $resultado_upload = $this->uploadService->uploadImagem($_FILES['imagem']);
+            if($resultado_upload['success']) {
                 // Remover imagem antiga se existir
                 if($anuncio_existente['imagem_url']) {
-                    $this->uploadService->removerArquivo($anuncio_existente['imagem_url']);
+                    $this->uploadService->excluirArquivo($anuncio_existente['imagem_url']);
                 }
                 $dados_atualizacao['imagem_url'] = $resultado_upload['url'];
             } else {
@@ -275,7 +275,7 @@ class AnuncioController {
         }
         
         if($this->anuncio->atualizar($id, $dados_atualizacao)) {
-            jsonResponse(['sucesso' => 'Anúncio atualizado com sucesso']);
+            jsonResponse(['success' => 'Anúncio atualizado com sucesso']);
         } else {
             jsonResponse(['erro' => 'Erro ao atualizar anúncio'], 500);
         }
@@ -300,10 +300,10 @@ class AnuncioController {
         if($this->anuncio->deletar($id)) {
             // Remover imagem se existir
             if($anuncio['imagem_url']) {
-                $this->uploadService->removerArquivo($anuncio['imagem_url']);
+                $this->uploadService->excluirArquivo($anuncio['imagem_url']);
             }
             
-            jsonResponse(['sucesso' => 'Anúncio removido com sucesso']);
+            jsonResponse(['success' => 'Anúncio removido com sucesso']);
         } else {
             jsonResponse(['erro' => 'Erro ao remover anúncio'], 500);
         }
@@ -325,7 +325,7 @@ class AnuncioController {
         $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
         
         if($this->anuncio->registrarClique($anuncio_id, $ip_usuario, $user_agent)) {
-            jsonResponse(['sucesso' => 'Clique registrado']);
+            jsonResponse(['success' => 'Clique registrado']);
         } else {
             jsonResponse(['erro' => 'Erro ao registrar clique'], 500);
         }

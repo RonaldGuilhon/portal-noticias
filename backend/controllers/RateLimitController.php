@@ -116,7 +116,7 @@ class RateLimitController {
         }
         
         echo json_encode([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => 'Estatísticas de rate limiting foram limpas'
         ]);
     }

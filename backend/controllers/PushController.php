@@ -49,7 +49,7 @@ class PushController {
                 return $this->handleDelete($action, $data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Método não permitido'
                 ], 405);
         }
@@ -94,7 +94,7 @@ class PushController {
                 return $this->syncNotifications($data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Endpoint não encontrado'
                 ], 404);
         }
@@ -110,7 +110,7 @@ class PushController {
                 break;
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Endpoint não encontrado'
                 ], 404);
         }
@@ -125,7 +125,7 @@ class PushController {
                 return $this->deleteSubscription($data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Endpoint não encontrado'
                 ], 404);
         }
@@ -139,7 +139,7 @@ class PushController {
             // Verificar autenticação
             if (!$this->verificarAutenticacao()) {
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Token de autenticação inválido ou ausente'
                 ], 401);
             }
@@ -147,7 +147,7 @@ class PushController {
             // Validar dados obrigatórios
             if (!isset($data['endpoint'])) {
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Endpoint é obrigatório'
                 ], 400);
             }
@@ -157,12 +157,12 @@ class PushController {
             
             if ($resultado) {
                 return $this->jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Subscription removida com sucesso'
                 ]);
             } else {
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Subscription não encontrada ou já removida'
                 ], 404);
             }
@@ -170,7 +170,7 @@ class PushController {
         } catch (Exception $e) {
             error_log("Erro ao deletar subscription: " . $e->getMessage());
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Erro interno do servidor'
             ], 500);
         }
@@ -242,7 +242,7 @@ class PushController {
             $subscriptions = $this->pushService->getAllActiveSubscriptions($userId);
             
             return $this->jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'subscriptions' => $subscriptions,
                 'total' => count($subscriptions)
             ]);
@@ -250,7 +250,7 @@ class PushController {
         } catch (Exception $e) {
             error_log("Erro ao obter subscriptions: " . $e->getMessage());
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Erro interno do servidor'
             ], 500);
         }
@@ -301,14 +301,15 @@ class PushController {
     /**
      * Inscrever usuário para push notifications
      */
-    private function subscribe() {
+    private function subscribe($data) {
         if (!$this->verificarAutenticacao()) {
             $this->responderErro('Token de acesso inválido ou expirado', 401);
             return;
         }
         
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados passados como parâmetro ou ler do input
+            $input = $data ?: json_decode(file_get_contents('php://input'), true);
             
             if (!$input || !isset($input['subscription'])) {
                 $this->responderErro('Dados de subscription inválidos', 400);
@@ -351,14 +352,15 @@ class PushController {
     /**
      * Cancelar inscrição de push notifications
      */
-    private function unsubscribe() {
+    private function unsubscribe($data) {
         if (!$this->verificarAutenticacao()) {
             $this->responderErro('Token de acesso inválido ou expirado', 401);
             return;
         }
         
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados passados como parâmetro ou ler do input
+            $input = $data ?: json_decode(file_get_contents('php://input'), true);
             $endpoint = $input['endpoint'] ?? null;
             
             $result = $this->pushService->unsubscribe($this->usuarioAtual['id'], $endpoint);
@@ -379,7 +381,7 @@ class PushController {
     /**
      * Enviar notificação push
      */
-    private function sendNotification() {
+    private function sendNotification($data) {
         if (!$this->verificarAutenticacao()) {
             $this->responderErro('Token de acesso inválido ou expirado', 401);
             return;
@@ -392,7 +394,8 @@ class PushController {
         }
         
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados passados como parâmetro ou ler do input
+            $input = $data ?: json_decode(file_get_contents('php://input'), true);
             
             if (!$input || !isset($input['title']) || !isset($input['body'])) {
                 $this->responderErro('Título e mensagem são obrigatórios', 400);
@@ -424,7 +427,7 @@ class PushController {
     /**
      * Enviar notificação de teste
      */
-    private function sendTestNotification() {
+    private function sendTestNotification($data) {
         if (!$this->verificarAutenticacao()) {
             $this->responderErro('Token de acesso inválido ou expirado', 401);
             return;
@@ -449,9 +452,10 @@ class PushController {
     /**
      * Registrar clique na notificação
      */
-    private function registerClick() {
+    private function registerClick($data) {
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados passados como parâmetro ou ler do input
+            $input = $data ?: json_decode(file_get_contents('php://input'), true);
             $notificationId = $input['notificationId'] ?? null;
             $action = $input['action'] ?? 'open';
             
@@ -469,9 +473,10 @@ class PushController {
     /**
      * Registrar fechamento da notificação
      */
-    private function registerClose() {
+    private function registerClose($data) {
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados passados como parâmetro ou ler do input
+            $input = $data ?: json_decode(file_get_contents('php://input'), true);
             $notificationId = $input['notificationId'] ?? null;
             
             if ($notificationId) {
@@ -506,14 +511,15 @@ class PushController {
     /**
      * Atualizar preferências de push notifications
      */
-    private function updatePreferences() {
+    private function updatePreferences($data = null) {
         if (!$this->verificarAutenticacao()) {
             $this->responderErro('Token de acesso inválido ou expirado', 401);
             return;
         }
         
         try {
-            $input = json_decode(file_get_contents('php://input'), true);
+            // Usar dados fornecidos ou ler do php://input
+            $input = $data ?? json_decode(file_get_contents('php://input'), true);
             
             $result = $this->pushService->updatePreferences(
                 $this->usuarioAtual['id'],
@@ -560,7 +566,7 @@ class PushController {
     /**
      * Sincronizar notificações
      */
-    private function syncNotifications() {
+    private function syncNotifications($data) {
         try {
             $result = $this->pushService->syncPendingNotifications();
             $this->responderSucesso([
@@ -624,7 +630,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'PushController.php') {
         header('Content-Type: application/json; charset=utf-8');
         http_response_code(500);
         echo json_encode([
-            'sucesso' => false,
+            'success' => false,
             'erro' => 'Erro interno: ' . $e->getMessage()
         ], JSON_UNESCAPED_UNICODE);
     }

@@ -104,7 +104,7 @@ class CacheController {
         $stats['total_size_formatted'] = $this->formatBytes($stats['total_size']);
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'stats' => $stats
         ]);
     }
@@ -114,7 +114,7 @@ class CacheController {
      */
     private function getStatus() {
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'enabled' => $this->cache_manager->isEnabled(),
             'config' => [
                 'type' => CACHE_CONFIG['type'] ?? 'file',
@@ -131,7 +131,7 @@ class CacheController {
         $result = $this->cache_manager->enable();
         
         return $this->jsonResponse([
-            'sucesso' => $result,
+            'success' => $result,
             'mensagem' => $result ? 'Cache habilitado com sucesso' : 'Erro ao habilitar cache'
         ]);
     }
@@ -143,7 +143,7 @@ class CacheController {
         $result = $this->cache_manager->disable();
         
         return $this->jsonResponse([
-            'sucesso' => $result,
+            'success' => $result,
             'mensagem' => $result ? 'Cache desabilitado com sucesso' : 'Erro ao desabilitar cache'
         ]);
     }
@@ -155,7 +155,7 @@ class CacheController {
         $cleared = $this->cache_manager->clear();
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "Cache limpo com sucesso. {$cleared} arquivos removidos.",
             'files_cleared' => $cleared
         ]);
@@ -168,7 +168,7 @@ class CacheController {
         $cleared = $this->cache_manager->clearExpired();
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "Cache expirado limpo com sucesso. {$cleared} arquivos removidos.",
             'files_cleared' => $cleared
         ]);

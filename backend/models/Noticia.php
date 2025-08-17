@@ -173,7 +173,31 @@ class Noticia {
     }
 
     /**
-     * Buscar notícia por ID
+     * Obter notícia por ID (retorna array)
+     */
+    public function obterPorId($id) {
+        $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug
+                  FROM {$this->table_name} n
+                  LEFT JOIN usuarios u ON n.autor_id = u.id
+                  LEFT JOIN categorias c ON n.categoria_id = c.id
+                  WHERE n.id = :id";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+
+        if($stmt->rowCount() > 0) {
+            $noticia = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Adicionar tags se necessário
+            $noticia['tags'] = $this->obterTagsPorNoticia($id);
+            return $noticia;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Buscar notícia por ID (preenche propriedades do objeto)
      */
     public function buscarPorId($id) {
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug

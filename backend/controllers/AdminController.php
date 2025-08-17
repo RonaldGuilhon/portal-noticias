@@ -145,7 +145,7 @@ class AdminController {
             $stats = $this->obterEstatisticas();
             
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'dados' => $stats
             ]);
         } catch (Exception $e) {
@@ -228,7 +228,7 @@ class AdminController {
             $stats['usuarios_ativos'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'dados' => $stats
             ]);
         } catch (Exception $e) {
@@ -266,7 +266,7 @@ class AdminController {
             $total = $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
 
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'dados' => $usuarios,
                 'total' => $total,
                 'pagina' => $page,
@@ -291,7 +291,7 @@ class AdminController {
             $configuracoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'dados' => $configuracoes
             ]);
         } catch (Exception $e) {
@@ -327,7 +327,7 @@ class AdminController {
             $this->db->commit();
 
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Configurações salvas com sucesso'
             ]);
         } catch (Exception $e) {
@@ -344,7 +344,7 @@ class AdminController {
      */
     private function logs() {
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'dados' => [],
             'mensagem' => 'Sistema de logs não implementado'
         ]);

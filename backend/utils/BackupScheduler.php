@@ -55,7 +55,7 @@ class BackupScheduler {
         $this->log('Configuração de agendamento atualizada');
         
         return [
-            'sucesso' => true,
+            'success' => true,
             'configuracao' => $merged_config
         ];
     }
@@ -70,7 +70,7 @@ class BackupScheduler {
         
         $config = json_decode(file_get_contents($this->schedule_file), true);
         return [
-            'sucesso' => true,
+            'success' => true,
             'configuracao' => $config
         ];
     }
@@ -80,8 +80,8 @@ class BackupScheduler {
      */
     public function checkSchedule() {
         $config_result = $this->getSchedule();
-        if (!$config_result['sucesso']) {
-            return ['sucesso' => false, 'erro' => 'Erro ao obter configuração'];
+        if (!$config_result['success']) {
+            return ['success' => false, 'erro' => 'Erro ao obter configuração'];
         }
         
         $config = $config_result['configuracao'];
@@ -94,7 +94,7 @@ class BackupScheduler {
                 $this->log('Iniciando backup completo agendado');
                 $result = $this->backup_manager->createFullBackup();
                 
-                if ($result['sucesso']) {
+                if ($result['success']) {
                     $this->log('Backup completo concluído: ' . $result['arquivo']);
                     $executed[] = 'backup_completo';
                 } else {
@@ -109,7 +109,7 @@ class BackupScheduler {
                 $this->log('Iniciando backup incremental agendado');
                 $result = $this->backup_manager->createIncrementalBackup();
                 
-                if ($result['sucesso']) {
+                if ($result['success']) {
                     $this->log('Backup incremental concluído: ' . $result['arquivo']);
                     $executed[] = 'backup_incremental';
                 } else {
@@ -128,7 +128,7 @@ class BackupScheduler {
         }
         
         return [
-            'sucesso' => true,
+            'success' => true,
             'executados' => $executed,
             'timestamp' => $now->format('Y-m-d H:i:s')
         ];
@@ -291,7 +291,7 @@ class BackupScheduler {
             $this->setLastRun('backup_incremental');
         }
         
-        if ($result['sucesso']) {
+        if ($result['success']) {
             $this->log("Backup manual concluído: {$result['arquivo']}");
         } else {
             $this->log("Erro no backup manual: {$result['erro']}", 'ERROR');

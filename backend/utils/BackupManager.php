@@ -78,7 +78,7 @@ class BackupManager {
             $this->cleanOldBackups();
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'arquivo' => $filename,
                 'caminho' => $filepath,
                 'tamanho' => $this->formatBytes(filesize($filepath)),
@@ -87,7 +87,7 @@ class BackupManager {
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }
@@ -131,7 +131,7 @@ class BackupManager {
             $this->registerBackup($filename, filesize($filepath), 'incremental');
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'arquivo' => $filename,
                 'caminho' => $filepath,
                 'tamanho' => $this->formatBytes(filesize($filepath)),
@@ -140,7 +140,7 @@ class BackupManager {
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }
@@ -187,14 +187,14 @@ class BackupManager {
             }
             
             return [
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Backup restaurado com sucesso',
                 'arquivo' => $filename
             ];
             
         } catch (Exception $e) {
             return [
-                'sucesso' => false,
+                'success' => false,
                 'erro' => $e->getMessage()
             ];
         }
@@ -348,7 +348,7 @@ class BackupManager {
                     tamanho BIGINT NOT NULL,
                     tipo ENUM('full', 'incremental') NOT NULL,
                     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    status ENUM('sucesso', 'erro') DEFAULT 'sucesso'
+                    status ENUM('success', 'erro') DEFAULT 'success'
                 )
             ";
             
@@ -370,7 +370,7 @@ class BackupManager {
      */
     private function getLastBackupTime() {
         try {
-            $query = "SELECT MAX(data_criacao) as ultimo_backup FROM backups WHERE status = 'sucesso'";
+            $query = "SELECT MAX(data_criacao) as ultimo_backup FROM backups WHERE status = 'success'";
             $stmt = $this->db->prepare($query);
             $stmt->execute();
             

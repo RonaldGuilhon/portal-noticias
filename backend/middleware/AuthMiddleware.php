@@ -138,7 +138,7 @@ class AuthMiddleware {
         if (!$auth_result['valido']) {
             http_response_code(401);
             echo json_encode([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Acesso negado. Faça login para continuar.',
                 'codigo' => 'AUTH_REQUIRED'
             ]);
@@ -150,7 +150,7 @@ class AuthMiddleware {
         if (!in_array($tipo_usuario, $tipos_permitidos)) {
             http_response_code(403);
             echo json_encode([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Acesso negado. Permissões insuficientes.',
                 'codigo' => 'INSUFFICIENT_PERMISSIONS'
             ]);

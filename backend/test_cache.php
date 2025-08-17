@@ -187,7 +187,7 @@ class CacheTester {
             $output = ob_get_clean();
             
             $response = json_decode($output, true);
-            $this->addResult('controller_stats', isset($response['sucesso']), 'Controller retorna estatísticas');
+            $this->addResult('controller_stats', isset($response['success']), 'Controller retorna estatísticas');
             
             // Testar status
             echo "  → Testando obtenção de status via controller...\n";

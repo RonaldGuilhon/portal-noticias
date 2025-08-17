@@ -26,7 +26,7 @@ class BackupController {
         // Verificar se é ambiente de desenvolvimento ou usuário é admin
         if (!$this->isAuthorized()) {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Acesso negado. Apenas administradores podem acessar o sistema de backup.'
             ], 403);
         }
@@ -42,7 +42,7 @@ class BackupController {
                 return $this->handleDelete($action, $data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Método não permitido'
                 ], 405);
         }
@@ -67,7 +67,7 @@ class BackupController {
                 return $this->checkSystem();
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Ação não encontrada'
                 ], 404);
         }
@@ -86,7 +86,7 @@ class BackupController {
                 return $this->runScheduledBackups();
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Ação não encontrada'
                 ], 404);
         }
@@ -101,7 +101,7 @@ class BackupController {
                 return $this->updateSchedule($data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Ação não encontrada'
                 ], 404);
         }
@@ -118,7 +118,7 @@ class BackupController {
                 return $this->cleanupBackups($data);
             default:
                 return $this->jsonResponse([
-                    'sucesso' => false,
+                    'success' => false,
                     'erro' => 'Ação não encontrada'
                 ], 404);
         }
@@ -131,7 +131,7 @@ class BackupController {
         $backups = $this->backup_manager->listBackups();
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'backups' => $backups,
             'total' => count($backups)
         ]);
@@ -144,7 +144,7 @@ class BackupController {
         $status = $this->backup_scheduler->getStatus();
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'status' => $status
         ]);
     }
@@ -156,7 +156,7 @@ class BackupController {
         $stats = $this->backup_manager->getBackupStats();
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'estatisticas' => $stats
         ]);
     }
@@ -178,7 +178,7 @@ class BackupController {
         $logs = $this->backup_scheduler->getLogs($lines);
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'logs' => $logs,
             'total_linhas' => count($logs)
         ]);
@@ -203,7 +203,7 @@ class BackupController {
         }, true);
         
         return $this->jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'sistema_ok' => $all_ok,
             'verificacoes' => $checks,
             'recomendacoes' => $this->getRecommendations($checks)
@@ -223,12 +223,12 @@ class BackupController {
             $result = $this->backup_manager->createIncrementalBackup();
         } else {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Tipo de backup inválido. Use "full" ou "incremental".'
             ], 400);
         }
         
-        $status_code = $result['sucesso'] ? 200 : 500;
+        $status_code = $result['success'] ? 200 : 500;
         return $this->jsonResponse($result, $status_code);
     }
     
@@ -238,7 +238,7 @@ class BackupController {
     private function restoreBackup($data) {
         if (!isset($data['arquivo'])) {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Nome do arquivo de backup é obrigatório'
             ], 400);
         }
@@ -246,14 +246,14 @@ class BackupController {
         // Confirmação adicional para restauração
         if (!isset($data['confirmacao']) || $data['confirmacao'] !== 'CONFIRMO_RESTAURACAO') {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Confirmação obrigatória. Envie "confirmacao": "CONFIRMO_RESTAURACAO" para prosseguir.'
             ], 400);
         }
         
         $result = $this->backup_manager->restoreBackup($data['arquivo']);
         
-        $status_code = $result['sucesso'] ? 200 : 500;
+        $status_code = $result['success'] ? 200 : 500;
         return $this->jsonResponse($result, $status_code);
     }
     
@@ -281,7 +281,7 @@ class BackupController {
     private function deleteBackup($data) {
         if (!isset($data['arquivo'])) {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Nome do arquivo é obrigatório'
             ], 400);
         }
@@ -290,7 +290,7 @@ class BackupController {
         
         if (!file_exists($filepath)) {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Arquivo de backup não encontrado'
             ], 404);
         }
@@ -306,19 +306,19 @@ class BackupController {
                 $stmt->execute([$data['arquivo']]);
                 
                 return $this->jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Backup deletado com sucesso'
                 ]);
                 
             } catch (Exception $e) {
                 return $this->jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'mensagem' => 'Arquivo deletado, mas erro ao remover do banco: ' . $e->getMessage()
                 ]);
             }
         } else {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Erro ao deletar arquivo'
             ], 500);
         }
@@ -357,14 +357,14 @@ class BackupController {
             }
             
             return $this->jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => "Limpeza concluída. {$deleted_count} backups removidos.",
                 'removidos' => $deleted_count
             ]);
             
         } catch (Exception $e) {
             return $this->jsonResponse([
-                'sucesso' => false,
+                'success' => false,
                 'erro' => 'Erro na limpeza: ' . $e->getMessage()
             ], 500);
         }

@@ -224,7 +224,7 @@ class CategoriaController {
         if($categoria_id) {
             $categoria = $this->categoria->obterPorId($categoria_id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Categoria criada com sucesso',
                 'categoria' => $categoria
             ], 201);
@@ -285,7 +285,7 @@ class CategoriaController {
         if($sucesso) {
             $categoria = $this->categoria->obterPorId($id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Categoria atualizada com sucesso',
                 'categoria' => $categoria
             ]);
@@ -320,7 +320,7 @@ class CategoriaController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Categoria excluída com sucesso'
             ]);
         } else {
@@ -356,7 +356,7 @@ class CategoriaController {
         if($sucesso) {
             $status_texto = $ativo ? 'ativada' : 'desativada';
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => "Categoria $status_texto com sucesso"
             ]);
         } else {
@@ -384,7 +384,7 @@ class CategoriaController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Categorias reordenadas com sucesso'
             ]);
         } else {

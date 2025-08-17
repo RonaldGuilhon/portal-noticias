@@ -307,7 +307,7 @@ class ComentarioController {
         if($comentario_id) {
             $comentario = $this->comentario->obterPorId($comentario_id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Comentário criado com sucesso. Aguardando moderação.',
                 'comentario' => $comentario
             ], 201);
@@ -365,7 +365,7 @@ class ComentarioController {
         if($sucesso) {
             $comentario = $this->comentario->obterPorId($id);
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Comentário atualizado com sucesso',
                 'comentario' => $comentario
             ]);
@@ -400,7 +400,7 @@ class ComentarioController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Comentário excluído com sucesso'
             ]);
         } else {
@@ -426,7 +426,7 @@ class ComentarioController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Comentário aprovado com sucesso'
             ]);
         } else {
@@ -452,7 +452,7 @@ class ComentarioController {
         
         if($sucesso) {
             jsonResponse([
-                'sucesso' => true,
+                'success' => true,
                 'mensagem' => 'Comentário rejeitado com sucesso'
             ]);
         } else {
@@ -478,8 +478,8 @@ class ComentarioController {
         $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'like');
         
         if($sucesso) {
-            jsonResponse([
-                'sucesso' => true,
+                jsonResponse([
+                    'success' => true,
                 'mensagem' => 'Comentário curtido'
             ]);
         } else {
@@ -505,8 +505,8 @@ class ComentarioController {
         $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'dislike');
         
         if($sucesso) {
-            jsonResponse([
-                'sucesso' => true,
+                jsonResponse([
+                    'success' => true,
                 'mensagem' => 'Comentário descurtido'
             ]);
         } else {
@@ -588,7 +588,7 @@ class ComentarioController {
         }
         
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "$sucessos comentário(s) aprovado(s) com sucesso",
             'detalhes' => [
                 'aprovados' => $sucessos,
@@ -632,7 +632,7 @@ class ComentarioController {
         }
         
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "$sucessos comentário(s) rejeitado(s) com sucesso",
             'detalhes' => [
                 'rejeitados' => $sucessos,
@@ -676,7 +676,7 @@ class ComentarioController {
         }
         
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "$sucessos comentário(s) marcado(s) como spam",
             'detalhes' => [
                 'spam' => $sucessos,
@@ -720,7 +720,7 @@ class ComentarioController {
         }
         
         jsonResponse([
-            'sucesso' => true,
+            'success' => true,
             'mensagem' => "$sucessos comentário(s) excluído(s) com sucesso",
             'detalhes' => [
                 'excluidos' => $sucessos,

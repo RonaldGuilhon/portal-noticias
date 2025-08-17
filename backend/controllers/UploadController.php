@@ -66,9 +66,9 @@ class UploadController {
             
             $resultado = $this->uploadService->uploadImagem($file);
             
-            if ($resultado['sucesso']) {
+            if ($resultado['success']) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'url' => $resultado['url'],
                     'nome_arquivo' => $resultado['nome_arquivo']
                 ]);
@@ -110,9 +110,9 @@ class UploadController {
             
             $resultado = $this->uploadService->uploadVideo($file);
             
-            if ($resultado['sucesso']) {
+            if ($resultado['success']) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'url' => $resultado['url'],
                     'nome_arquivo' => $resultado['nome_arquivo']
                 ]);
@@ -154,9 +154,9 @@ class UploadController {
             
             $resultado = $this->uploadService->uploadAudio($file);
             
-            if ($resultado['sucesso']) {
+            if ($resultado['success']) {
                 jsonResponse([
-                    'sucesso' => true,
+                    'success' => true,
                     'url' => $resultado['url'],
                     'nome_arquivo' => $resultado['nome_arquivo']
                 ]);

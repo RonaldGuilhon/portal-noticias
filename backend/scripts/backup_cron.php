@@ -88,7 +88,7 @@ class BackupCronJob {
                 throw new Exception("Tipo de backup inválido: {$type}");
         }
         
-        if ($result['sucesso']) {
+        if ($result['success']) {
             $this->log("Backup {$type} concluído: {$result['arquivo']} ({$result['tamanho']})");
         } else {
             throw new Exception("Falha no backup {$type}: {$result['erro']}");
@@ -103,7 +103,7 @@ class BackupCronJob {
         
         $result = $this->scheduler->checkSchedule();
         
-        if ($result['sucesso']) {
+        if ($result['success']) {
             if (empty($result['executados'])) {
                 $this->log("Nenhum backup agendado para execução no momento");
             } else {

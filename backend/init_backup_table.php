@@ -24,7 +24,7 @@ try {
             tamanho BIGINT NOT NULL,
             tipo ENUM('full', 'incremental') NOT NULL,
             data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            status ENUM('sucesso', 'erro') DEFAULT 'sucesso',
+            status ENUM('success', 'erro') DEFAULT 'success',
             INDEX idx_data_criacao (data_criacao),
             INDEX idx_tipo (tipo)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
