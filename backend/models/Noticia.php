@@ -33,6 +33,12 @@ class Noticia {
     public $meta_description;
     public $meta_keywords;
     public $tags;
+    
+    // Propriedades relacionadas (preenchidas via JOIN)
+    public $autor_nome;
+    public $categoria_nome;
+    public $categoria_slug;
+    public $categoria_cor;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -587,6 +593,9 @@ class Noticia {
         if(isset($row['categoria_nome'])) {
             $this->categoria_nome = $row['categoria_nome'];
             $this->categoria_slug = $row['categoria_slug'];
+        }
+        if(isset($row['categoria_cor'])) {
+            $this->categoria_cor = $row['categoria_cor'];
         }
     }
 
