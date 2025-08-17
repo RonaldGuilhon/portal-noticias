@@ -51,7 +51,7 @@ class MediaController {
             $diretorio = $diretorios[$tipo] ?? 'temp';
 
             // Fazer upload
-            $resultado = $this->uploadService->upload($arquivo, $diretorio);
+            $resultado = $this->uploadService->processarUpload($arquivo, $diretorio);
 
             if ($resultado['sucesso']) {
                 $caminhoCompleto = $resultado['caminho'];
@@ -136,7 +136,7 @@ class MediaController {
 
             foreach ($arquivosNormalizados as $arquivo) {
                 if ($arquivo['error'] === UPLOAD_ERR_OK) {
-                    $resultado = $this->uploadService->upload($arquivo, $tipo);
+                    $resultado = $this->uploadService->processarUpload($arquivo, $tipo);
                     
                     if ($resultado['sucesso']) {
                         $info = $this->obterInfoArquivo($resultado['caminho']);

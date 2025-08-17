@@ -6,8 +6,8 @@
 class AdminPanel {
     constructor() {
         this.apiBase = 'http://localhost:8001';
-        this.authToken = localStorage.getItem('auth_token');
-        this.userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+        this.authToken = localStorage.getItem('portal-token');
+        this.userData = JSON.parse(localStorage.getItem('portal-user') || '{}');
         this.notifications = [];
         this.charts = {};
         
@@ -41,7 +41,7 @@ class AdminPanel {
     }
     
     checkAuthentication() {
-        if (!this.authToken || this.userData.tipo !== 'admin') {
+        if (!this.authToken || (this.userData.tipo_usuario !== 'admin' && this.userData.tipo_usuario !== 'editor')) {
             this.redirectToLogin();
             return false;
         }

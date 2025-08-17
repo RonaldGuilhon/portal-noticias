@@ -666,12 +666,12 @@
         // Utility functions
         function isAdminLoggedIn() {
             const token = getAuthToken();
-            const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
-            return token && userData.tipo === 'admin';
+            const userData = JSON.parse(localStorage.getItem('portal-user') || '{}');
+            return token && (userData.tipo_usuario === 'admin' || userData.tipo_usuario === 'editor');
         }
         
         function getAuthToken() {
-            return localStorage.getItem('auth_token');
+            return localStorage.getItem('portal-token');
         }
         
         function formatNumber(num) {
@@ -753,8 +753,8 @@
         
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user_data');
+                localStorage.removeItem('portal-token');
+                localStorage.removeItem('portal-user');
                 window.location.href = '../login.html';
             }
         }

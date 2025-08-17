@@ -21,6 +21,13 @@ class UploadService {
     }
     
     /**
+     * Obter caminho de upload
+     */
+    public function getUploadPath() {
+        return $this->uploadPath;
+    }
+    
+    /**
      * Processar upload de arquivo
      */
     public function processarUpload($arquivo, $tipo = 'images', $redimensionar = true) {

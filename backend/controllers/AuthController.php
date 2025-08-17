@@ -8,7 +8,6 @@ require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../services/EmailService.php';
-require_once __DIR__ . '/../utils/JWTHelper.php';
 
 class AuthController {
     private $db;
@@ -75,6 +74,15 @@ class AuthController {
                     case 'profile':
                         $this->obterPerfil();
                         break;
+                    case 'activity':
+                        $this->obterAtividade();
+                        break;
+                    case 'comments':
+                        $this->obterComentarios();
+                        break;
+                    case 'favorite-categories':
+                        $this->obterCategoriasFavoritas();
+                        break;
                     default:
                         jsonResponse(['erro' => 'Ação não encontrada'], 404);
                 }
@@ -85,7 +93,14 @@ class AuthController {
                         $this->atualizarPerfil();
                         break;
                     case 'password':
+                    case 'change-password':
                         $this->alterarSenha();
+                        break;
+                    case 'preferences':
+                        $this->atualizarPreferencias();
+                        break;
+                    case 'notifications':
+                        $this->atualizarNotificacoes();
                         break;
                     default:
                         jsonResponse(['erro' => 'Ação não encontrada'], 404);
@@ -614,6 +629,201 @@ class AuthController {
         ";
         
         $this->emailService->enviar($email, $assunto, $mensagem);
+    }
+
+    /**
+     * Verificar token de autenticação
+     */
+    private function verificarToken() {
+        if (!$this->estaLogado()) {
+            jsonResponse(['erro' => 'Não autorizado'], 401);
+            return false;
+        }
+        
+        // Buscar dados do usuário
+        $this->usuario->buscarPorId($_SESSION['usuario_id']);
+        
+        return [
+            'id' => $this->usuario->id,
+            'nome' => $this->usuario->nome,
+            'email' => $this->usuario->email
+        ];
+    }
+
+    /**
+     * Obter atividade do usuário
+     */
+    private function obterAtividade() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        try {
+            // Buscar estatísticas do usuário
+            $stmt = $this->db->prepare("
+                SELECT 
+                    COUNT(DISTINCT c.id) as total_comments,
+                    COUNT(DISTINCT n.id) as total_views,
+                    0 as total_likes,
+                    0 as total_shares
+                FROM usuarios u
+                LEFT JOIN comentarios c ON c.usuario_id = u.id
+                LEFT JOIN noticias n ON n.autor_id = u.id
+                WHERE u.id = ?
+            ");
+            $stmt->execute([$usuario['id']]);
+            $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Buscar atividades recentes
+            $stmt = $this->db->prepare("
+                SELECT 'comment' as tipo, c.data_comentario as data_atividade, 
+                       n.titulo as titulo_noticia, n.id as noticia_id
+                FROM comentarios c
+                JOIN noticias n ON n.id = c.noticia_id
+                WHERE c.usuario_id = ?
+                ORDER BY c.data_comentario DESC
+                LIMIT 10
+            ");
+            $stmt->execute([$usuario['id']]);
+            $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            jsonResponse([
+                'sucesso' => true,
+                'data' => [
+                    'stats' => $stats,
+                    'activities' => $activities
+                ]
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao obter atividade: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Obter comentários do usuário
+     */
+    private function obterComentarios() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        try {
+            $stmt = $this->db->prepare("
+                SELECT c.*, n.titulo as titulo_noticia, n.id as noticia_id
+                FROM comentarios c
+                JOIN noticias n ON n.id = c.noticia_id
+                WHERE c.usuario_id = ?
+                ORDER BY c.data_comentario DESC
+                LIMIT 10
+            ");
+            $stmt->execute([$usuario['id']]);
+            $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            jsonResponse([
+                'success' => true,
+                'data' => $comments
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao obter comentários: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Obter categorias favoritas
+     */
+    private function obterCategoriasFavoritas() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        try {
+            $stmt = $this->db->prepare("
+                SELECT c.id, c.nome, c.slug, COUNT(n.id) as total_leituras
+                FROM categorias c
+                LEFT JOIN noticias n ON n.categoria_id = c.id
+                GROUP BY c.id, c.nome, c.slug
+                ORDER BY total_leituras DESC
+                LIMIT 5
+            ");
+            $stmt->execute();
+            $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            jsonResponse([
+                'success' => true,
+                'data' => $categories
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao obter categorias favoritas: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Atualizar preferências do usuário
+     */
+    private function atualizarPreferencias() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        try {
+            // Atualizar configurações do usuário
+            $configuracoes = [
+                'show_images' => $input['show-images'] ?? true,
+                'auto_play_videos' => $input['auto-play-videos'] ?? false,
+                'dark_mode' => $input['dark-mode'] ?? false
+            ];
+
+            $stmt = $this->db->prepare("
+                UPDATE usuarios 
+                SET configuracoes = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([json_encode($configuracoes), $usuario['id']]);
+
+            jsonResponse([
+                'success' => true,
+                'message' => 'Preferências atualizadas com sucesso'
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao atualizar preferências: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Atualizar configurações de notificação
+     */
+    private function atualizarNotificacoes() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        try {
+            // Atualizar configurações de notificação
+            $stmt = $this->db->prepare("
+                UPDATE usuarios 
+                SET email_newsletter = ?, 
+                    notificacoes_email = ?,
+                    notificacoes_push = ?
+                WHERE id = ?
+            ");
+            $stmt->execute([
+                $input['email-newsletter'] ?? false,
+                $input['email-notifications'] ?? false,
+                $input['push-notifications'] ?? false,
+                $usuario['id']
+            ]);
+
+            jsonResponse([
+                'success' => true,
+                'message' => 'Configurações de notificação atualizadas'
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao atualizar notificações: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
     }
 
     /**

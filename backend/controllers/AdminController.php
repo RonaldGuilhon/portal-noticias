@@ -10,7 +10,7 @@ require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Noticia.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Comentario.php';
-require_once __DIR__ . '/../utils/JWTHelper.php';
+
 
 class AdminController {
     private $db;
@@ -19,6 +19,7 @@ class AdminController {
     private $categoria;
     private $comentario;
     private $jwtHelper;
+    private $usuarioAtual;
 
     public function __construct() {
         $database = new Database();

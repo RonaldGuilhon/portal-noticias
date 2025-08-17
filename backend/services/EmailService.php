@@ -311,7 +311,7 @@ class EmailService {
             return ['erro' => 'PHPMailer não está instalado'];
         }
         
-        $mail = new PHPMailer\PHPMailer\PHPMailer(true);
+        $mail = new PHPMailer(true);
         
         try {
             $mail->isSMTP();

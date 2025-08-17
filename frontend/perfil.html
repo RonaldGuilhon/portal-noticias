@@ -837,7 +837,7 @@
         
         async function loadUserData() {
             try {
-                const response = await fetch('/backend/auth/profile', {
+                const response = await fetch('http://localhost:8001/auth/profile', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -935,7 +935,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('/backend/auth/profile', {
+                const response = await fetch('http://localhost:8001/auth/profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -973,7 +973,7 @@
             data.preferencias = preferencias;
             
             try {
-                const response = await fetch('/backend/auth/preferences', {
+                const response = await fetch('http://localhost:8001/auth/preferences', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1014,7 +1014,7 @@
             }
             
             try {
-                const response = await fetch('/backend/auth/change-password', {
+                const response = await fetch('http://localhost:8001/auth/change-password', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1047,7 +1047,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('/backend/auth/notifications', {
+                const response = await fetch('http://localhost:8001/auth/notifications', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1088,7 +1088,7 @@
             formData.append('avatar', file);
             
             try {
-                const response = await fetch('/backend/auth/avatar', {
+                const response = await fetch('http://localhost:8001/auth/avatar', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
@@ -1112,7 +1112,7 @@
         
         async function loadUserActivity() {
             try {
-                const response = await fetch('/backend/auth/activity', {
+                const response = await fetch('http://localhost:8001/auth/activity', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1178,7 +1178,7 @@
         
         async function loadRecentComments() {
             try {
-                const response = await fetch('/backend/auth/comments', {
+                const response = await fetch('http://localhost:8001/auth/comments', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1215,7 +1215,7 @@
         
         async function loadFavoriteCategories() {
             try {
-                const response = await fetch('/backend/auth/favorite-categories', {
+                const response = await fetch('http://localhost:8001/auth/favorite-categories', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1411,7 +1411,7 @@
             }
             
             try {
-                const response = await fetch('/backend/auth/logout-all', {
+                const response = await fetch('http://localhost:8001/auth/logout-all', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
@@ -1436,7 +1436,7 @@
         
         async function exportUserData() {
             try {
-                const response = await fetch('/backend/auth/export-data', {
+                const response = await fetch('http://localhost:8001/auth/export-data', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1471,7 +1471,7 @@
             }
             
             try {
-                const response = await fetch('/backend/auth/deactivate', {
+                const response = await fetch('http://localhost:8001/auth/deactivate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1505,7 +1505,7 @@
             }
             
             try {
-                const response = await fetch('/backend/auth/delete-account', {
+                const response = await fetch('http://localhost:8001/auth/delete-account', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1537,7 +1537,7 @@
             activityPage++;
             
             try {
-                const response = await fetch(`/backend/auth/activity?page=${activityPage}`, {
+                const response = await fetch(`http://localhost:8001/auth/activity?page=${activityPage}`, {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1574,16 +1574,16 @@
         
         // Utility functions
         function isLoggedIn() {
-            return localStorage.getItem('auth_token') !== null;
+            return localStorage.getItem('portal-token') !== null;
         }
         
         function getAuthToken() {
-            return localStorage.getItem('auth_token');
+            return localStorage.getItem('portal-token');
         }
         
         function logout() {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user_data');
+            localStorage.removeItem('portal-token');
+            localStorage.removeItem('portal-user');
             window.location.href = '/login.html?logout=1';
         }
         

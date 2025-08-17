@@ -561,7 +561,7 @@ try {
     logError('Erro na API: ' . $e->getMessage());
     jsonResponse([
         'erro' => 'Erro interno do servidor',
-        'mensagem' => ENVIRONMENT === 'development' ? $e->getMessage() : 'Tente novamente mais tarde'
+        'mensagem' => APP_CONFIG['environment'] === 'development' ? $e->getMessage() : 'Tente novamente mais tarde'
     ], 500);
 }
 ?>
