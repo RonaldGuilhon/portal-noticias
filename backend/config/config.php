@@ -19,6 +19,7 @@ ini_set('session.cookie_secure', 0); // Mudar para 1 em HTTPS
 
 // Constantes do sistema
 define('AMBIENTE', 'desenvolvimento'); // desenvolvimento, producao
+define('DEBUG', AMBIENTE === 'desenvolvimento'); // Modo debug baseado no ambiente
 define('SITE_NAME', 'Portal de Notícias');
 define('BASE_URL', 'http://localhost/portal-noticias');
 define('SITE_URL', BASE_URL); // Alias para BASE_URL para compatibilidade

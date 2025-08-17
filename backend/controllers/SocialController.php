@@ -4,21 +4,25 @@
  * Portal de Notícias
  */
 
-require_once __DIR__ . '/../config-dev.php';
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../services/SocialMediaService.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../utils/Logger.php';
 
 class SocialController {
+    private $db;
     private $social_service;
     private $usuario;
     private $auth_middleware;
     private $logger;
     
     public function __construct() {
+        $database = new Database();
+        $this->db = $database->getConnection();
         $this->social_service = new SocialMediaService();
-        $this->usuario = new Usuario();
+        $this->usuario = new Usuario($this->db);
         $this->auth_middleware = new AuthMiddleware();
         $this->logger = new Logger();
     }

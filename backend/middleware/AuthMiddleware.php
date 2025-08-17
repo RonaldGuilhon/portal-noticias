@@ -179,6 +179,15 @@ class AuthMiddleware {
     public function authenticate() {
         return $this->getUsuarioAtual();
     }
+    
+    /**
+     * Obter ID do usuário autenticado
+     * @return int|null ID do usuário ou null se não autenticado
+     */
+    public function getUserId() {
+        $usuario = $this->getUsuarioAtual();
+        return $usuario ? $usuario['id'] : null;
+    }
 }
 
 // Função auxiliar para obter headers em diferentes ambientes
