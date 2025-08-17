@@ -62,7 +62,7 @@ class Noticia {
         $this->titulo = sanitizeInput($this->titulo);
         $this->slug = $this->gerarSlugUnico($this->titulo);
         $this->subtitulo = sanitizeInput($this->subtitulo);
-        $this->conteudo = $this->conteudo; // Não sanitizar HTML do conteúdo
+        // Não sanitizar HTML do conteúdo
         $this->resumo = sanitizeInput($this->resumo);
         $this->alt_imagem = sanitizeInput($this->alt_imagem);
         $this->status = $this->status ?: 'rascunho';
