@@ -434,7 +434,7 @@ class TagController {
     public function maisUsadas() {
         $limit = (int)($_GET['limit'] ?? 20);
         
-        $tags = $this->tag->obterMaisUsadas($limit);
+        $tags = $this->tag->obterMaisUtilizadas($limit);
         
         jsonResponse(['tags' => $tags]);
     }
@@ -446,7 +446,7 @@ class TagController {
         $limit = (int)($_GET['limit'] ?? 50);
         $min_uso = (int)($_GET['min_uso'] ?? 1);
         
-        $nuvem = $this->tag->gerarNuvemTags($limit, $min_uso);
+        $nuvem = $this->tag->obterNuvemTags($limit);
         
         jsonResponse(['nuvem_tags' => $nuvem]);
     }

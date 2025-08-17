@@ -190,6 +190,30 @@ class Categoria {
     }
     
     /**
+     * Buscar categoria por nome
+     */
+    public function buscarPorNome($nome) {
+        try {
+            $query = "SELECT * FROM " . $this->table_name . " WHERE nome = :nome LIMIT 1";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':nome', $nome);
+            $stmt->execute();
+            
+            if($stmt->rowCount() > 0) {
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $this->preencherPropriedades($row);
+                return $row;
+            }
+            
+            return null;
+            
+        } catch(Exception $e) {
+            logError('Erro ao buscar categoria por nome: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
      * Listar categorias
      */
     public function listar($filtros = []) {
@@ -545,7 +569,7 @@ class Categoria {
         // Verificar se nome já existe (exceto para o próprio registro)
         if(!empty($dados['nome'])) {
             $categoria_existente = $this->buscarPorNome($dados['nome']);
-            if($categoria_existente && (!$id || $categoria_existente['id'] != $id)) {
+            if($categoria_existente !== null && (!$id || $categoria_existente['id'] != $id)) {
                 $erros[] = 'Já existe uma categoria com este nome';
             }
         }

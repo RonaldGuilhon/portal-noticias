@@ -135,7 +135,7 @@ class CategoriaController {
             'direction' => $direction
         ];
         
-        $categorias = $this->categoria->listar($page, $limit, $filtros);
+        $categorias = $this->categoria->listar($filtros);
         $total = $this->categoria->contar($filtros);
         
         jsonResponse([
@@ -162,9 +162,9 @@ class CategoriaController {
         }
         
         if($id) {
-            $categoria = $this->categoria->obterPorId($id);
+            $categoria = $this->categoria->buscarPorId($id);
         } else {
-            $categoria = $this->categoria->obterPorSlug($slug);
+            $categoria = $this->categoria->buscarPorSlug($slug);
         }
         
         if(!$categoria) {
@@ -222,7 +222,7 @@ class CategoriaController {
         $categoria_id = $this->categoria->criar($dados_limpos);
         
         if($categoria_id) {
-            $categoria = $this->categoria->obterPorId($categoria_id);
+            $categoria = $this->categoria->buscarPorId($categoria_id);
             jsonResponse([
                 'success' => true,
                 'mensagem' => 'Categoria criada com success',
@@ -249,7 +249,7 @@ class CategoriaController {
         }
         
         // Verificar se categoria existe
-        $categoria_existente = $this->categoria->obterPorId($id);
+        $categoria_existente = $this->categoria->buscarPorId($id);
         if(!$categoria_existente) {
             jsonResponse(['erro' => 'Categoria não encontrada'], 404);
             return;
@@ -283,7 +283,7 @@ class CategoriaController {
         $success = $this->categoria->atualizar($id, $dados_limpos);
             
             if($success) {
-            $categoria = $this->categoria->obterPorId($id);
+            $categoria = $this->categoria->buscarPorId($id);
             jsonResponse([
                 'success' => true,
                 'mensagem' => 'Categoria atualizada com success',
@@ -310,7 +310,7 @@ class CategoriaController {
         }
         
         // Verificar se categoria existe
-        $categoria = $this->categoria->obterPorId($id);
+        $categoria = $this->categoria->buscarPorId($id);
         if(!$categoria) {
             jsonResponse(['erro' => 'Categoria não encontrada'], 404);
             return;
@@ -398,7 +398,7 @@ class CategoriaController {
     public function maisUsadas() {
         $limit = (int)($_GET['limit'] ?? 10);
         
-        $categorias = $this->categoria->obterMaisUsadas($limit);
+        $categorias = $this->categoria->obterMaisUtilizadas($limit);
         
         jsonResponse(['categorias' => $categorias]);
     }

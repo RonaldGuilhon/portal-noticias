@@ -132,10 +132,10 @@ class Tag {
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->preencherPropriedades($row);
-                return true;
+                return $row;
             }
             
-            return false;
+            return null;
             
         } catch(Exception $e) {
             logError('Erro ao buscar tag por ID: ' . $e->getMessage());
@@ -470,7 +470,7 @@ class Tag {
     public function criarOuObter($nome) {
         try {
             // Verificar se tag já existe
-            if($this->buscarPorNome($nome)) {
+            if($this->buscarPorNome($nome) !== null) {
                 return $this->id;
             }
             
@@ -644,7 +644,7 @@ class Tag {
         // Verificar se nome já existe (exceto para o próprio registro)
         if(!empty($dados['nome'])) {
             $tag_existente = $this->buscarPorNome($dados['nome']);
-            if($tag_existente && (!$id || $tag_existente['id'] != $id)) {
+            if($tag_existente !== null && (!$id || $tag_existente['id'] != $id)) {
                 $erros[] = 'Já existe uma tag com este nome';
             }
         }

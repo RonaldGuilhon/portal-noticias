@@ -95,7 +95,7 @@ class PushController {
             default:
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Endpoint não encontrado'
+                    'error' => 'Endpoint not found'
                 ], 404);
         }
     }
@@ -111,7 +111,7 @@ class PushController {
             default:
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Endpoint não encontrado'
+                    'error' => 'Endpoint not found'
                 ], 404);
         }
     }
@@ -126,7 +126,7 @@ class PushController {
             default:
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Endpoint não encontrado'
+                    'error' => 'Endpoint not found'
                 ], 404);
         }
     }
@@ -140,7 +140,7 @@ class PushController {
             if (!$this->verificarAutenticacao()) {
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Token de autenticação inválido ou ausente'
+                    'error' => 'Token de autenticação inválido ou ausente'
                 ], 401);
             }
 
@@ -148,7 +148,7 @@ class PushController {
             if (!isset($data['endpoint'])) {
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Endpoint é obrigatório'
+                    'error' => 'Endpoint é obrigatório'
                 ], 400);
             }
 
@@ -158,12 +158,12 @@ class PushController {
             if ($resultado) {
                 return $this->jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Subscription removida com success'
+                    'message' => 'Subscription removed successfully'
                 ]);
             } else {
                 return $this->jsonResponse([
                     'success' => false,
-                    'erro' => 'Subscription não encontrada ou já removida'
+                    'error' => 'Subscription não encontrada ou já removida'
                 ], 404);
             }
             
@@ -171,7 +171,7 @@ class PushController {
             error_log("Erro ao deletar subscription: " . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
-                'erro' => 'Erro interno do servidor'
+                'error' => 'Internal server error'
             ], 500);
         }
     }
@@ -251,7 +251,7 @@ class PushController {
             error_log("Erro ao obter subscriptions: " . $e->getMessage());
             return $this->jsonResponse([
                 'success' => false,
-                'erro' => 'Erro interno do servidor'
+                'error' => 'Erro interno do servidor'
             ], 500);
         }
     }
@@ -631,7 +631,7 @@ if (basename($_SERVER['SCRIPT_NAME']) === 'PushController.php') {
         http_response_code(500);
         echo json_encode([
             'success' => false,
-            'erro' => 'Erro interno: ' . $e->getMessage()
+            'error' => 'Erro interno: ' . $e->getMessage()
         ], JSON_UNESCAPED_UNICODE);
     }
 }

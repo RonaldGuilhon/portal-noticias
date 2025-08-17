@@ -297,7 +297,7 @@ class ConfiguracaoController {
         
         jsonResponse([
             'success' => 'Processamento concluído',
-            'success' => $success,
+            'total_success' => $success,
             'erros' => $erros,
             'detalhes' => $detalhes
         ]);
@@ -442,7 +442,7 @@ class ConfiguracaoController {
         
         jsonResponse([
             'success' => 'Importação concluída',
-            'success' => $success,
+            'total_importados' => $success,
             'erros' => $erros,
             'detalhes' => $detalhes
         ]);

@@ -677,9 +677,9 @@ class ComentarioController {
         
         jsonResponse([
             'success' => true,
-            'mensagem' => "$successes comentário(s) marcado(s) como spam",
+            'mensagem' => "$success comentário(s) marcado(s) como spam",
             'detalhes' => [
-                'spam' => $successes,
+                'spam' => $success,
                 'erros' => $erros,
                 'total' => count($ids)
             ]
