@@ -153,7 +153,7 @@ class NotificacaoController {
     private function marcarComoLida($id) {
         try {
             if ($this->notificacao->marcarComoLida($id)) {
-                $this->responderSucesso(['mensagem' => 'Notificação marcada como lida']);
+                $this->responderSucesso(['mensagem' => 'Notificação marcada como lida com success']);
             } else {
                 $this->responderErro('Erro ao marcar notificação como lida', 500);
             }
@@ -189,7 +189,7 @@ class NotificacaoController {
             
             if ($this->notificacao->criar()) {
                 $this->responderSucesso([
-                    'mensagem' => 'Notificação criada com sucesso',
+                    'mensagem' => 'Notificação criada com success',
                     'id' => $this->notificacao->id
                 ]);
             } else {
@@ -207,7 +207,7 @@ class NotificacaoController {
     private function deletarNotificacao($id) {
         try {
             if ($this->notificacao->deletar($id)) {
-                $this->responderSucesso(['mensagem' => 'Notificação deletada com sucesso']);
+                $this->responderSucesso(['mensagem' => 'Notificação deletada com success']);
             } else {
                 $this->responderErro('Erro ao deletar notificação', 500);
             }

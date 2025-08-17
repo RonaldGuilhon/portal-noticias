@@ -157,7 +157,7 @@ class AuthController {
 
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Login realizado com sucesso',
+                    'mensagem' => 'Login realizado com success',
                     'usuario' => [
                         'id' => $this->usuario->id,
                         'nome' => $this->usuario->nome,
@@ -211,7 +211,7 @@ class AuthController {
                 
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Usuário criado com sucesso.',
+                    'mensagem' => 'Usuário criado com success.',
                     'usuario_id' => $this->usuario->id
                 ], 201);
             } else {
@@ -241,7 +241,7 @@ class AuthController {
                 $this->enviarEmailRecuperacao($email, $token);
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Email de recuperação enviado com sucesso'
+                    'mensagem' => 'Email de recuperação enviado com success'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Email não encontrado'], 404);
@@ -278,7 +278,7 @@ class AuthController {
             if($this->usuario->recuperarSenha($token, $nova_senha)) {
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Senha redefinida com sucesso'
+                    'mensagem' => 'Senha redefinida com success'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Token inválido ou expirado'], 400);
@@ -304,7 +304,7 @@ class AuthController {
             if($this->usuario->verificarEmail($token)) {
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Email verificado com sucesso'
+                    'mensagem' => 'Email verificado com success'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Token inválido'], 400);
@@ -373,7 +373,7 @@ class AuthController {
 
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Login social realizado com sucesso',
+                    'mensagem' => 'Login social realizado com success',
                     'usuario' => [
                         'id' => $this->usuario->id,
                         'nome' => $this->usuario->nome,
@@ -404,7 +404,7 @@ class AuthController {
             
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Logout realizado com sucesso'
+                'mensagem' => 'Logout realizado com success'
             ]);
         } catch(Exception $e) {
             logError('Erro no logout: ' . $e->getMessage());
@@ -529,7 +529,7 @@ class AuthController {
                 
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Perfil atualizado com sucesso'
+                    'mensagem' => 'Perfil atualizado com success'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Erro ao atualizar perfil'], 500);
@@ -572,7 +572,7 @@ class AuthController {
             if($this->usuario->alterarSenha($senha_atual, $nova_senha)) {
                 jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Senha alterada com sucesso'
+                    'mensagem' => 'Senha alterada com success'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Senha atual incorreta'], 400);
@@ -845,7 +845,7 @@ class AuthController {
 
             jsonResponse([
                 'success' => true,
-                'message' => 'Preferências atualizadas com sucesso'
+                'message' => 'Preferências atualizadas com success'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar preferências: " . $e->getMessage());

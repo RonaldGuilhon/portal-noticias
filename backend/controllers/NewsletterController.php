@@ -100,7 +100,7 @@ class NewsletterController {
             } else {
                 // Reativar inscrição
                 $this->newsletter->reativar($assinante_existente['id']);
-                jsonResponse(['success' => 'Inscrição reativada com sucesso']);
+                jsonResponse(['success' => 'Inscrição reativada com success']);
                 return;
             }
         }
@@ -119,7 +119,7 @@ class NewsletterController {
             $this->enviarEmailConfirmacao($dados_inscricao['email'], $dados_inscricao['token_confirmacao']);
             
             jsonResponse([
-                'success' => 'Inscrição realizada com sucesso. Verifique seu email para confirmar.',
+                'success' => 'Inscrição realizada com success. Verifique seu email para confirmar.',
                 'id' => $id
             ]);
         } else {
@@ -146,7 +146,7 @@ class NewsletterController {
         }
         
         if($this->newsletter->confirmar($assinante['id'])) {
-            jsonResponse(['success' => 'Email confirmado com sucesso']);
+            jsonResponse(['success' => 'Email confirmado com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao confirmar email'], 500);
         }
@@ -172,7 +172,7 @@ class NewsletterController {
         }
         
         if($this->newsletter->desativar($assinante['id'])) {
-            jsonResponse(['success' => 'Inscrição cancelada com sucesso']);
+            jsonResponse(['success' => 'Inscrição cancelada com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao cancelar inscrição'], 500);
         }
@@ -246,7 +246,7 @@ class NewsletterController {
         }
         
         if($this->newsletter->atualizar($id, $dados_atualizacao)) {
-            jsonResponse(['success' => 'Assinante atualizado com sucesso']);
+            jsonResponse(['success' => 'Assinante atualizado com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao atualizar assinante'], 500);
         }
@@ -261,7 +261,7 @@ class NewsletterController {
         }
         
         if($this->newsletter->deletar($id)) {
-            jsonResponse(['success' => 'Assinante removido com sucesso']);
+            jsonResponse(['success' => 'Assinante removido com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao remover assinante'], 500);
         }

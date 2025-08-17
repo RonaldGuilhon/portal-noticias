@@ -75,6 +75,7 @@ class MediaController {
 
                 echo json_encode([
                     'success' => true,
+                    'mensagem' => 'Upload realizado com success',
                     'arquivo' => [
                         'nome' => $resultado['nome'],
                         'nome_original' => $arquivo['name'],
@@ -294,10 +295,10 @@ class MediaController {
                 return;
             }
 
-            $resultado = $this->uploadService->delete($caminho);
+            $success = $this->uploadService->delete($caminho);
 
-            if ($resultado) {
-                echo json_encode(['success' => true, 'mensagem' => 'Arquivo deletado com sucesso']);
+            if ($success) {
+                echo json_encode(['success' => true, 'mensagem' => 'Arquivo excluído com success']);
             } else {
                 http_response_code(400);
                 echo json_encode(['erro' => 'Erro ao deletar arquivo']);
@@ -358,7 +359,7 @@ class MediaController {
                 $info = $this->obterInfoArquivo($caminhoCompleto);
                 echo json_encode([
                     'success' => true,
-                    'mensagem' => 'Imagem redimensionada com sucesso',
+                    'mensagem' => 'Imagem redimensionada com success',
                     'dimensoes' => $info['dimensoes']
                 ]);
             } else {

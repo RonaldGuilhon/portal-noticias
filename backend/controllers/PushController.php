@@ -158,7 +158,7 @@ class PushController {
             if ($resultado) {
                 return $this->jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Subscription removida com sucesso'
+                    'mensagem' => 'Subscription removida com success'
                 ]);
             } else {
                 return $this->jsonResponse([
@@ -337,7 +337,7 @@ class PushController {
             
             if ($result) {
                 $this->responderSucesso([
-                    'mensagem' => 'Subscription criada com sucesso',
+                    'mensagem' => 'Subscription criada com success',
                     'id' => $result
                 ]);
             } else {
@@ -367,7 +367,7 @@ class PushController {
             
             if ($result) {
                 $this->responderSucesso([
-                    'mensagem' => 'Subscription removida com sucesso'
+                    'mensagem' => 'Subscription removida com success'
                 ]);
             } else {
                 $this->responderErro('Subscription não encontrada', 404);
@@ -414,7 +414,7 @@ class PushController {
             );
             
             $this->responderSucesso([
-                'mensagem' => 'Notificação enviada com sucesso',
+                'mensagem' => 'Notificação enviada com success',
                 'enviadas' => $result['enviadas'],
                 'erros' => $result['erros']
             ]);
@@ -438,7 +438,7 @@ class PushController {
             
             if ($result['enviadas'] > 0) {
                 $this->responderSucesso([
-                    'mensagem' => 'Notificação de teste enviada com sucesso'
+                    'mensagem' => 'Notificação de teste enviada com success'
                 ]);
             } else {
                 $this->responderErro('Nenhuma subscription ativa encontrada', 404);
@@ -528,7 +528,7 @@ class PushController {
             
             if ($result) {
                 $this->responderSucesso([
-                    'mensagem' => 'Preferências atualizadas com sucesso'
+                    'mensagem' => 'Preferências atualizadas com success'
                 ]);
             } else {
                 $this->responderErro('Erro ao atualizar preferências', 500);

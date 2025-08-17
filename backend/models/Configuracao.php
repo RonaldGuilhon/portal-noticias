@@ -289,7 +289,7 @@ class Configuracao {
     public function resetarPadrao($categoria = '') {
         $configuracoes_padrao = $this->obterConfiguracoesPadrao();
         
-        $sucessos = 0;
+        $success = 0;
         foreach($configuracoes_padrao as $config) {
             if(!empty($categoria) && $config['categoria'] !== $categoria) {
                 continue;
@@ -298,16 +298,16 @@ class Configuracao {
             $existente = $this->obterPorChave($config['chave']);
             if($existente) {
                 if($this->atualizar($config['chave'], ['valor' => $config['valor']])) {
-                    $sucessos++;
+                    $success++;
                 }
             } else {
                 if($this->criar($config)) {
-                    $sucessos++;
+                    $success++;
                 }
             }
         }
         
-        return $sucessos > 0;
+        return $success > 0;
     }
 
     /**

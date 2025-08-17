@@ -627,6 +627,45 @@ class Tag {
     }
     
     /**
+     * Validar dados da tag (aceita dados como parâmetro)
+     */
+    public function validarDados($dados, $id = null) {
+        $erros = [];
+        
+        // Nome obrigatório
+        if(empty($dados['nome'])) {
+            $erros[] = 'Nome da tag é obrigatório';
+        } elseif(strlen($dados['nome']) < 2) {
+            $erros[] = 'Nome da tag deve ter pelo menos 2 caracteres';
+        } elseif(strlen($dados['nome']) > 50) {
+            $erros[] = 'Nome da tag deve ter no máximo 50 caracteres';
+        }
+        
+        // Verificar se nome já existe (exceto para o próprio registro)
+        if(!empty($dados['nome'])) {
+            $tag_existente = $this->buscarPorNome($dados['nome']);
+            if($tag_existente && (!$id || $tag_existente['id'] != $id)) {
+                $erros[] = 'Já existe uma tag com este nome';
+            }
+        }
+        
+        // Validar cor (formato hexadecimal)
+        if(!empty($dados['cor']) && !preg_match('/^#[a-fA-F0-9]{6}$/', $dados['cor'])) {
+            $erros[] = 'Cor deve estar no formato hexadecimal (#RRGGBB)';
+        }
+        
+        // Validar descrição (opcional, mas com limite)
+        if(!empty($dados['descricao']) && strlen($dados['descricao']) > 255) {
+            $erros[] = 'Descrição deve ter no máximo 255 caracteres';
+        }
+        
+        return [
+            'valido' => empty($erros),
+            'erros' => $erros
+        ];
+    }
+    
+    /**
      * Verificar se slug já existe
      */
     private function slugExiste($slug, $excluir_id = null) {

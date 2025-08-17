@@ -225,7 +225,7 @@ class CategoriaController {
             $categoria = $this->categoria->obterPorId($categoria_id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Categoria criada com sucesso',
+                'mensagem' => 'Categoria criada com success',
                 'categoria' => $categoria
             ], 201);
         } else {
@@ -280,13 +280,13 @@ class CategoriaController {
             return;
         }
         
-        $sucesso = $this->categoria->atualizar($id, $dados_limpos);
-        
-        if($sucesso) {
+        $success = $this->categoria->atualizar($id, $dados_limpos);
+            
+            if($success) {
             $categoria = $this->categoria->obterPorId($id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Categoria atualizada com sucesso',
+                'mensagem' => 'Categoria atualizada com success',
                 'categoria' => $categoria
             ]);
         } else {
@@ -316,12 +316,12 @@ class CategoriaController {
             return;
         }
         
-        $sucesso = $this->categoria->excluir($id);
-        
-        if($sucesso) {
+        $success = $this->categoria->excluir($id);
+            
+            if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Categoria excluída com sucesso'
+                'mensagem' => 'Categoria excluída com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Não é possível excluir categoria com notícias associadas'], 400);
@@ -351,13 +351,13 @@ class CategoriaController {
             return;
         }
         
-        $sucesso = $this->categoria->alterarStatus($id, $ativo);
+        $success = $this->categoria->alterarStatus($id, $ativo);
         
-        if($sucesso) {
+        if($success) {
             $status_texto = $ativo ? 'ativada' : 'desativada';
             jsonResponse([
                 'success' => true,
-                'mensagem' => "Categoria $status_texto com sucesso"
+                'mensagem' => "Categoria $status_texto com success"
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao alterar status da categoria'], 500);
@@ -380,12 +380,12 @@ class CategoriaController {
             return;
         }
         
-        $sucesso = $this->categoria->reordenar($dados['categorias']);
+        $success = $this->categoria->reordenar($dados['categorias']);
         
-        if($sucesso) {
+        if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Categorias reordenadas com sucesso'
+                'mensagem' => 'Categorias reordenadas com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao reordenar categorias'], 500);

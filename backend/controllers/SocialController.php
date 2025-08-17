@@ -203,7 +203,7 @@ class SocialController {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Autenticação realizada com sucesso',
+                'message' => 'Autenticação realizada com success',
                 'user' => [
                     'id' => $user_id,
                     'name' => $user_data['name'],
@@ -269,7 +269,7 @@ class SocialController {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Conteúdo compartilhado com sucesso',
+                'message' => 'Conteúdo compartilhado com success',
                 'result' => $result
             ]);
             
@@ -463,7 +463,7 @@ class SocialController {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Conta conectada com sucesso',
+                'message' => 'Conta conectada com success',
                 'provider' => $provider
             ]);
             
@@ -499,7 +499,7 @@ class SocialController {
             
             echo json_encode([
                 'success' => true,
-                'message' => 'Conta desconectada com sucesso',
+                'message' => 'Conta desconectada com success',
                 'provider' => $provider
             ]);
             

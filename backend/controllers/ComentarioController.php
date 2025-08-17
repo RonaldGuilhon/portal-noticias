@@ -308,7 +308,7 @@ class ComentarioController {
             $comentario = $this->comentario->obterPorId($comentario_id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Comentário criado com sucesso. Aguardando moderação.',
+                'mensagem' => 'Comentário criado com success. Aguardando moderação.',
                 'comentario' => $comentario
             ], 201);
         } else {
@@ -360,13 +360,13 @@ class ComentarioController {
             }
         }
         
-        $sucesso = $this->comentario->atualizar($id, $dados_atualizacao);
-        
-        if($sucesso) {
+        $success = $this->comentario->atualizar($id, $dados_atualizacao);
+            
+            if($success) {
             $comentario = $this->comentario->obterPorId($id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Comentário atualizado com sucesso',
+                'mensagem' => 'Comentário atualizado com success',
                 'comentario' => $comentario
             ]);
         } else {
@@ -396,12 +396,12 @@ class ComentarioController {
             return;
         }
         
-        $sucesso = $this->comentario->excluir($id);
-        
-        if($sucesso) {
+        $success = $this->comentario->excluir($id);
+            
+            if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Comentário excluído com sucesso'
+                'mensagem' => 'Comentário excluído com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao excluir comentário'], 500);
@@ -422,12 +422,12 @@ class ComentarioController {
             return;
         }
         
-        $sucesso = $this->comentario->moderar($id, 'aprovado', $_SESSION['usuario_id']);
-        
-        if($sucesso) {
+        $success = $this->comentario->moderar($id, 'aprovado', $_SESSION['usuario_id']);
+            
+            if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Comentário aprovado com sucesso'
+                'mensagem' => 'Comentário aprovado com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao aprovar comentário'], 500);
@@ -448,12 +448,12 @@ class ComentarioController {
             return;
         }
         
-        $sucesso = $this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id']);
-        
-        if($sucesso) {
+        $success = $this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id']);
+            
+            if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Comentário rejeitado com sucesso'
+                'mensagem' => 'Comentário rejeitado com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao rejeitar comentário'], 500);
@@ -475,9 +475,9 @@ class ComentarioController {
             return;
         }
         
-        $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'like');
-        
-        if($sucesso) {
+        $success = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'like');
+            
+            if($success) {
                 jsonResponse([
                     'success' => true,
                 'mensagem' => 'Comentário curtido'
@@ -502,9 +502,9 @@ class ComentarioController {
             return;
         }
         
-        $sucesso = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'dislike');
-        
-        if($sucesso) {
+        $success = $this->comentario->curtir($comentario_id, $_SESSION['usuario_id'], 'dislike');
+            
+            if($success) {
                 jsonResponse([
                     'success' => true,
                 'mensagem' => 'Comentário descurtido'
@@ -576,12 +576,12 @@ class ComentarioController {
             return;
         }
         
-        $sucessos = 0;
+        $successes = 0;
         $erros = 0;
         
         foreach($ids as $id) {
             if($this->comentario->moderar($id, 'aprovado', $_SESSION['usuario_id'])) {
-                $sucessos++;
+                $successes++;
             } else {
                 $erros++;
             }
@@ -589,9 +589,9 @@ class ComentarioController {
         
         jsonResponse([
             'success' => true,
-            'mensagem' => "$sucessos comentário(s) aprovado(s) com sucesso",
+            'mensagem' => "$successes comentário(s) aprovado(s) com success",
             'detalhes' => [
-                'aprovados' => $sucessos,
+                'aprovados' => $successes,
                 'erros' => $erros,
                 'total' => count($ids)
             ]
@@ -620,12 +620,12 @@ class ComentarioController {
             return;
         }
         
-        $sucessos = 0;
-        $erros = 0;
-        
-        foreach($ids as $id) {
-            if($this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id'])) {
-                $sucessos++;
+        $successes = 0;
+            $erros = 0;
+            
+            foreach($ids as $id) {
+                if($this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id'])) {
+                    $successes++;
             } else {
                 $erros++;
             }
@@ -633,9 +633,9 @@ class ComentarioController {
         
         jsonResponse([
             'success' => true,
-            'mensagem' => "$sucessos comentário(s) rejeitado(s) com sucesso",
+            'mensagem' => "$successes comentário(s) rejeitado(s) com success",
             'detalhes' => [
-                'rejeitados' => $sucessos,
+                'rejeitados' => $successes,
                 'erros' => $erros,
                 'total' => count($ids)
             ]
@@ -664,12 +664,12 @@ class ComentarioController {
             return;
         }
         
-        $sucessos = 0;
+        $success = 0;
         $erros = 0;
         
         foreach($ids as $id) {
             if($this->comentario->moderar($id, 'spam', $_SESSION['usuario_id'])) {
-                $sucessos++;
+                $success++;
             } else {
                 $erros++;
             }
@@ -677,9 +677,9 @@ class ComentarioController {
         
         jsonResponse([
             'success' => true,
-            'mensagem' => "$sucessos comentário(s) marcado(s) como spam",
+            'mensagem' => "$successes comentário(s) marcado(s) como spam",
             'detalhes' => [
-                'spam' => $sucessos,
+                'spam' => $successes,
                 'erros' => $erros,
                 'total' => count($ids)
             ]
@@ -708,12 +708,12 @@ class ComentarioController {
             return;
         }
         
-        $sucessos = 0;
+        $successes = 0;
         $erros = 0;
         
         foreach($ids as $id) {
             if($this->comentario->excluir($id)) {
-                $sucessos++;
+                $successes++;
             } else {
                 $erros++;
             }
@@ -721,9 +721,9 @@ class ComentarioController {
         
         jsonResponse([
             'success' => true,
-            'mensagem' => "$sucessos comentário(s) excluído(s) com sucesso",
+            'mensagem' => "$successes comentário(s) excluído(s) com success",
             'detalhes' => [
-                'excluidos' => $sucessos,
+                'excluidos' => $successes,
                 'erros' => $erros,
                 'total' => count($ids)
             ]

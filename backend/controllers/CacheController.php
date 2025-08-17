@@ -132,7 +132,7 @@ class CacheController {
         
         return $this->jsonResponse([
             'success' => $result,
-            'mensagem' => $result ? 'Cache habilitado com sucesso' : 'Erro ao habilitar cache'
+            'mensagem' => $result ? 'Cache habilitado com success' : 'Erro ao habilitar cache'
         ]);
     }
     
@@ -144,7 +144,7 @@ class CacheController {
         
         return $this->jsonResponse([
             'success' => $result,
-            'mensagem' => $result ? 'Cache desabilitado com sucesso' : 'Erro ao desabilitar cache'
+            'mensagem' => $result ? 'Cache desabilitado com success' : 'Erro ao desabilitar cache'
         ]);
     }
     
@@ -156,7 +156,7 @@ class CacheController {
         
         return $this->jsonResponse([
             'success' => true,
-            'mensagem' => "Cache limpo com sucesso. {$cleared} arquivos removidos.",
+            'mensagem' => "Cache limpo com success. {$cleared} arquivos removidos.",
             'files_cleared' => $cleared
         ]);
     }
@@ -169,7 +169,7 @@ class CacheController {
         
         return $this->jsonResponse([
             'success' => true,
-            'mensagem' => "Cache expirado limpo com sucesso. {$cleared} arquivos removidos.",
+            'mensagem' => "Cache expirado limpo com success. {$cleared} arquivos removidos.",
             'files_cleared' => $cleared
         ]);
     }

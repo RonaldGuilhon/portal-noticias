@@ -171,7 +171,7 @@ class ConfiguracaoController {
         
         if($id) {
             jsonResponse([
-                'success' => 'Configuração criada com sucesso',
+                'success' => 'Configuração criada com success',
                 'id' => $id
             ]);
         } else {
@@ -236,7 +236,7 @@ class ConfiguracaoController {
         $dados_atualizacao['usuario_atualizacao_id'] = $_SESSION['usuario_id'];
         
         if($this->configuracao->atualizar($chave, $dados_atualizacao)) {
-            jsonResponse(['success' => 'Configuração atualizada com sucesso']);
+            jsonResponse(['success' => 'Configuração atualizada com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao atualizar configuração'], 500);
         }
@@ -257,7 +257,7 @@ class ConfiguracaoController {
             return;
         }
         
-        $sucessos = 0;
+        $success = 0;
         $erros = 0;
         $detalhes = [];
         
@@ -287,7 +287,7 @@ class ConfiguracaoController {
             ];
             
             if($this->configuracao->atualizar($config['chave'], $dados_atualizacao)) {
-                $sucessos++;
+                $success++;
                 $detalhes[] = ['chave' => $config['chave'], 'success' => true];
             } else {
                 $erros++;
@@ -297,7 +297,7 @@ class ConfiguracaoController {
         
         jsonResponse([
             'success' => 'Processamento concluído',
-            'sucessos' => $sucessos,
+            'success' => $success,
             'erros' => $erros,
             'detalhes' => $detalhes
         ]);
@@ -325,7 +325,7 @@ class ConfiguracaoController {
         }
         
         if($this->configuracao->deletar($chave)) {
-            jsonResponse(['success' => 'Configuração removida com sucesso']);
+            jsonResponse(['success' => 'Configuração removida com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao remover configuração'], 500);
         }
@@ -342,7 +342,7 @@ class ConfiguracaoController {
         $categoria = $_GET['categoria'] ?? '';
         
         if($this->configuracao->resetarPadrao($categoria)) {
-            jsonResponse(['success' => 'Configurações resetadas com sucesso']);
+            jsonResponse(['success' => 'Configurações resetadas com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao resetar configurações'], 500);
         }
@@ -392,7 +392,7 @@ class ConfiguracaoController {
             return;
         }
         
-        $sucessos = 0;
+        $success = 0;
         $erros = 0;
         $detalhes = [];
         
@@ -413,7 +413,7 @@ class ConfiguracaoController {
                 ];
                 
                 if($this->configuracao->atualizar($config['chave'], $dados_atualizacao)) {
-                    $sucessos++;
+                    $success++;
                     $detalhes[] = ['chave' => $config['chave'], 'acao' => 'atualizada'];
                 } else {
                     $erros++;
@@ -432,7 +432,7 @@ class ConfiguracaoController {
                 ];
                 
                 if($this->configuracao->criar($dados_configuracao)) {
-                    $sucessos++;
+                    $success++;
                     $detalhes[] = ['chave' => $config['chave'], 'acao' => 'criada'];
                 } else {
                     $erros++;
@@ -442,7 +442,7 @@ class ConfiguracaoController {
         
         jsonResponse([
             'success' => 'Importação concluída',
-            'sucessos' => $sucessos,
+            'success' => $success,
             'erros' => $erros,
             'detalhes' => $detalhes
         ]);

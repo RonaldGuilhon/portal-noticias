@@ -188,7 +188,7 @@ class BackupManager {
             
             return [
                 'success' => true,
-                'mensagem' => 'Backup restaurado com sucesso',
+                'mensagem' => 'Backup restaurado com success',
                 'arquivo' => $filename
             ];
             

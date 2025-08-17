@@ -328,7 +328,7 @@ class AdminController {
 
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Configurações salvas com sucesso'
+                'mensagem' => 'Configurações salvas com success'
             ]);
         } catch (Exception $e) {
             $this->db->rollBack();

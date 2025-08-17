@@ -183,7 +183,7 @@ class AnuncioController {
         
         if($id) {
             jsonResponse([
-                'success' => 'Anúncio criado com sucesso',
+                'success' => 'Anúncio criado com success',
                 'id' => $id
             ]);
         } else {
@@ -275,7 +275,7 @@ class AnuncioController {
         }
         
         if($this->anuncio->atualizar($id, $dados_atualizacao)) {
-            jsonResponse(['success' => 'Anúncio atualizado com sucesso']);
+            jsonResponse(['success' => 'Anúncio atualizado com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao atualizar anúncio'], 500);
         }
@@ -303,7 +303,7 @@ class AnuncioController {
                 $this->uploadService->excluirArquivo($anuncio['imagem_url']);
             }
             
-            jsonResponse(['success' => 'Anúncio removido com sucesso']);
+            jsonResponse(['success' => 'Anúncio removido com success']);
         } else {
             jsonResponse(['erro' => 'Erro ao remover anúncio'], 500);
         }

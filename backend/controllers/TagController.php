@@ -171,9 +171,9 @@ class TagController {
         }
         
         if($id) {
-            $tag = $this->tag->obterPorId($id);
+            $tag = $this->tag->buscarPorId($id);
         } else {
-            $tag = $this->tag->obterPorSlug($slug);
+            $tag = $this->tag->buscarPorSlug($slug);
         }
         
         if(!$tag) {
@@ -241,10 +241,10 @@ class TagController {
         $tag_id = $this->tag->criar($dados_limpos);
         
         if($tag_id) {
-            $tag = $this->tag->obterPorId($tag_id);
+            $tag = $this->tag->buscarPorId($tag_id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Tag criada com sucesso',
+                'mensagem' => 'Tag criada com success',
                 'tag' => $tag
             ], 201);
         } else {
@@ -287,7 +287,7 @@ class TagController {
             $tag_id = $this->tag->criarOuObter($dados_limpos['nome']);
             
             if($tag_id) {
-                $tags_criadas[] = $this->tag->obterPorId($tag_id);
+                $tags_criadas[] = $this->tag->buscarPorId($tag_id);
             } else {
                 $erros[] = "Erro ao criar tag: {$dados_limpos['nome']}";
             }
@@ -317,7 +317,7 @@ class TagController {
         }
         
         // Verificar se tag existe
-        $tag_existente = $this->tag->obterPorId($id);
+        $tag_existente = $this->tag->buscarPorId($id);
         if(!$tag_existente) {
             jsonResponse(['erro' => 'Tag não encontrada'], 404);
             return;
@@ -344,13 +344,13 @@ class TagController {
             return;
         }
         
-        $sucesso = $this->tag->atualizar($id, $dados_limpos);
-        
-        if($sucesso) {
-            $tag = $this->tag->obterPorId($id);
+        $success = $this->tag->atualizar($id, $dados_limpos);
+            
+            if($success) {
+            $tag = $this->tag->buscarPorId($id);
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Tag atualizada com sucesso',
+                'mensagem' => 'Tag atualizada com success',
                 'tag' => $tag
             ]);
         } else {
@@ -374,18 +374,18 @@ class TagController {
         }
         
         // Verificar se tag existe
-        $tag = $this->tag->obterPorId($id);
+        $tag = $this->tag->buscarPorId($id);
         if(!$tag) {
             jsonResponse(['erro' => 'Tag não encontrada'], 404);
             return;
         }
         
-        $sucesso = $this->tag->excluir($id);
-        
-        if($sucesso) {
+        $success = $this->tag->excluir($id);
+            
+            if($success) {
             jsonResponse([
                 'success' => true,
-                'mensagem' => 'Tag excluída com sucesso'
+                'mensagem' => 'Tag excluída com success'
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao excluir tag'], 500);
@@ -415,13 +415,13 @@ class TagController {
             return;
         }
         
-        $sucesso = $this->tag->alterarStatus($id, $ativo);
-        
-        if($sucesso) {
+        $success = $this->tag->alterarStatus($id, $ativo);
+            
+            if($success) {
             $status_texto = $ativo ? 'ativada' : 'desativada';
             jsonResponse([
                 'success' => true,
-                'mensagem' => "Tag $status_texto com sucesso"
+                'mensagem' => "Tag $status_texto com success"
             ]);
         } else {
             jsonResponse(['erro' => 'Erro ao alterar status da tag'], 500);

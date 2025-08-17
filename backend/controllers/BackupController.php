@@ -307,7 +307,7 @@ class BackupController {
                 
                 return $this->jsonResponse([
                     'success' => true,
-                    'mensagem' => 'Backup deletado com sucesso'
+                    'mensagem' => 'Backup deletado com success'
                 ]);
                 
             } catch (Exception $e) {
@@ -358,7 +358,7 @@ class BackupController {
             
             return $this->jsonResponse([
                 'success' => true,
-                'mensagem' => "Limpeza concluída. {$deleted_count} backups removidos.",
+                'mensagem' => "Limpeza concluída com success. {$deleted_count} backups removidos.",
                 'removidos' => $deleted_count
             ]);
             
