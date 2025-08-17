@@ -5,7 +5,7 @@
 
 class AdminPanel {
     constructor() {
-        this.apiBase = '/backend';
+        this.apiBase = 'http://localhost:8001';
         this.authToken = localStorage.getItem('auth_token');
         this.userData = JSON.parse(localStorage.getItem('user_data') || '{}');
         this.notifications = [];
@@ -215,7 +215,7 @@ class AdminPanel {
     
     async loadNotifications() {
         try {
-            const response = await fetch(`${this.apiBase}/admin/notifications`, {
+            const response = await fetch(`${this.apiBase}/notificacoes`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
                 }
@@ -277,7 +277,7 @@ class AdminPanel {
     
     async markNotificationAsRead(notificationId) {
         try {
-            const response = await fetch(`${this.apiBase}/admin/notifications/${notificationId}/read`, {
+            const response = await fetch(`${this.apiBase}/notificacoes/${notificationId}/read`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`

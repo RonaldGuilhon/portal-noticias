@@ -4,19 +4,23 @@
  * Portal de Notícias
  */
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Comentario.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Noticia.php';
 
 class ComentarioController {
+    private $db;
     private $comentario;
     private $usuario;
     private $noticia;
     
     public function __construct() {
-        $this->comentario = new Comentario();
-        $this->usuario = new Usuario();
-        $this->noticia = new Noticia();
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $this->comentario = new Comentario($this->db);
+        $this->usuario = new Usuario($this->db);
+        $this->noticia = new Noticia($this->db);
     }
     
     /**

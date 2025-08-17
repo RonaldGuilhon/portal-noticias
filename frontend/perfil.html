@@ -946,14 +946,14 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
+                if (result.sucesso) {
                     showSuccess('Dados pessoais atualizados com sucesso!');
                     // Update header info
                     document.getElementById('user-name').textContent = data.nome;
                     document.getElementById('profile-name').textContent = `${data.nome} ${data.sobrenome}`;
                     document.getElementById('profile-bio').textContent = data.bio || 'Nenhuma biografia adicionada.';
                 } else {
-                    showError(result.message || 'Erro ao atualizar dados.');
+                    showError(result.mensagem || 'Erro ao atualizar dados.');
                 }
             } catch (error) {
                 console.error('Erro ao atualizar:', error);
@@ -1120,7 +1120,7 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
+                if (result.sucesso) {
                     // Update stats
                     document.getElementById('total-views').textContent = result.data.stats.total_views || 0;
                     document.getElementById('total-comments').textContent = result.data.stats.total_comments || 0;
@@ -1545,7 +1545,7 @@
                 
                 const result = await response.json();
                 
-                if (result.success && result.data.activities.length > 0) {
+                if (result.sucesso && result.data.activities.length > 0) {
                     const container = document.getElementById('activity-list');
                     const newActivities = result.data.activities.map(activity => `
                         <div class="activity-item">

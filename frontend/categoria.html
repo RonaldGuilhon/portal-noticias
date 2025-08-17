@@ -800,7 +800,7 @@
         // Carrega notícias em destaque
         async function loadFeaturedNews() {
             try {
-                const response = await fetch(`/backend/noticias/categoria/${categorySlug}/destaque`);
+                const response = await fetch(`/backend/noticias/categoria/${categorySlug}/destaques`);
                 const result = await response.json();
                 
                 if (result.success && result.data.length > 0) {

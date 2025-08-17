@@ -4,15 +4,12 @@
  * Portal de Notícias
  */
 
-require_once __DIR__ . '/../config/database.php';
-
 class Comentario {
     private $db;
     private $table = 'comentarios';
     
-    public function __construct() {
-        $database = new Database();
-        $this->db = $database->getConnection();
+    public function __construct($db) {
+        $this->db = $db;
     }
     
     /**

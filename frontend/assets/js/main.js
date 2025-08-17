@@ -5,7 +5,7 @@
 
 // Configurações globais
 const CONFIG = {
-    API_BASE_URL: '/backend',
+    API_BASE_URL: 'http://localhost:8001',
     ITEMS_PER_PAGE: 12,
     DEBOUNCE_DELAY: 300,
     ANIMATION_DURATION: 300,
@@ -442,7 +442,7 @@ class PortalNoticias {
     // Carrega notícias em destaque
     async loadFeaturedNews() {
         try {
-            const news = await this.apiRequest('/noticias/destaque');
+            const news = await this.apiRequest('/noticias/destaques');
             this.displayFeaturedNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias em destaque:', error);

@@ -255,6 +255,27 @@ CREATE TABLE midias (
 );
 
 -- =============================================
+-- Tabela de Notificações
+-- =============================================
+CREATE TABLE notificacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    mensagem TEXT NOT NULL,
+    tipo ENUM('info', 'sucesso', 'aviso', 'erro', 'sistema') DEFAULT 'info',
+    usuario_id INT DEFAULT NULL, -- NULL para notificações globais/admin
+    lida BOOLEAN DEFAULT FALSE,
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_leitura TIMESTAMP NULL,
+    url VARCHAR(500) DEFAULT NULL, -- Link relacionado à notificação
+    icone VARCHAR(50) DEFAULT NULL, -- Classe do ícone (ex: fas fa-bell)
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    INDEX idx_usuario_id (usuario_id),
+    INDEX idx_lida (lida),
+    INDEX idx_tipo (tipo),
+    INDEX idx_data_criacao (data_criacao)
+);
+
+-- =============================================
 -- DADOS INICIAIS
 -- =============================================
 

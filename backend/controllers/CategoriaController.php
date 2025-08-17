@@ -4,16 +4,20 @@
  * Portal de Notícias
  */
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
 class CategoriaController {
+    private $db;
     private $categoria;
     private $usuario;
     
     public function __construct() {
-        $this->categoria = new Categoria();
-        $this->usuario = new Usuario();
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $this->categoria = new Categoria($this->db);
+        $this->usuario = new Usuario($this->db);
     }
     
     /**

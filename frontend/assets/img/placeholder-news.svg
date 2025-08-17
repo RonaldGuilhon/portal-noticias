@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250">
+  <defs>
+    <linearGradient id="placeholderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f1f5f9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="250" fill="url(#placeholderGradient)" stroke="#cbd5e1" stroke-width="1"/>
+  
+  <!-- Newspaper icon -->
+  <g transform="translate(200, 125)">
+    <!-- Main newspaper -->
+    <rect x="-40" y="-30" width="80" height="60" rx="4" fill="white" stroke="#94a3b8" stroke-width="1"/>
+    
+    <!-- Header -->
+    <rect x="-35" y="-25" width="70" height="6" fill="#2563eb" opacity="0.7"/>
+    <rect x="-35" y="-16" width="50" height="3" fill="#64748b" opacity="0.6"/>
+    
+    <!-- Content lines -->
+    <rect x="-35" y="-8" width="30" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-35" y="-4" width="30" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-35" y="0" width="25" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-35" y="4" width="30" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-35" y="8" width="28" height="2" fill="#94a3b8" opacity="0.5"/>
+    
+    <rect x="-2" y="-8" width="25" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-2" y="-4" width="25" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-2" y="0" width="20" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-2" y="4" width="25" height="2" fill="#94a3b8" opacity="0.5"/>
+    <rect x="-2" y="8" width="23" height="2" fill="#94a3b8" opacity="0.5"/>
+    
+    <!-- Image placeholder -->
+    <rect x="25" y="-25" width="30" height="20" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="40" cy="-20" r="3" fill="#94a3b8" opacity="0.6"/>
+    <polygon points="30,-10 35,-15 45,-15 50,-10" fill="#94a3b8" opacity="0.4"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="190" font-family="Arial, sans-serif" font-size="14" fill="#64748b" text-anchor="middle">Imagem não disponível</text>
+</svg>

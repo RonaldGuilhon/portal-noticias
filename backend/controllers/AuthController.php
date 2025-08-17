@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../services/EmailService.php';
 require_once __DIR__ . '/../utils/JWTHelper.php';
@@ -189,12 +190,12 @@ class AuthController {
             }
 
             if($this->usuario->criar()) {
-                // Enviar email de verificação
-                $this->enviarEmailVerificacao($this->usuario->email, $this->usuario->token_verificacao);
+                // Enviar email de verificação (temporariamente desabilitado)
+                // $this->enviarEmailVerificacao($this->usuario->email, $this->usuario->token_verificacao);
                 
                 jsonResponse([
                     'sucesso' => true,
-                    'mensagem' => 'Usuário criado com sucesso. Verifique seu email para ativar a conta.',
+                    'mensagem' => 'Usuário criado com sucesso.',
                     'usuario_id' => $this->usuario->id
                 ], 201);
             } else {
@@ -202,7 +203,7 @@ class AuthController {
             }
         } catch(Exception $e) {
             logError('Erro no registro: ' . $e->getMessage());
-            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+            jsonResponse(['erro' => 'Erro interno do servidor: ' . $e->getMessage()], 500);
         }
     }
 

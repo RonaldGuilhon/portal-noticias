@@ -422,7 +422,7 @@
             setLoading(true);
             
             try {
-                const response = await fetch('/backend/auth/register', {
+                const response = await fetch('http://localhost:8001/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -432,7 +432,7 @@
                 
                 const result = await response.json();
                 
-                if (result.success) {
+                if (result.sucesso) {
                     showSuccess('Conta criada com sucesso! Verifique seu e-mail para ativar sua conta.');
                     
                     // Redireciona para login após 3 segundos
@@ -440,7 +440,7 @@
                         window.location.href = '/login.html?registered=true';
                     }, 3000);
                 } else {
-                    showError(result.message || 'Erro ao criar conta. Tente novamente.');
+                    showError(result.mensagem || 'Erro ao criar conta. Tente novamente.');
                     
                     // Destaca campos com erro
                     if (result.errors) {
@@ -713,19 +713,27 @@
         
         function showFieldError(fieldName, message) {
             const field = document.getElementById(fieldName);
+            if (!field) return;
+            
             const feedback = field.closest('.form-group').querySelector('.invalid-feedback');
             
             field.classList.add('is-invalid');
             field.classList.remove('is-valid');
-            feedback.textContent = message;
+            if (feedback) {
+                feedback.textContent = message;
+            }
         }
         
         function clearFieldError(fieldName) {
             const field = document.getElementById(fieldName);
+            if (!field) return;
+            
             const feedback = field.closest('.form-group').querySelector('.invalid-feedback');
             
             field.classList.remove('is-invalid');
-            if (feedback) feedback.textContent = '';
+            if (feedback) {
+                feedback.textContent = '';
+            }
         }
         
         function clearErrors() {

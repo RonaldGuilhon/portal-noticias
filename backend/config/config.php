@@ -18,6 +18,7 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.cookie_secure', 0); // Mudar para 1 em HTTPS
 
 // Constantes do sistema
+define('SITE_NAME', 'Portal de Notícias');
 define('BASE_URL', 'http://localhost/portal-noticias');
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('UPLOAD_URL', BASE_URL . '/backend/uploads/');
@@ -28,12 +29,16 @@ define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
 define('ALLOWED_IMAGE_TYPES', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
 define('ALLOWED_VIDEO_TYPES', ['mp4', 'avi', 'mov', 'wmv']);
 define('ALLOWED_AUDIO_TYPES', ['mp3', 'wav', 'ogg']);
+define('ALLOWED_TYPES', array_merge(ALLOWED_IMAGE_TYPES, ALLOWED_VIDEO_TYPES, ALLOWED_AUDIO_TYPES));
 
 // Configurações de email
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
 define('SMTP_USERNAME', 'seu-email@gmail.com');
 define('SMTP_PASSWORD', 'sua-senha-app');
+define('SMTP_SECURE', 'tls');
+define('SMTP_FROM_EMAIL', 'noreply@portalnoticias.com');
+define('SMTP_FROM_NAME', 'Portal de Notícias');
 define('FROM_EMAIL', 'noreply@portalnoticias.com');
 define('FROM_NAME', 'Portal de Notícias');
 

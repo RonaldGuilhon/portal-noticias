@@ -335,6 +335,7 @@ try {
             
         case 'upload':
             require_once __DIR__ . '/controllers/UploadController.php';
+            /** @var UploadController $controller */
             $controller = new UploadController();
             
             switch($action) {
@@ -402,6 +403,40 @@ try {
             $controller->processarRequisicao();
             break;
             
+        case 'notificacoes':
+        case 'notifications':
+            require_once __DIR__ . '/controllers/NotificacaoController.php';
+            $controller = new NotificacaoController();
+            
+            switch($action) {
+                case 'list':
+                case 'listar':
+                    $_GET['action'] = 'list';
+                    break;
+                case 'read':
+                case 'ler':
+                    $_GET['action'] = 'read';
+                    break;
+                case 'create':
+                case 'criar':
+                    $_GET['action'] = 'create';
+                    break;
+                case 'delete':
+                case 'excluir':
+                    $_GET['action'] = 'delete';
+                    break;
+                case 'count':
+                case 'contar':
+                    $_GET['action'] = 'count';
+                    break;
+                default:
+                    $_GET['action'] = $action ?: 'list';
+            }
+            
+            if($id) $_GET['id'] = $id;
+            $controller->processarRequisicao();
+            break;
+            
         case 'newsletter':
             require_once __DIR__ . '/controllers/NewsletterController.php';
             $controller = new NewsletterController();
@@ -461,6 +496,7 @@ try {
                     'comentarios' => '/comentarios/{action}',
                     'upload' => '/upload/{action}',
                     'admin' => '/admin/{action}',
+                    'notificacoes' => '/notificacoes/{action}',
                     'newsletter' => '/newsletter/{action}',
                     'rss' => '/rss',
                     'sitemap' => '/sitemap',
@@ -515,8 +551,8 @@ try {
                 'recurso_solicitado' => $resource,
                 'endpoints_disponiveis' => [
                     'auth', 'noticias', 'categorias', 'tags', 
-                    'comentarios', 'upload', 'admin', 'newsletter', 
-                    'rss', 'sitemap', 'search', 'api', 'health'
+                    'comentarios', 'upload', 'admin', 'notificacoes', 
+                    'newsletter', 'rss', 'sitemap', 'search', 'api', 'health'
                 ]
             ], 404);
     }

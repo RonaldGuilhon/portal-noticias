@@ -4,16 +4,20 @@
  * Portal de Notícias
  */
 
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Tag.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
 class TagController {
+    private $db;
     private $tag;
     private $usuario;
     
     public function __construct() {
-        $this->tag = new Tag();
-        $this->usuario = new Usuario();
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $this->tag = new Tag($this->db);
+        $this->usuario = new Usuario($this->db);
     }
     
     /**
