@@ -396,5 +396,178 @@ class Usuario {
         
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    /**
+     * Criar usuário via login social
+     */
+    public function criarUsuarioSocial($dados) {
+        $query = "INSERT INTO " . $this->table_name . " 
+                  SET nome=:nome, email=:email, senha=:senha, foto_perfil=:foto_perfil,
+                      provider=:provider, provider_id=:provider_id, email_verificado=1, ativo=1";
+        
+        $stmt = $this->conn->prepare($query);
+        
+        $senha_aleatoria = password_hash(bin2hex(random_bytes(16)), PASSWORD_DEFAULT);
+        
+        $stmt->bindParam(":nome", $dados['nome']);
+        $stmt->bindParam(":email", $dados['email']);
+        $stmt->bindParam(":senha", $senha_aleatoria);
+        $stmt->bindParam(":foto_perfil", $dados['avatar']);
+        $stmt->bindParam(":provider", $dados['provider']);
+        $stmt->bindParam(":provider_id", $dados['provider_id']);
+        
+        if($stmt->execute()) {
+            $user_id = $this->conn->lastInsertId();
+            
+            // Salvar access token na tabela de conexões sociais
+            $this->salvarConexaoSocial($user_id, $dados['provider'], $dados['provider_id'], $dados['access_token']);
+            
+            return $user_id;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Buscar usuário por email
+     */
+    public function buscarPorEmail($email) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":email", $email);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Atualizar conexão social do usuário
+     */
+    public function atualizarConexaoSocial($user_id, $provider, $provider_id, $access_token) {
+        // Primeiro, verificar se a conexão já existe
+        $query = "SELECT id FROM social_connections WHERE user_id = :user_id AND provider = :provider";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":provider", $provider);
+        $stmt->execute();
+        
+        if($stmt->rowCount() > 0) {
+            // Atualizar conexão existente
+            $query = "UPDATE social_connections 
+                      SET provider_id = :provider_id, access_token = :access_token, 
+                          updated_at = NOW() 
+                      WHERE user_id = :user_id AND provider = :provider";
+        } else {
+            // Criar nova conexão
+            $query = "INSERT INTO social_connections 
+                      SET user_id = :user_id, provider = :provider, provider_id = :provider_id, 
+                          access_token = :access_token, created_at = NOW(), updated_at = NOW()";
+        }
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":provider", $provider);
+        $stmt->bindParam(":provider_id", $provider_id);
+        $stmt->bindParam(":access_token", $access_token);
+        
+        return $stmt->execute();
+    }
+    
+    /**
+     * Salvar conexão social
+     */
+    private function salvarConexaoSocial($user_id, $provider, $provider_id, $access_token) {
+        $query = "INSERT INTO social_connections 
+                  SET user_id = :user_id, provider = :provider, provider_id = :provider_id, 
+                      access_token = :access_token, created_at = NOW(), updated_at = NOW()";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":provider", $provider);
+        $stmt->bindParam(":provider_id", $provider_id);
+        $stmt->bindParam(":access_token", $access_token);
+        
+        return $stmt->execute();
+    }
+    
+    /**
+     * Obter conexão social do usuário
+     */
+    public function obterConexaoSocial($user_id, $provider) {
+        $query = "SELECT * FROM social_connections 
+                  WHERE user_id = :user_id AND provider = :provider";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":provider", $provider);
+        $stmt->execute();
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Obter todas as conexões sociais do usuário
+     */
+    public function obterConexoesSociais($user_id) {
+        $query = "SELECT provider, provider_id, created_at, updated_at 
+                  FROM social_connections 
+                  WHERE user_id = :user_id 
+                  ORDER BY created_at DESC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Remover conexão social
+     */
+    public function removerConexaoSocial($user_id, $provider) {
+        $query = "DELETE FROM social_connections 
+                  WHERE user_id = :user_id AND provider = :provider";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":provider", $provider);
+        
+        return $stmt->execute();
+    }
+    
+    /**
+     * Registrar compartilhamento
+     */
+    public function registrarCompartilhamento($dados) {
+        $query = "INSERT INTO social_shares 
+                  SET user_id = :user_id, provider = :provider, content_type = :content_type, 
+                      content_id = :content_id, response = :response, created_at = NOW()";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $dados['user_id']);
+        $stmt->bindParam(":provider", $dados['provider']);
+        $stmt->bindParam(":content_type", $dados['content_type']);
+        $stmt->bindParam(":content_id", $dados['content_id']);
+        $stmt->bindParam(":response", $dados['response']);
+        
+        return $stmt->execute();
+    }
+    
+    /**
+     * Obter histórico de compartilhamentos
+     */
+    public function obterHistoricoCompartilhamentos($user_id, $limit = 50) {
+        $query = "SELECT * FROM social_shares 
+                  WHERE user_id = :user_id 
+                  ORDER BY created_at DESC 
+                  LIMIT :limit";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
 ?>

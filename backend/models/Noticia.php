@@ -48,7 +48,7 @@ class Noticia {
      * Criar nova notícia
      */
     public function criar() {
-        $query = "INSERT INTO " . $this->table_name . " 
+        $query = "INSERT INTO {$this->table_name} 
                   SET titulo=:titulo, slug=:slug, subtitulo=:subtitulo, conteudo=:conteudo, 
                       resumo=:resumo, imagem_destaque=:imagem_destaque, alt_imagem=:alt_imagem,
                       autor_id=:autor_id, categoria_id=:categoria_id, status=:status, 
@@ -113,7 +113,7 @@ class Noticia {
      * Atualizar notícia
      */
     public function atualizar() {
-        $query = "UPDATE " . $this->table_name . " 
+        $query = "UPDATE {$this->table_name} 
                   SET titulo=:titulo, slug=:slug, subtitulo=:subtitulo, conteudo=:conteudo, 
                       resumo=:resumo, imagem_destaque=:imagem_destaque, alt_imagem=:alt_imagem,
                       categoria_id=:categoria_id, status=:status, destaque=:destaque, 
@@ -177,7 +177,7 @@ class Noticia {
      */
     public function buscarPorId($id) {
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE n.id = :id";
@@ -201,7 +201,7 @@ class Noticia {
      */
     public function buscarPorSlug($slug) {
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE n.slug = :slug AND n.status = 'publicado'";
@@ -280,7 +280,7 @@ class Noticia {
         $whereClause = implode(' AND ', $where);
         
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug, c.cor as categoria_cor
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE {$whereClause}
@@ -341,7 +341,7 @@ class Noticia {
         
         $whereClause = implode(' AND ', $where);
         
-        $query = "SELECT COUNT(*) as total FROM " . $this->table_name . " WHERE {$whereClause}";
+        $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE {$whereClause}";
         $stmt = $this->conn->prepare($query);
         
         foreach($params as $key => $value) {
@@ -358,7 +358,7 @@ class Noticia {
      * Excluir notícia
      */
     public function excluir($id) {
-        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $query = "DELETE FROM {$this->table_name} WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
         
@@ -369,7 +369,7 @@ class Noticia {
      * Incrementar visualizações
      */
     public function incrementarVisualizacoes() {
-        $query = "UPDATE " . $this->table_name . " SET visualizacoes = visualizacoes + 1 WHERE id = :id";
+        $query = "UPDATE {$this->table_name} SET visualizacoes = visualizacoes + 1 WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $this->id);
         $stmt->execute();
@@ -418,7 +418,7 @@ class Noticia {
      */
     public function obterRelacionadas($limite = 4) {
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE n.categoria_id = :categoria_id AND n.id != :id AND n.status = 'publicado'
@@ -454,7 +454,7 @@ class Noticia {
      * Verificar se slug existe
      */
     private function slugExiste($slug, $id = null) {
-        $query = "SELECT id FROM " . $this->table_name . " WHERE slug = :slug";
+        $query = "SELECT id FROM {$this->table_name} WHERE slug = :slug";
         if($id) {
             $query .= " AND id != :id";
         }
@@ -694,7 +694,7 @@ class Noticia {
         $whereClause = implode(' AND ', $where);
         
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug, c.cor as categoria_cor
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE {$whereClause}
@@ -756,7 +756,7 @@ class Noticia {
         
         $whereClause = implode(' AND ', $where);
         
-        $query = "SELECT COUNT(*) as total FROM " . $this->table_name . " WHERE {$whereClause}";
+        $query = "SELECT COUNT(*) as total FROM {$this->table_name} WHERE {$whereClause}";
         $stmt = $this->conn->prepare($query);
         
         foreach ($params as $key => $value) {
@@ -774,7 +774,7 @@ class Noticia {
      */
     public function buscarSugestoesTitulos($termo, $limite = 5) {
         $query = "SELECT id, titulo, slug
-                  FROM " . $this->table_name . "
+                  FROM {$this->table_name}
                   WHERE status = 'publicado' AND titulo LIKE :termo
                   ORDER BY data_publicacao DESC
                   LIMIT :limite";
@@ -798,7 +798,7 @@ class Noticia {
                     SUM(CASE WHEN destaque = 1 THEN 1 ELSE 0 END) as destaques,
                     SUM(visualizacoes) as total_visualizacoes,
                     SUM(curtidas) as total_curtidas
-                  FROM " . $this->table_name;
+                  FROM {$this->table_name}";
         
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
@@ -872,7 +872,7 @@ class Noticia {
         $whereClause = implode(' AND ', $where);
         
         $query = "SELECT n.*, u.nome as autor_nome, c.nome as categoria_nome, c.slug as categoria_slug, c.cor as categoria_cor
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   LEFT JOIN categorias c ON n.categoria_id = c.id
                   WHERE {$whereClause}
@@ -955,7 +955,7 @@ class Noticia {
         $whereClause = implode(' AND ', $where);
         
         $query = "SELECT COUNT(*) as total 
-                  FROM " . $this->table_name . " n
+                  FROM {$this->table_name} n
                   LEFT JOIN usuarios u ON n.autor_id = u.id
                   WHERE {$whereClause}";
         

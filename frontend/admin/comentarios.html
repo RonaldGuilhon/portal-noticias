@@ -238,22 +238,22 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-3">
-                                <button class="btn btn-success w-100" onclick="bulkApprove()">
+                                <button class="btn btn-success w-100" onclick="approveSelected()">
                                     <i class="fas fa-check me-2"></i>Aprovar Selecionados
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-warning w-100" onclick="bulkReject()">
+                                <button class="btn btn-warning w-100" onclick="rejectSelected()">
                                     <i class="fas fa-times me-2"></i>Rejeitar Selecionados
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-danger w-100" onclick="bulkSpam()">
+                                <button class="btn btn-danger w-100" onclick="markSpamSelected()">
                                     <i class="fas fa-ban me-2"></i>Marcar como Spam
                                 </button>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-outline-danger w-100" onclick="bulkDelete()">
+                                <button class="btn btn-outline-danger w-100" onclick="deleteSelected()">
                                     <i class="fas fa-trash me-2"></i>Excluir Selecionados
                                 </button>
                             </div>
@@ -718,7 +718,110 @@
             }
             
             // Show bulk actions menu
-            alert('Funcionalidade de ações em lote será implementada');
+            showBulkActionsModal(selectedComments);
+        }
+        
+        function showBulkActionsModal(selectedIds) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Ações em Lote</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Selecione a ação para ${selectedIds.length} comentário(s):</p>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success" onclick="executarAcaoLote('aprovar', ${JSON.stringify(selectedIds)})">
+                                    <i class="fas fa-check me-2"></i>Aprovar Selecionados
+                                </button>
+                                <button class="btn btn-warning" onclick="executarAcaoLote('rejeitar', ${JSON.stringify(selectedIds)})">
+                                    <i class="fas fa-times me-2"></i>Rejeitar Selecionados
+                                </button>
+                                <button class="btn btn-danger" onclick="executarAcaoLote('spam', ${JSON.stringify(selectedIds)})">
+                                    <i class="fas fa-ban me-2"></i>Marcar como Spam
+                                </button>
+                                <button class="btn btn-dark" onclick="executarAcaoLote('excluir', ${JSON.stringify(selectedIds)})">
+                                    <i class="fas fa-trash me-2"></i>Excluir Selecionados
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
+        
+        async function executarAcaoLote(acao, ids) {
+            const acoes = {
+                'aprovar': 'aprovar os comentários selecionados',
+                'rejeitar': 'rejeitar os comentários selecionados', 
+                'spam': 'marcar os comentários selecionados como spam',
+                'excluir': 'excluir os comentários selecionados'
+            };
+            
+            if (!confirm(`Tem certeza que deseja ${acoes[acao]}?`)) {
+                return;
+            }
+            
+            // Close modal
+            const modal = document.querySelector('.modal.show');
+            if (modal) {
+                bootstrap.Modal.getInstance(modal).hide();
+            }
+            
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+            
+            try {
+                const endpoints = {
+                    'aprovar': 'bulk-approve',
+                    'rejeitar': 'bulk-reject',
+                    'spam': 'bulk-spam', 
+                    'excluir': 'bulk-delete'
+                };
+                
+                const response = await fetch(`http://localhost:8001/comentarios/${endpoints[acao]}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
+                    },
+                    body: JSON.stringify({ ids: ids })
+                });
+                
+                const data = await response.json();
+                
+                if (data.sucesso) {
+                    adminPanel.showNotification(data.mensagem, 'success');
+                    
+                    // Desmarcar todos os checkboxes
+                    document.querySelectorAll('.comment-checkbox').forEach(cb => cb.checked = false);
+                    document.getElementById('selectAll').checked = false;
+                    
+                    // Recarregar lista de comentários
+                    loadComments();
+                    
+                    // Atualizar estatísticas
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(data.erro || 'Erro ao executar ação em lote', 'error');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                adminPanel.showNotification('Erro ao executar ação em lote', 'error');
+            } finally {
+                overlay.style.display = 'none';
+            }
         }
         
         function moderationQueue() {
@@ -729,7 +832,163 @@
         }
         
         function exportComments() {
-            alert('Funcionalidade de exportação será implementada');
+            // Criar modal de exportação
+            const modalHtml = `
+                <div class="modal fade" id="exportModal" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Exportar Comentários</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="export-form">
+                                    <div class="mb-3">
+                                        <label class="form-label">Formato de Exportação</label>
+                                        <select class="form-control" id="export-format">
+                                            <option value="csv">CSV (Excel)</option>
+                                            <option value="json">JSON</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Filtros Atuais</label>
+                                        <div class="alert alert-info">
+                                            <small id="current-filters-info">Serão aplicados os filtros atualmente ativos na listagem</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="include-content" checked>
+                                            <label class="form-check-label" for="include-content">
+                                                Incluir conteúdo completo dos comentários
+                                            </label>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" onclick="executeExport()">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remover modal existente se houver
+            const existingModal = document.getElementById('exportModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Adicionar modal ao DOM
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Mostrar informações dos filtros atuais
+            updateCurrentFiltersInfo();
+            
+            // Mostrar modal
+            const modal = new bootstrap.Modal(document.getElementById('exportModal'));
+            modal.show();
+        }
+        
+        function updateCurrentFiltersInfo() {
+            const info = document.getElementById('current-filters-info');
+            const filters = [];
+            
+            if (currentFilters.status) {
+                filters.push(`Status: ${currentFilters.status}`);
+            }
+            if (currentFilters.noticia_id) {
+                filters.push(`Notícia específica`);
+            }
+            if (currentFilters.search) {
+                filters.push(`Busca: "${currentFilters.search}"`);
+            }
+            if (currentFilters.data_inicio) {
+                filters.push(`Data início: ${currentFilters.data_inicio}`);
+            }
+            if (currentFilters.data_fim) {
+                filters.push(`Data fim: ${currentFilters.data_fim}`);
+            }
+            
+            if (filters.length > 0) {
+                info.textContent = 'Filtros ativos: ' + filters.join(', ');
+            } else {
+                info.textContent = 'Nenhum filtro ativo - todos os comentários serão exportados';
+            }
+        }
+        
+        async function executeExport() {
+            const format = document.getElementById('export-format').value;
+            const includeContent = document.getElementById('include-content').checked;
+            
+            try {
+                // Construir URL com filtros
+                const params = new URLSearchParams({
+                    format: format,
+                    ...currentFilters
+                });
+                
+                const exportUrl = `../backend/controllers/ComentarioController.php?action=export&${params}`;
+                
+                // Criar link temporário para download
+                const link = document.createElement('a');
+                link.href = exportUrl;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Fechar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+                modal.hide();
+                
+                adminPanel.showNotification('Exportação iniciada! O download começará em breve.', 'success');
+                
+            } catch (error) {
+                console.error('Erro ao exportar:', error);
+                adminPanel.showNotification('Erro ao exportar comentários', 'error');
+            }
+        }
+        
+        // Funções de moderação rápida
+        function approveSelected() {
+            const selectedComments = getSelectedComments();
+            if (selectedComments.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos um comentário', 'warning');
+                return;
+            }
+            executarAcaoLote('aprovar', selectedComments);
+        }
+        
+        function rejectSelected() {
+            const selectedComments = getSelectedComments();
+            if (selectedComments.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos um comentário', 'warning');
+                return;
+            }
+            executarAcaoLote('rejeitar', selectedComments);
+        }
+        
+        function markSpamSelected() {
+            const selectedComments = getSelectedComments();
+            if (selectedComments.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos um comentário', 'warning');
+                return;
+            }
+            executarAcaoLote('spam', selectedComments);
+        }
+        
+        function deleteSelected() {
+            const selectedComments = getSelectedComments();
+            if (selectedComments.length === 0) {
+                adminPanel.showNotification('Selecione pelo menos um comentário', 'warning');
+                return;
+            }
+            executarAcaoLote('excluir', selectedComments);
         }
         
         // Logout function

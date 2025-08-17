@@ -9,12 +9,14 @@ require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Noticia.php';
 require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../services/UploadService.php';
+require_once __DIR__ . '/../utils/CacheManager.php';
 
 class NoticiaController {
     private $db;
     private $noticia;
     private $usuario;
     private $uploadService;
+    private $cache;
 
     public function __construct() {
         $database = new Database();
@@ -22,6 +24,7 @@ class NoticiaController {
         $this->noticia = new Noticia($this->db);
         $this->usuario = new Usuario($this->db);
         $this->uploadService = new UploadService();
+        $this->cache = new CacheManager();
         
         // Iniciar sessão se não estiver iniciada
         if (session_status() == PHP_SESSION_NONE) {
@@ -147,11 +150,21 @@ class NoticiaController {
                 'ordem' => $_GET['ordem'] ?? 'recentes'
             ];
 
+            // Gerar chave de cache baseada nos filtros
+            $cache_key = 'noticias_list_' . md5(serialize($filtros));
+            
+            // Tentar obter do cache
+            $cached_result = $this->cache->get($cache_key);
+            if ($cached_result !== null) {
+                jsonResponse($cached_result);
+                return;
+            }
+
             $noticias = $this->noticia->listar($filtros);
             $total = $this->noticia->contar($filtros);
             $total_paginas = ceil($total / $filtros['limit']);
 
-            jsonResponse([
+            $result = [
                 'noticias' => $noticias,
                 'paginacao' => [
                     'pagina_atual' => $filtros['page'],
@@ -159,7 +172,12 @@ class NoticiaController {
                     'total_itens' => $total,
                     'itens_por_pagina' => $filtros['limit']
                 ]
-            ]);
+            ];
+            
+            // Armazenar no cache por 5 minutos
+            $this->cache->set($cache_key, $result, 300);
+
+            jsonResponse($result);
         } catch(Exception $e) {
             logError('Erro ao listar notícias: ' . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
@@ -171,8 +189,18 @@ class NoticiaController {
      */
     private function obterPorId($id) {
         try {
+            // Gerar chave de cache
+            $cache_key = 'noticia_' . $id;
+            
+            // Tentar obter do cache
+            $cached_result = $this->cache->get($cache_key);
+            if ($cached_result !== null) {
+                jsonResponse($cached_result);
+                return;
+            }
+            
             if($this->noticia->buscarPorId($id)) {
-                jsonResponse([
+                $result = [
                     'noticia' => [
                         'id' => $this->noticia->id,
                         'titulo' => $this->noticia->titulo,
@@ -199,7 +227,12 @@ class NoticiaController {
                         'meta_keywords' => $this->noticia->meta_keywords,
                         'tags' => $this->noticia->tags
                     ]
-                ]);
+                ];
+                
+                // Armazenar no cache por 10 minutos
+                $this->cache->set($cache_key, $result, 600);
+                
+                jsonResponse($result);
             } else {
                 jsonResponse(['erro' => 'Notícia não encontrada'], 404);
             }
@@ -675,8 +708,10 @@ class NoticiaController {
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':noticia_id', $id);
             $stmt->bindParam(':ip', $_SERVER['REMOTE_ADDR']);
-            $stmt->bindParam(':user_agent', $_SERVER['HTTP_USER_AGENT'] ?? '');
-            $stmt->bindParam(':referer', $_SERVER['HTTP_REFERER'] ?? '');
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+            $referer = $_SERVER['HTTP_REFERER'] ?? '';
+            $stmt->bindParam(':user_agent', $userAgent);
+            $stmt->bindParam(':referer', $referer);
             $stmt->execute();
 
             jsonResponse(['sucesso' => true]);

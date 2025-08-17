@@ -73,6 +73,9 @@ class ComentarioController {
             case 'stats':
                 $this->estatisticas();
                 break;
+            case 'export':
+                $this->exportar();
+                break;
             default:
                 jsonResponse(['erro' => 'Ação não encontrada'], 404);
         }
@@ -91,6 +94,18 @@ class ComentarioController {
                 break;
             case 'dislike':
                 $this->descurtir();
+                break;
+            case 'bulk-approve':
+                $this->aprovarEmLote();
+                break;
+            case 'bulk-reject':
+                $this->rejeitarEmLote();
+                break;
+            case 'bulk-spam':
+                $this->marcarSpamEmLote();
+                break;
+            case 'bulk-delete':
+                $this->excluirEmLote();
                 break;
             default:
                 jsonResponse(['erro' => 'Ação não encontrada'], 404);
@@ -540,6 +555,182 @@ class ComentarioController {
     }
     
     /**
+     * Aprovar comentários em lote
+     */
+    public function aprovarEmLote() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados || !isset($dados['ids']) || !is_array($dados['ids'])) {
+            jsonResponse(['erro' => 'IDs dos comentários são obrigatórios'], 400);
+            return;
+        }
+        
+        $ids = array_filter($dados['ids'], 'is_numeric');
+        
+        if(empty($ids)) {
+            jsonResponse(['erro' => 'Nenhum ID válido fornecido'], 400);
+            return;
+        }
+        
+        $sucessos = 0;
+        $erros = 0;
+        
+        foreach($ids as $id) {
+            if($this->comentario->moderar($id, 'aprovado', $_SESSION['usuario_id'])) {
+                $sucessos++;
+            } else {
+                $erros++;
+            }
+        }
+        
+        jsonResponse([
+            'sucesso' => true,
+            'mensagem' => "$sucessos comentário(s) aprovado(s) com sucesso",
+            'detalhes' => [
+                'aprovados' => $sucessos,
+                'erros' => $erros,
+                'total' => count($ids)
+            ]
+        ]);
+    }
+    
+    /**
+     * Rejeitar comentários em lote
+     */
+    public function rejeitarEmLote() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados || !isset($dados['ids']) || !is_array($dados['ids'])) {
+            jsonResponse(['erro' => 'IDs dos comentários são obrigatórios'], 400);
+            return;
+        }
+        
+        $ids = array_filter($dados['ids'], 'is_numeric');
+        
+        if(empty($ids)) {
+            jsonResponse(['erro' => 'Nenhum ID válido fornecido'], 400);
+            return;
+        }
+        
+        $sucessos = 0;
+        $erros = 0;
+        
+        foreach($ids as $id) {
+            if($this->comentario->moderar($id, 'rejeitado', $_SESSION['usuario_id'])) {
+                $sucessos++;
+            } else {
+                $erros++;
+            }
+        }
+        
+        jsonResponse([
+            'sucesso' => true,
+            'mensagem' => "$sucessos comentário(s) rejeitado(s) com sucesso",
+            'detalhes' => [
+                'rejeitados' => $sucessos,
+                'erros' => $erros,
+                'total' => count($ids)
+            ]
+        ]);
+    }
+    
+    /**
+     * Marcar comentários como spam em lote
+     */
+    public function marcarSpamEmLote() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados || !isset($dados['ids']) || !is_array($dados['ids'])) {
+            jsonResponse(['erro' => 'IDs dos comentários são obrigatórios'], 400);
+            return;
+        }
+        
+        $ids = array_filter($dados['ids'], 'is_numeric');
+        
+        if(empty($ids)) {
+            jsonResponse(['erro' => 'Nenhum ID válido fornecido'], 400);
+            return;
+        }
+        
+        $sucessos = 0;
+        $erros = 0;
+        
+        foreach($ids as $id) {
+            if($this->comentario->moderar($id, 'spam', $_SESSION['usuario_id'])) {
+                $sucessos++;
+            } else {
+                $erros++;
+            }
+        }
+        
+        jsonResponse([
+            'sucesso' => true,
+            'mensagem' => "$sucessos comentário(s) marcado(s) como spam",
+            'detalhes' => [
+                'spam' => $sucessos,
+                'erros' => $erros,
+                'total' => count($ids)
+            ]
+        ]);
+    }
+    
+    /**
+     * Excluir comentários em lote
+     */
+    public function excluirEmLote() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $dados = json_decode(file_get_contents('php://input'), true);
+        
+        if(!$dados || !isset($dados['ids']) || !is_array($dados['ids'])) {
+            jsonResponse(['erro' => 'IDs dos comentários são obrigatórios'], 400);
+            return;
+        }
+        
+        $ids = array_filter($dados['ids'], 'is_numeric');
+        
+        if(empty($ids)) {
+            jsonResponse(['erro' => 'Nenhum ID válido fornecido'], 400);
+            return;
+        }
+        
+        $sucessos = 0;
+        $erros = 0;
+        
+        foreach($ids as $id) {
+            if($this->comentario->excluir($id)) {
+                $sucessos++;
+            } else {
+                $erros++;
+            }
+        }
+        
+        jsonResponse([
+            'sucesso' => true,
+            'mensagem' => "$sucessos comentário(s) excluído(s) com sucesso",
+            'detalhes' => [
+                'excluidos' => $sucessos,
+                'erros' => $erros,
+                'total' => count($ids)
+            ]
+        ]);
+    }
+    
+    /**
      * Verificar rate limit para comentários
      */
     private function verificarRateLimit() {
@@ -624,6 +815,113 @@ class ComentarioController {
         
         jsonResponse(['erro' => 'Sem permissão para excluir este comentário'], 403);
         return false;
+    }
+    
+    /**
+     * Exportar comentários
+     */
+    public function exportar() {
+        if(!$this->verificarPermissaoModerador()) {
+            return;
+        }
+        
+        $formato = $_GET['format'] ?? 'csv';
+        $filtros = [];
+        
+        // Aplicar filtros da query string
+        if(!empty($_GET['status'])) {
+            $filtros['status'] = $_GET['status'];
+        }
+        
+        if(!empty($_GET['noticia_id'])) {
+            $filtros['noticia_id'] = $_GET['noticia_id'];
+        }
+        
+        if(!empty($_GET['search'])) {
+            $filtros['search'] = $_GET['search'];
+        }
+        
+        if(!empty($_GET['data_inicio'])) {
+            $filtros['data_inicio'] = $_GET['data_inicio'];
+        }
+        
+        if(!empty($_GET['data_fim'])) {
+            $filtros['data_fim'] = $_GET['data_fim'];
+        }
+        
+        try {
+            if($formato === 'json') {
+                $comentarios = $this->comentario->exportarParaJSON($filtros);
+                
+                header('Content-Type: application/json; charset=utf-8');
+                header('Content-Disposition: attachment; filename="comentarios_' . date('Y-m-d_H-i-s') . '.json"');
+                
+                echo json_encode([
+                    'exportado_em' => date('Y-m-d H:i:s'),
+                    'total_comentarios' => count($comentarios),
+                    'filtros_aplicados' => $filtros,
+                    'comentarios' => $comentarios
+                ], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+            } else {
+                // Formato CSV (padrão)
+                $comentarios = $this->comentario->exportarParaCSV($filtros);
+                
+                header('Content-Type: text/csv; charset=utf-8');
+                header('Content-Disposition: attachment; filename="comentarios_' . date('Y-m-d_H-i-s') . '.csv"');
+                
+                // BOM para UTF-8
+                echo "\xEF\xBB\xBF";
+                
+                // Cabeçalhos CSV
+                $cabecalhos = [
+                    'ID',
+                    'Notícia ID',
+                    'Título da Notícia',
+                    'Autor',
+                    'Email',
+                    'Conteúdo',
+                    'Tipo',
+                    'Status',
+                    'Likes',
+                    'Dislikes',
+                    'IP Address',
+                    'Data Criação',
+                    'Data Atualização',
+                    'Data Moderação'
+                ];
+                
+                echo implode(',', array_map(function($header) {
+                    return '"' . str_replace('"', '""', $header) . '"';
+                }, $cabecalhos)) . "\n";
+                
+                // Dados dos comentários
+                foreach($comentarios as $comentario) {
+                    $linha = [
+                        $comentario['id'],
+                        $comentario['noticia_id'],
+                        $comentario['noticia_titulo'] ?? '',
+                        $comentario['autor_nome'] ?? '',
+                        $comentario['autor_email'] ?? '',
+                        $comentario['conteudo'],
+                        $comentario['tipo'],
+                        $comentario['status'],
+                        $comentario['likes'],
+                        $comentario['dislikes'],
+                        $comentario['ip_address'] ?? '',
+                        $comentario['criado_em'],
+                        $comentario['atualizado_em'] ?? '',
+                        $comentario['moderado_em'] ?? ''
+                    ];
+                    
+                    echo implode(',', array_map(function($campo) {
+                        return '"' . str_replace('"', '""', $campo) . '"';
+                    }, $linha)) . "\n";
+                }
+            }
+        } catch(Exception $e) {
+            logError('Erro ao exportar comentários: ' . $e->getMessage());
+            jsonResponse(['erro' => 'Erro ao exportar comentários'], 500);
+        }
     }
     
     /**

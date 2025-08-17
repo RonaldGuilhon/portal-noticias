@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes Sociais - Portal de Notícias</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../css/admin.css" rel="stylesheet">
+    <link href="../css/social-media.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-newspaper"></i> Portal Admin</h4>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="noticias.html"><i class="fas fa-newspaper"></i> Notícias</a></li>
+                <li><a href="categorias.html"><i class="fas fa-tags"></i> Categorias</a></li>
+                <li><a href="usuarios.html"><i class="fas fa-users"></i> Usuários</a></li>
+                <li><a href="comentarios.html"><i class="fas fa-comments"></i> Comentários</a></li>
+                <li class="active"><a href="social-media.html"><i class="fab fa-facebook"></i> Redes Sociais</a></li>
+                <li><a href="configuracoes.html"><i class="fas fa-cog"></i> Configurações</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <header class="content-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1><i class="fab fa-facebook"></i> Redes Sociais</h1>
+                        <p class="text-muted">Gerencie integrações e configurações de redes sociais</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bulkShareModal">
+                            <i class="fas fa-share-alt"></i> Compartilhamento em Lote
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-body">
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-facebook">
+                                <i class="fab fa-facebook"></i>
+                            </div>
+                            <div class="stat-number" id="facebook-connections">-</div>
+                            <div class="stat-label">Facebook</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-twitter">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="stat-number" id="twitter-connections">-</div>
+                            <div class="stat-label">Twitter</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-linkedin">
+                                <i class="fab fa-linkedin"></i>
+                            </div>
+                            <div class="stat-number" id="linkedin-connections">-</div>
+                            <div class="stat-label">LinkedIn</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-icon text-google">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="stat-number" id="total-shares">-</div>
+                            <div class="stat-label">Total Shares</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <ul class="nav nav-tabs mb-4" id="socialTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="providers-tab" data-bs-toggle="tab" data-bs-target="#providers" type="button" role="tab">
+                            <i class="fas fa-plug"></i> Provedores
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="connections-tab" data-bs-toggle="tab" data-bs-target="#connections" type="button" role="tab">
+                            <i class="fas fa-link"></i> Conexões
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics" type="button" role="tab">
+                            <i class="fas fa-chart-bar"></i> Analytics
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab">
+                            <i class="fas fa-cog"></i> Configurações
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="socialTabContent">
+                    <!-- Providers Tab -->
+                    <div class="tab-pane fade show active" id="providers" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-plug"></i> Provedores Disponíveis</h5>
+                                <p class="text-muted mb-0">Configure e gerencie integrações com redes sociais</p>
+                            </div>
+                            <div class="card-body">
+                                <div id="social-providers">
+                                    <!-- Providers will be loaded here -->
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Carregando...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">Carregando provedores...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connections Tab -->
+                    <div class="tab-pane fade" id="connections" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-link"></i> Suas Conexões</h5>
+                                <p class="text-muted mb-0">Gerencie suas contas conectadas</p>
+                            </div>
+                            <div class="card-body">
+                                <div id="user-connections">
+                                    <!-- User connections will be loaded here -->
+                                    <div class="text-center py-4">
+                                        <div class="spinner-border" role="status">
+                                            <span class="visually-hidden">Carregando...</span>
+                                        </div>
+                                        <p class="mt-2 text-muted">Carregando conexões...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div class="tab-pane fade" id="analytics" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-chart-line"></i> Estatísticas de Compartilhamento</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="shareChart" width="400" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5><i class="fas fa-trophy"></i> Top Compartilhamentos</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="top-shares">
+                                            <!-- Top shares will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div class="tab-pane fade" id="settings" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-cog"></i> Configurações Gerais</h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="social-settings-form">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Compartilhamento Automático</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="auto-share">
+                                                    <label class="form-check-label" for="auto-share">
+                                                        Compartilhar automaticamente novas notícias
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Login Social</label>
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" id="social-login">
+                                                    <label class="form-check-label" for="social-login">
+                                                        Permitir login via redes sociais
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="default-message" class="form-label">Mensagem Padrão</label>
+                                                <textarea class="form-control" id="default-message" rows="3" placeholder="Mensagem padrão para compartilhamentos"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="share-frequency" class="form-label">Frequência de Compartilhamento</label>
+                                                <select class="form-select" id="share-frequency">
+                                                    <option value="immediate">Imediato</option>
+                                                    <option value="hourly">A cada hora</option>
+                                                    <option value="daily">Diário</option>
+                                                    <option value="weekly">Semanal</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Redes Sociais Ativas</label>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enable-facebook">
+                                                    <label class="form-check-label" for="enable-facebook">
+                                                        <i class="fab fa-facebook text-facebook"></i> Facebook
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enable-twitter">
+                                                    <label class="form-check-label" for="enable-twitter">
+                                                        <i class="fab fa-twitter text-twitter"></i> Twitter
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enable-linkedin">
+                                                    <label class="form-check-label" for="enable-linkedin">
+                                                        <i class="fab fa-linkedin text-linkedin"></i> LinkedIn
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" id="enable-instagram">
+                                                    <label class="form-check-label" for="enable-instagram">
+                                                        <i class="fab fa-instagram text-instagram"></i> Instagram
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Salvar Configurações
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal fade share-modal" id="shareModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-share-alt"></i> Compartilhar Conteúdo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="share-form">
+                        <input type="hidden" id="share-provider" name="provider">
+                        <input type="hidden" id="share-content-id" name="content_id">
+                        <input type="hidden" id="share-content-type" name="content_type">
+                        
+                        <div class="share-form-group">
+                            <label for="share-message">Mensagem</label>
+                            <textarea class="form-control share-textarea" id="share-message" name="message" placeholder="Digite sua mensagem..."></textarea>
+                        </div>
+                        
+                        <div class="share-preview">
+                            <h6>Preview</h6>
+                            <p id="share-preview-text">Sua mensagem aparecerá aqui...</p>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-share"></i> Compartilhar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Share Modal -->
+    <div class="modal fade" id="bulkShareModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-share-alt"></i> Compartilhamento em Lote</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bulk-share-form">
+                        <div class="mb-3">
+                            <label class="form-label">Selecionar Redes Sociais</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="bulk-facebook" name="providers[]" value="facebook">
+                                        <label class="form-check-label" for="bulk-facebook">
+                                            <i class="fab fa-facebook text-facebook"></i> Facebook
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="bulk-twitter" name="providers[]" value="twitter">
+                                        <label class="form-check-label" for="bulk-twitter">
+                                            <i class="fab fa-twitter text-twitter"></i> Twitter
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="bulk-linkedin" name="providers[]" value="linkedin">
+                                        <label class="form-check-label" for="bulk-linkedin">
+                                            <i class="fab fa-linkedin text-linkedin"></i> LinkedIn
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="bulk-instagram" name="providers[]" value="instagram">
+                                        <label class="form-check-label" for="bulk-instagram">
+                                            <i class="fab fa-instagram text-instagram"></i> Instagram
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bulk-message" class="form-label">Mensagem</label>
+                            <textarea class="form-control" id="bulk-message" name="message" rows="4" placeholder="Digite a mensagem para compartilhamento..."></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="bulk-content-type" class="form-label">Tipo de Conteúdo</label>
+                            <select class="form-select" id="bulk-content-type" name="content_type">
+                                <option value="news">Notícia</option>
+                                <option value="announcement">Anúncio</option>
+                                <option value="promotion">Promoção</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-share-alt"></i> Compartilhar em Todas
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="../js/admin.js"></script>
+    <script src="../js/social-media.js"></script>
+    
+    <script>
+        // Initialize charts and additional functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize share chart
+            const ctx = document.getElementById('shareChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'Facebook',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: '#1877f2',
+                        backgroundColor: 'rgba(24, 119, 242, 0.1)'
+                    }, {
+                        label: 'Twitter',
+                        data: [2, 3, 20, 5, 1, 4],
+                        borderColor: '#1da1f2',
+                        backgroundColor: 'rgba(29, 161, 242, 0.1)'
+                    }, {
+                        label: 'LinkedIn',
+                        data: [3, 10, 13, 15, 22, 30],
+                        borderColor: '#0077b5',
+                        backgroundColor: 'rgba(0, 119, 181, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Load stats
+            loadSocialStats();
+        });
+        
+        async function loadSocialStats() {
+            try {
+                const response = await fetch('/backend/controllers/SocialController.php?action=stats');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('facebook-connections').textContent = data.stats.facebook || 0;
+                    document.getElementById('twitter-connections').textContent = data.stats.twitter || 0;
+                    document.getElementById('linkedin-connections').textContent = data.stats.linkedin || 0;
+                    document.getElementById('total-shares').textContent = data.stats.total_shares || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -495,5 +495,77 @@ class Comentario {
         
         return $hierarquia;
     }
+    
+    /**
+     * Exportar comentários para CSV
+     */
+    public function exportarParaCSV($filtros = []) {
+        try {
+            $where = ['1=1'];
+            $params = [];
+            
+            // Aplicar filtros
+            if(!empty($filtros['noticia_id'])) {
+                $where[] = 'c.noticia_id = :noticia_id';
+                $params['noticia_id'] = $filtros['noticia_id'];
+            }
+            
+            if(!empty($filtros['status'])) {
+                $where[] = 'c.status = :status';
+                $params['status'] = $filtros['status'];
+            }
+            
+            if(!empty($filtros['search'])) {
+                $where[] = '(c.conteudo LIKE :search OR c.autor_nome LIKE :search)';
+                $params['search'] = '%' . $filtros['search'] . '%';
+            }
+            
+            if(!empty($filtros['data_inicio'])) {
+                $where[] = 'DATE(c.criado_em) >= :data_inicio';
+                $params['data_inicio'] = $filtros['data_inicio'];
+            }
+            
+            if(!empty($filtros['data_fim'])) {
+                $where[] = 'DATE(c.criado_em) <= :data_fim';
+                $params['data_fim'] = $filtros['data_fim'];
+            }
+            
+            $sql = "SELECT c.id, c.noticia_id, c.conteudo, c.status, c.likes, c.dislikes,
+                           c.criado_em, c.atualizado_em, c.moderado_em, c.ip_address,
+                           COALESCE(u.nome, c.autor_nome) as autor_nome,
+                           c.autor_email, n.titulo as noticia_titulo,
+                           CASE WHEN c.comentario_pai_id IS NULL THEN 'Principal' ELSE 'Resposta' END as tipo
+                    FROM {$this->table} c
+                    LEFT JOIN usuarios u ON c.usuario_id = u.id
+                    LEFT JOIN noticias n ON c.noticia_id = n.id
+                    WHERE " . implode(' AND ', $where) . "
+                    ORDER BY c.criado_em DESC";
+            
+            $stmt = $this->db->prepare($sql);
+            
+            foreach($params as $key => $value) {
+                $stmt->bindValue(":$key", $value);
+            }
+            
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch(PDOException $e) {
+            logError('Erro ao exportar comentários: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Exportar comentários para JSON
+     */
+    public function exportarParaJSON($filtros = []) {
+        try {
+            $comentarios = $this->listar(1, 10000, $filtros); // Buscar até 10k comentários
+            return $comentarios;
+        } catch(Exception $e) {
+            logError('Erro ao exportar comentários para JSON: ' . $e->getMessage());
+            return [];
+        }
+    }
 }
 ?>

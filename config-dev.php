@@ -94,9 +94,9 @@ define('UPLOAD_CONFIG', [
     ]
 ]);
 
-// Configurações de cache (desenvolvimento - desabilitado)
+// Configurações de cache (desenvolvimento - habilitado para teste)
 define('CACHE_CONFIG', [
-    'enabled' => false,
+    'enabled' => true,
     'type' => 'file', // file, redis, memcached
     'ttl' => 3600,
     'path' => __DIR__ . '/backend/cache'
@@ -275,10 +275,22 @@ if (DEV_CONFIG['show_debug_bar'] || !file_exists(__DIR__ . '/backend/logs')) {
 if (DEV_CONFIG['show_debug_bar'] && php_sapi_name() !== 'cli') {
     register_shutdown_function(function() {
         if (isDevelopment()) {
-            echo "\n<!-- DEBUG INFO -->\n";
-            echo "<!-- Environment: " . APP_CONFIG['environment'] . " -->\n";
-            echo "<!-- Memory Usage: " . memory_get_peak_usage(true) / 1024 / 1024 . " MB -->\n";
-            echo "<!-- Execution Time: " . (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) . " seconds -->\n";
+            // Só adicionar debug info se não for uma resposta JSON
+            $headers = headers_list();
+            $isJsonResponse = false;
+            foreach ($headers as $header) {
+                if (stripos($header, 'content-type: application/json') !== false) {
+                    $isJsonResponse = true;
+                    break;
+                }
+            }
+            
+            if (!$isJsonResponse) {
+                echo "\n<!-- DEBUG INFO -->\n";
+                echo "<!-- Environment: " . APP_CONFIG['environment'] . " -->\n";
+                echo "<!-- Memory Usage: " . memory_get_peak_usage(true) / 1024 / 1024 . " MB -->\n";
+                echo "<!-- Execution Time: " . (microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) . " seconds -->\n";
+            }
         }
     });
 }

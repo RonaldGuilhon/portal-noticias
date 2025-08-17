@@ -18,6 +18,7 @@ ini_set('session.use_only_cookies', 1);
 ini_set('session.cookie_secure', 0); // Mudar para 1 em HTTPS
 
 // Constantes do sistema
+define('AMBIENTE', 'desenvolvimento'); // desenvolvimento, producao
 define('SITE_NAME', 'Portal de Notícias');
 define('BASE_URL', 'http://localhost/portal-noticias');
 define('UPLOAD_PATH', __DIR__ . '/../uploads/');

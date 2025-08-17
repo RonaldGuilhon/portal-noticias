@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Push Notifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        #log {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste de Push Notifications</h1>
+    
+    <div class="container">
+        <h2>Status do Service Worker</h2>
+        <div id="sw-status" class="status info">Verificando...</div>
+        <button id="register-sw">Registrar Service Worker</button>
+    </div>
+    
+    <div class="container">
+        <h2>Notificações Push</h2>
+        <div id="push-status" class="status info">Verificando suporte...</div>
+        <button id="subscribe-btn" disabled>Ativar Notificações</button>
+        <button id="unsubscribe-btn" disabled>Desativar Notificações</button>
+        <button id="test-notification" disabled>Enviar Teste</button>
+    </div>
+    
+    <div class="container">
+        <h2>Log de Eventos</h2>
+        <div id="log"></div>
+        <button onclick="clearLog()">Limpar Log</button>
+    </div>
+
+    <script src="assets/js/push-notifications.js"></script>
+    <script>
+        let pushManager;
+        
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+        
+        function updateStatus(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `status ${type}`;
+        }
+        
+        async function initPushTest() {
+            log('Iniciando teste de push notifications...');
+            
+            // Verificar suporte a Service Worker
+            if ('serviceWorker' in navigator) {
+                updateStatus('sw-status', 'Service Worker suportado', 'success');
+                log('Service Worker é suportado pelo navegador');
+            } else {
+                updateStatus('sw-status', 'Service Worker não suportado', 'error');
+                log('Service Worker NÃO é suportado pelo navegador');
+                return;
+            }
+            
+            // Verificar suporte a Push API
+            if ('PushManager' in window) {
+                updateStatus('push-status', 'Push API suportada', 'success');
+                log('Push API é suportada pelo navegador');
+            } else {
+                updateStatus('push-status', 'Push API não suportada', 'error');
+                log('Push API NÃO é suportada pelo navegador');
+                return;
+            }
+            
+            // Inicializar o gerenciador de push
+            try {
+                pushManager = new PushNotificationManager();
+                await pushManager.init();
+                log('PushNotificationManager inicializado com sucesso');
+                
+                // Verificar status da inscrição
+                const isSubscribed = await pushManager.isSubscribed();
+                if (isSubscribed) {
+                    updateStatus('push-status', 'Inscrito para notificações', 'success');
+                    document.getElementById('subscribe-btn').disabled = true;
+                    document.getElementById('unsubscribe-btn').disabled = false;
+                    document.getElementById('test-notification').disabled = false;
+                } else {
+                    updateStatus('push-status', 'Não inscrito para notificações', 'info');
+                    document.getElementById('subscribe-btn').disabled = false;
+                    document.getElementById('unsubscribe-btn').disabled = true;
+                    document.getElementById('test-notification').disabled = true;
+                }
+                
+            } catch (error) {
+                log('Erro ao inicializar PushNotificationManager: ' + error.message);
+                updateStatus('push-status', 'Erro na inicialização', 'error');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('register-sw').addEventListener('click', async () => {
+            try {
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                log('Service Worker registrado com sucesso');
+                updateStatus('sw-status', 'Service Worker registrado', 'success');
+            } catch (error) {
+                log('Erro ao registrar Service Worker: ' + error.message);
+                updateStatus('sw-status', 'Erro no registro', 'error');
+            }
+        });
+        
+        document.getElementById('subscribe-btn').addEventListener('click', async () => {
+            try {
+                log('Tentando inscrever para notificações...');
+                await pushManager.subscribe();
+                log('Inscrito com sucesso para notificações push');
+                updateStatus('push-status', 'Inscrito para notificações', 'success');
+                document.getElementById('subscribe-btn').disabled = true;
+                document.getElementById('unsubscribe-btn').disabled = false;
+                document.getElementById('test-notification').disabled = false;
+            } catch (error) {
+                log('Erro ao inscrever: ' + error.message);
+                updateStatus('push-status', 'Erro na inscrição', 'error');
+            }
+        });
+        
+        document.getElementById('unsubscribe-btn').addEventListener('click', async () => {
+            try {
+                log('Tentando cancelar inscrição...');
+                await pushManager.unsubscribe();
+                log('Inscrição cancelada com sucesso');
+                updateStatus('push-status', 'Inscrição cancelada', 'info');
+                document.getElementById('subscribe-btn').disabled = false;
+                document.getElementById('unsubscribe-btn').disabled = true;
+                document.getElementById('test-notification').disabled = true;
+            } catch (error) {
+                log('Erro ao cancelar inscrição: ' + error.message);
+                updateStatus('push-status', 'Erro ao cancelar', 'error');
+            }
+        });
+        
+        document.getElementById('test-notification').addEventListener('click', async () => {
+            try {
+                log('Enviando notificação de teste...');
+                await pushManager.sendTestNotification();
+                log('Notificação de teste enviada');
+            } catch (error) {
+                log('Erro ao enviar teste: ' + error.message);
+            }
+        });
+        
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', initPushTest);
+    </script>
+</body>
+</html>
