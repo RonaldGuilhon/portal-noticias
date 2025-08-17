@@ -507,13 +507,14 @@ class AuthController {
      */
     private function atualizarPerfil() {
         try {
-            if(!$this->estaLogado()) {
-                jsonResponse(['erro' => 'Não autorizado'], 401);
+            $usuario = $this->verificarToken();
+            if (!$usuario) {
+                return; // verificarToken já enviou a resposta de erro
             }
 
             $dados = json_decode(file_get_contents('php://input'), true);
             
-            $this->usuario->id = $_SESSION['usuario_id'];
+            $this->usuario->id = $usuario['id'];
             $this->usuario->nome = $dados['nome'] ?? '';
             $this->usuario->bio = $dados['bio'] ?? '';
             $this->usuario->preferencias = json_encode($dados['preferencias'] ?? []);

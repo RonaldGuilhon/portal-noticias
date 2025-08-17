@@ -442,7 +442,7 @@ class PortalNoticias {
     // Carrega notícias em destaque
     async loadFeaturedNews() {
         try {
-            const news = await this.apiRequest('/noticias/destaques');
+            const news = await this.apiRequest('/controllers/NoticiaController.php?action=featured');
             this.displayFeaturedNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias em destaque:', error);
@@ -452,7 +452,7 @@ class PortalNoticias {
     // Carrega notícias populares
     async loadPopularNews() {
         try {
-            const news = await this.apiRequest('/noticias/populares');
+            const news = await this.apiRequest('/controllers/NoticiaController.php?action=popular');
             this.displayPopularNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias populares:', error);
@@ -462,7 +462,7 @@ class PortalNoticias {
     // Carrega categorias
     async loadCategories() {
         try {
-            const categories = await this.apiRequest('/categorias');
+            const categories = await this.apiRequest('/controllers/CategoriaController.php?action=listar');
             this.displayCategories(categories);
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);

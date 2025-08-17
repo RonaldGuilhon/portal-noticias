@@ -837,7 +837,7 @@
         
         async function loadUserData() {
             try {
-                const response = await fetch('http://localhost:8001/auth/profile', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -935,7 +935,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('http://localhost:8001/auth/profile', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -973,7 +973,7 @@
             data.preferencias = preferencias;
             
             try {
-                const response = await fetch('http://localhost:8001/auth/preferences', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=preferences', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1014,7 +1014,7 @@
             }
             
             try {
-                const response = await fetch('http://localhost:8001/auth/change-password', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=change-password', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1047,7 +1047,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                const response = await fetch('http://localhost:8001/auth/notifications', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=notifications', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1088,7 +1088,7 @@
             formData.append('avatar', file);
             
             try {
-                const response = await fetch('http://localhost:8001/auth/avatar', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=avatar', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
@@ -1112,7 +1112,7 @@
         
         async function loadUserActivity() {
             try {
-                const response = await fetch('http://localhost:8001/auth/activity', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=activity', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1178,7 +1178,7 @@
         
         async function loadRecentComments() {
             try {
-                const response = await fetch('http://localhost:8001/auth/comments', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=comments', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -1215,7 +1215,7 @@
         
         async function loadFavoriteCategories() {
             try {
-                const response = await fetch('http://localhost:8001/auth/favorite-categories', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=favorite-categories', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }

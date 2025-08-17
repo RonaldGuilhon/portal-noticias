@@ -8,8 +8,62 @@
  * Classe mock para simular PDO quando não há drivers disponíveis
  */
 class MockPDO {
+    private static $dataFile = __DIR__ . '/../database/mock_data.json';
+    private static $userData = null;
+    
+    private static function loadUserData() {
+        if (self::$userData === null) {
+            if (file_exists(self::$dataFile)) {
+                $data = json_decode(file_get_contents(self::$dataFile), true);
+                self::$userData = $data['usuarios'][0] ?? self::getDefaultUser();
+            } else {
+                self::$userData = self::getDefaultUser();
+                self::saveUserData();
+            }
+        }
+        return self::$userData;
+    }
+    
+    private static function getDefaultUser() {
+        return [
+            'id' => 1,
+            'nome' => 'Administrador',
+            'email' => 'admin@portalnoticias.com',
+            'senha' => '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', // Hash SHA1 de 'password'
+            'tipo_usuario' => 'admin',
+            'ativo' => 1,
+            'email_verificado' => 1,
+            'bio' => null,
+            'foto_perfil' => null,
+            'preferencias' => null
+        ];
+    }
+    
+    private static function saveUserData() {
+        $dir = dirname(self::$dataFile);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        
+        $data = ['usuarios' => [self::$userData]];
+        file_put_contents(self::$dataFile, json_encode($data, JSON_PRETTY_PRINT));
+    }
+    
     public function prepare($statement) {
+        // Retornar dados mock para queries específicas
+        if (strpos($statement, 'usuarios') !== false && strpos($statement, 'SELECT') !== false) {
+            return new MockPDOStatement([self::$userData]);
+        }
+        if (strpos($statement, 'usuarios') !== false && strpos($statement, 'UPDATE') !== false) {
+            return new MockPDOStatement([], $statement);
+        }
         return new MockPDOStatement();
+    }
+    
+    public static function updateUserData($field, $value) {
+        if (array_key_exists($field, self::$userData)) {
+            self::$userData[$field] = $value;
+        }
     }
     
     public function query($statement) {
@@ -34,12 +88,25 @@ class MockPDO {
  */
 class MockPDOStatement {
     private $data;
+    private $statement;
+    private $params = [];
     
-    public function __construct($data = []) {
+    public function __construct($data = [], $statement = '') {
         $this->data = $data;
+        $this->statement = $statement;
     }
     
     public function execute($params = []) {
+        // Se é um UPDATE na tabela usuarios, simular a atualização
+        if (strpos($this->statement, 'UPDATE') !== false && strpos($this->statement, 'usuarios') !== false) {
+            // Atualizar os dados mock com os parâmetros
+            foreach ($this->params as $param => $value) {
+                $field = str_replace(':', '', $param);
+                if ($field !== 'id') {
+                    MockPDO::updateUserData($field, $value);
+                }
+            }
+        }
         return true;
     }
     
@@ -56,22 +123,52 @@ class MockPDOStatement {
     }
     
     public function bindParam($parameter, &$variable, $data_type = null) {
+        $this->params[$parameter] = &$variable;
         return true;
     }
     
     public function bindValue($parameter, $value, $data_type = null) {
+        $this->params[$parameter] = $value;
         return true;
     }
 }
 
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'portal_noticias';
-    private $username = 'root';
-    private $password = '';
-    private $charset = 'utf8mb4';
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
+    private $charset;
     public $conn;
     private $use_sqlite = false; // Fallback para SQLite se MySQL não disponível
+    private $force_mysql = true; // Forçar uso do MySQL
+
+    public function __construct() {
+        // Carregar configurações do .env
+        $this->loadEnvConfig();
+        // Estabelecer conexão
+        $this->getConnection();
+    }
+    
+    private function loadEnvConfig() {
+        $envFile = __DIR__ . '/../../.env';
+        if (file_exists($envFile)) {
+            $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (strpos($line, '=') !== false && !str_starts_with(trim($line), '#')) {
+                    list($key, $value) = explode('=', $line, 2);
+                    $_ENV[trim($key)] = trim($value);
+                }
+            }
+        }
+        
+        // Definir configurações do banco
+        $this->host = $_ENV['DB_HOST'] ?? 'localhost';
+        $this->db_name = $_ENV['DB_NAME'] ?? 'portal_noticias';
+        $this->username = $_ENV['DB_USERNAME'] ?? 'root';
+        $this->password = $_ENV['DB_PASSWORD'] ?? '';
+        $this->charset = $_ENV['DB_CHARSET'] ?? 'utf8mb4';
+    }
 
     /**
      * Conecta ao banco de dados
@@ -80,6 +177,27 @@ class Database {
         $this->conn = null;
 
         try {
+            // Forçar uso do MySQL se configurado
+            if ($this->force_mysql) {
+                // MySQL forçado - tentando conectar diretamente
+                $dsn = "mysql:host=" . $this->host . ";dbname=" . $this->db_name . ";charset=" . $this->charset;
+                
+                $options = [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ];
+                
+                // Adicionar opção MySQL apenas se disponível
+                if (defined('PDO::MYSQL_ATTR_INIT_COMMAND')) {
+                    $options[PDO::MYSQL_ATTR_INIT_COMMAND] = "SET NAMES utf8mb4";
+                }
+
+                $this->conn = new PDO($dsn, $this->username, $this->password, $options);
+                echo "<!-- Conectado ao MySQL -->\n";
+                return $this->conn;
+            }
+            
             // Verificar se há drivers PDO disponíveis
             $available_drivers = PDO::getAvailableDrivers();
             
@@ -121,9 +239,7 @@ class Database {
             }
         } catch(PDOException $exception) {
             error_log("Erro de conexão: " . $exception->getMessage());
-            // Em modo de desenvolvimento, usar mock em caso de erro
-            $this->conn = new MockPDO();
-            error_log("Usando modo mock devido a erro de conexão");
+            throw new Exception("Erro ao conectar com o banco de dados MySQL: " . $exception->getMessage());
         }
 
         return $this->conn;

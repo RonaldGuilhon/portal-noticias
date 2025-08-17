@@ -66,6 +66,14 @@ define('MAX_ITEMS_PER_PAGE', 50);
 define('CACHE_ENABLED', true);
 define('CACHE_TIME', 3600); // 1 hora
 
+// Configuração do sistema de cache
+define('CACHE_CONFIG', [
+    'enabled' => true,
+    'type' => 'file',
+    'ttl' => 3600,
+    'path' => __DIR__ . '/../cache'
+]);
+
 // Configurações de API
 define('API_VERSION', 'v1');
 define('API_RATE_LIMIT', 100); // requests por hora
@@ -119,17 +127,22 @@ function generateSecureToken($length = 32) {
 
 /**
  * Função para hash de senha
- * ATENÇÃO: SHA1 é considerado inseguro para senhas!
- * Recomenda-se usar PASSWORD_ARGON2ID ou PASSWORD_DEFAULT
+ * Usando bcrypt (PASSWORD_DEFAULT) para segurança
  */
 function hashPassword($password) {
-    return sha1($password);
+    return password_hash($password, PASSWORD_DEFAULT);
 }
 
 /**
  * Função para verificar senha
+ * Suporta tanto bcrypt quanto SHA1 (para compatibilidade)
  */
 function verifyPassword($password, $hash) {
+    // Se o hash começa com $2y$, é bcrypt
+    if (strpos($hash, '$2y$') === 0) {
+        return password_verify($password, $hash);
+    }
+    // Caso contrário, assume SHA1 (compatibilidade)
     return sha1($password) === $hash;
 }
 
