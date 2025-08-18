@@ -436,4 +436,10 @@ class CategoriaController {
         return true;
     }
 }
+
+// Processar requisição se chamado diretamente
+if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
+    $controller = new CategoriaController();
+    $controller->processarRequisicao();
+}
 ?>

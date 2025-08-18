@@ -194,7 +194,6 @@ class Database {
                 }
 
                 $this->conn = new PDO($dsn, $this->username, $this->password, $options);
-                echo "<!-- Conectado ao MySQL -->\n";
                 return $this->conn;
             }
             

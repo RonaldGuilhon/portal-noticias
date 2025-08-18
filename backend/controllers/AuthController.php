@@ -72,6 +72,9 @@ class AuthController {
                     case 'check-auth':
                         $this->verificarAutenticacao();
                         break;
+                    case 'check-email':
+                        $this->verificarEmailExiste();
+                        break;
                     case 'profile':
                         $this->obterPerfil();
                         break;
@@ -183,11 +186,25 @@ class AuthController {
      */
     private function registrar() {
         try {
-            $dados = json_decode(file_get_contents('php://input'), true);
+            $input = file_get_contents('php://input');
             
-            $this->usuario->nome = $dados['nome'] ?? '';
+            $dados = json_decode($input, true);
+            
+            // Mapear dados do frontend
+            $this->usuario->nome = trim($dados['nome'] ?? '');
             $this->usuario->email = $dados['email'] ?? '';
             $this->usuario->senha = $dados['senha'] ?? '';
+            $this->usuario->data_nascimento = !empty($dados['data_nascimento']) ? $dados['data_nascimento'] : null;
+            $this->usuario->genero = !empty($dados['genero']) ? $dados['genero'] : null;
+            $this->usuario->newsletter = isset($dados['newsletter']) ? (bool)$dados['newsletter'] : false;
+            
+            // Processar preferências (categorias de interesse)
+            $preferencias = [];
+            if (isset($dados['preferencias']) && is_array($dados['preferencias'])) {
+                $preferencias = $dados['preferencias'];
+            }
+            $this->usuario->preferencias = json_encode($preferencias);
+            
             $confirmar_senha = $dados['confirmar_senha'] ?? '';
 
             // Validar dados
@@ -885,6 +902,32 @@ class AuthController {
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar notificações: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Verificar se email já existe
+     */
+    private function verificarEmailExiste() {
+        $email = $_GET['email'] ?? '';
+        
+        if (empty($email)) {
+            jsonResponse(['erro' => 'Email é obrigatório'], 400);
+            return;
+        }
+        
+        try {
+            $stmt = $this->db->prepare("SELECT id FROM usuarios WHERE email = ?");
+            $stmt->execute([$email]);
+            $existe = $stmt->fetch() !== false;
+            
+            jsonResponse([
+                'exists' => $existe,
+                'message' => $existe ? 'Email já cadastrado' : 'Email disponível'
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao verificar email: " . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
         }
     }

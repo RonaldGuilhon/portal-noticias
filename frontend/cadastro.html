@@ -105,27 +105,13 @@
                         
                         <!-- Registration Form -->
                         <form class="auth-form" id="register-form">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="nome" class="form-label">
-                                            <i class="fas fa-user me-1"></i>
-                                            Nome *
-                                        </label>
-                                        <input type="text" class="form-control" id="nome" name="nome" required autocomplete="given-name">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group mb-3">
-                                        <label for="sobrenome" class="form-label">
-                                            <i class="fas fa-user me-1"></i>
-                                            Sobrenome *
-                                        </label>
-                                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" required autocomplete="family-name">
-                                        <div class="invalid-feedback"></div>
-                                    </div>
-                                </div>
+                            <div class="form-group mb-3">
+                                <label for="nome" class="form-label">
+                                    <i class="fas fa-user me-1"></i>
+                                    Nome Completo *
+                                </label>
+                                <input type="text" class="form-control" id="nome" name="nome" required autocomplete="name" placeholder="Digite seu nome completo">
+                                <div class="invalid-feedback"></div>
                             </div>
                             
                             <div class="form-group mb-3">
@@ -386,7 +372,6 @@
             
             // Input validation
             document.getElementById('nome').addEventListener('blur', () => validateField('nome'));
-            document.getElementById('sobrenome').addEventListener('blur', () => validateField('sobrenome'));
             document.getElementById('email').addEventListener('blur', validateEmail);
             document.getElementById('password').addEventListener('input', validatePassword);
             document.getElementById('password-confirm').addEventListener('blur', validatePasswordConfirm);
@@ -409,6 +394,16 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
+            // Mapear campos para o formato esperado pelo backend
+            if (data.password) {
+                data.senha = data.password;
+                delete data.password;
+            }
+            if (data.password_confirm) {
+                data.confirmar_senha = data.password_confirm;
+                delete data.password_confirm;
+            }
+            
             // Coleta preferências
             const preferencias = Array.from(form.querySelectorAll('input[name="preferencias[]"]:checked'))
                 .map(cb => cb.value);
@@ -422,7 +417,7 @@
             setLoading(true);
             
             try {
-                const response = await fetch('http://localhost:8001/auth/register', {
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -470,15 +465,16 @@
             // Limpa erros anteriores
             clearErrors();
             
-            // Valida nome
+            // Valida nome completo
             if (!data.nome || data.nome.trim().length < 2) {
-                showFieldError('nome', 'Nome deve ter pelo menos 2 caracteres.');
+                showFieldError('nome', 'Nome completo deve ter pelo menos 2 caracteres.');
                 isValid = false;
             }
             
-            // Valida sobrenome
-            if (!data.sobrenome || data.sobrenome.trim().length < 2) {
-                showFieldError('sobrenome', 'Sobrenome deve ter pelo menos 2 caracteres.');
+            // Verifica se tem pelo menos nome e sobrenome
+            const nomePartes = data.nome.trim().split(' ').filter(parte => parte.length > 0);
+            if (nomePartes.length < 2) {
+                showFieldError('nome', 'Por favor, digite seu nome e sobrenome.');
                 isValid = false;
             }
             
@@ -547,7 +543,7 @@
             if (!email || !isValidEmail(email)) return;
             
             try {
-                const response = await fetch(`/backend/auth/check-email?email=${encodeURIComponent(email)}`);
+                const response = await fetch(`http://localhost:8001/controllers/AuthController.php?action=check-email&email=${encodeURIComponent(email)}`);
                 const result = await response.json();
                 
                 if (!result.available) {

@@ -28,6 +28,9 @@ class Usuario {
     public $preferencias;
     public $provider;
     public $provider_id;
+    public $data_nascimento;
+    public $genero;
+    public $newsletter;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -39,7 +42,8 @@ class Usuario {
     public function criar() {
         $query = "INSERT INTO " . $this->table_name . " 
                   SET nome=:nome, email=:email, senha=:senha, tipo_usuario=:tipo_usuario, 
-                      token_verificacao=:token_verificacao, provider=:provider, provider_id=:provider_id";
+                      token_verificacao=:token_verificacao, provider=:provider, provider_id=:provider_id,
+                      data_nascimento=:data_nascimento, genero=:genero, newsletter=:newsletter";
 
         $stmt = $this->conn->prepare($query);
 
@@ -59,6 +63,9 @@ class Usuario {
         $stmt->bindParam(":token_verificacao", $this->token_verificacao);
         $stmt->bindParam(":provider", $this->provider);
         $stmt->bindParam(":provider_id", $this->provider_id);
+        $stmt->bindParam(":data_nascimento", $this->data_nascimento);
+        $stmt->bindParam(":genero", $this->genero);
+        $stmt->bindParam(":newsletter", $this->newsletter);
 
         if($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();

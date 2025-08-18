@@ -462,7 +462,7 @@ class PortalNoticias {
     // Carrega categorias
     async loadCategories() {
         try {
-            const categories = await this.apiRequest('/controllers/CategoriaController.php?action=listar');
+            const categories = await this.apiRequest('/controllers/CategoriaController.php');
             this.displayCategories(categories);
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);
