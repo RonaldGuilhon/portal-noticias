@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autores - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Autores</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Autores</h2>
+                            <p class="page-subtitle">Gerencie autores e suas permissões</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportAuthors()">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                            <button class="btn btn-primary" onclick="showAuthorModal()">
+                                <i class="fas fa-plus me-2"></i>Novo Autor
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-authors">0</h3>
+                                <p>Total de Autores</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="active-authors">0</h3>
+                                <p>Autores Ativos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-newspaper"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-articles">0</h3>
+                                <p>Artigos Publicados</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="pending-articles">0</h3>
+                                <p>Artigos Pendentes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <div class="input-group">
+                                    <input type="text" id="search-authors" class="form-control" placeholder="Nome ou email...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchAuthors()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select id="status-filter" class="form-select" onchange="filterAuthors()">
+                                    <option value="">Todos</option>
+                                    <option value="ativo">Ativo</option>
+                                    <option value="inativo">Inativo</option>
+                                    <option value="suspenso">Suspenso</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Especialidade</label>
+                                <select id="specialty-filter" class="form-select" onchange="filterAuthors()">
+                                    <option value="">Todas</option>
+                                    <option value="politica">Política</option>
+                                    <option value="economia">Economia</option>
+                                    <option value="esportes">Esportes</option>
+                                    <option value="tecnologia">Tecnologia</option>
+                                    <option value="cultura">Cultura</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Período</label>
+                                <select id="period-filter" class="form-select" onchange="filterAuthors()">
+                                    <option value="">Todos</option>
+                                    <option value="today">Hoje</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mês</option>
+                                    <option value="year">Este ano</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Ordenar por</label>
+                                <select id="sort-authors" class="form-select" onchange="sortAuthors()">
+                                    <option value="nome-asc">Nome A-Z</option>
+                                    <option value="nome-desc">Nome Z-A</option>
+                                    <option value="data_cadastro-desc">Mais recentes</option>
+                                    <option value="data_cadastro-asc">Mais antigos</option>
+                                    <option value="total_noticias-desc">Mais artigos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-secondary d-block w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Authors List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="authors-count">0 autores encontrados</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="view-mode" id="list-view" checked>
+                            <label class="btn btn-outline-secondary" for="list-view" onclick="setViewMode('list')">
+                                <i class="fas fa-list"></i> Lista
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="view-mode" id="grid-view">
+                            <label class="btn btn-outline-secondary" for="grid-view" onclick="setViewMode('grid')">
+                                <i class="fas fa-th"></i> Grade
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="authors-list">
+                            <!-- Authors will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <select id="per-page" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage()">
+                                    <option value="25">25 por página</option>
+                                    <option value="50" selected>50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                            <nav id="authors-pagination">
+                                <!-- Pagination will be loaded here -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Author Modal -->
+    <div class="modal fade" id="authorModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="authorModalTitle">Novo Autor</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="authorForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="author-id">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome Completo *</label>
+                                    <input type="text" class="form-control" id="author-name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="author-email" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Especialidade</label>
+                                    <select class="form-select" id="author-specialty">
+                                        <option value="">Selecione...</option>
+                                        <option value="politica">Política</option>
+                                        <option value="economia">Economia</option>
+                                        <option value="esportes">Esportes</option>
+                                        <option value="tecnologia">Tecnologia</option>
+                                        <option value="cultura">Cultura</option>
+                                        <option value="internacional">Internacional</option>
+                                        <option value="saude">Saúde</option>
+                                        <option value="educacao">Educação</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="author-status">
+                                        <option value="ativo">Ativo</option>
+                                        <option value="inativo">Inativo</option>
+                                        <option value="suspenso">Suspenso</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Biografia</label>
+                            <textarea class="form-control" id="author-bio" rows="4" placeholder="Biografia do autor..."></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" id="author-phone">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Website/Blog</label>
+                                    <input type="url" class="form-control" id="author-website" placeholder="https://...">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Foto do Perfil</label>
+                            <input type="file" class="form-control" id="author-avatar" accept="image/*">
+                            <div id="avatar-preview" class="mt-2" style="display: none;">
+                                <img id="avatar-img" src="" alt="Preview" class="rounded-circle" width="80" height="80">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Redes Sociais</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <label class="form-label small">Twitter</label>
+                                        <input type="text" class="form-control" id="author-twitter" placeholder="@usuario">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <label class="form-label small">LinkedIn</label>
+                                        <input type="url" class="form-control" id="author-linkedin" placeholder="https://linkedin.com/in/...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <h6>Permissões</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="author-can-publish" checked>
+                                <label class="form-check-label" for="author-can-publish">
+                                    Pode publicar artigos diretamente
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="author-can-moderate">
+                                <label class="form-check-label" for="author-can-moderate">
+                                    Pode moderar comentários
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Autor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 50;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'nome-asc';
+        let viewMode = 'list';
+        let currentAuthorId = null;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadAuthors();
+            setupEventListeners();
+        });
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/autores/stats');
+                if (result.success) {
+                    document.getElementById('total-authors').textContent = result.data.total_autores || 0;
+                    document.getElementById('active-authors').textContent = result.data.autores_ativos || 0;
+                    document.getElementById('total-articles').textContent = result.data.total_artigos || 0;
+                    document.getElementById('pending-articles').textContent = result.data.artigos_pendentes || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadAuthors() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/autores?${params}`);
+                
+                if (result.success) {
+                    displayAuthors(result.data.items);
+                    updatePagination(result.data.pagination);
+                    updateAuthorsCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar autores', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar autores:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function displayAuthors(authors) {
+            const authorsList = document.getElementById('authors-list');
+            
+            if (authors.length === 0) {
+                authorsList.innerHTML = '<div class="text-center py-5"><i class="fas fa-user-edit fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum autor encontrado</p></div>';
+                return;
+            }
+            
+            if (viewMode === 'list') {
+                displayAuthorsList(authors);
+            } else {
+                displayAuthorsGrid(authors);
+            }
+        }
+        
+        function displayAuthorsList(authors) {
+            const authorsList = document.getElementById('authors-list');
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Autor</th>
+                            <th>Email</th>
+                            <th width="120">Especialidade</th>
+                            <th width="100">Status</th>
+                            <th width="80">Artigos</th>
+                            <th width="120">Último Login</th>
+                            <th width="120">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${authors.map(author => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="${author.foto || '../assets/images/default-avatar.png'}" alt="${author.nome}" class="rounded-circle me-3" width="40" height="40">
+                                        <div>
+                                            <div class="fw-medium">${author.nome}</div>
+                                            <small class="text-muted">ID: ${author.id}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>${author.email}</td>
+                                <td>
+                                    <span class="badge bg-info">${author.especialidade || 'N/A'}</span>
+                                </td>
+                                <td>
+                                    <span class="badge ${getStatusBadge(author.status)}">
+                                        ${getStatusText(author.status)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">${author.total_noticias || 0}</span>
+                                </td>
+                                <td>
+                                    <small>${author.ultimo_login ? new Date(author.ultimo_login).toLocaleDateString('pt-BR') : 'Nunca'}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" onclick="viewAuthor(${author.id})" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="editAuthor(${author.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteAuthor(${author.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            authorsList.innerHTML = table;
+        }
+        
+        function displayAuthorsGrid(authors) {
+            const authorsList = document.getElementById('authors-list');
+            
+            const grid = `
+                <div class="row g-3 p-3">
+                    ${authors.map(author => `
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <img src="${author.foto || '../assets/images/default-avatar.png'}" alt="${author.nome}" class="rounded-circle mb-3" width="80" height="80">
+                                    <h6 class="card-title">${author.nome}</h6>
+                                    <p class="card-text text-muted small">${author.email}</p>
+                                    <div class="mb-2">
+                                        <span class="badge bg-info me-1">${author.especialidade || 'N/A'}</span>
+                                        <span class="badge ${getStatusBadge(author.status)}">
+                                            ${getStatusText(author.status)}
+                                        </span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-newspaper me-1"></i>${author.total_noticias || 0} artigos
+                                        </small>
+                                    </div>
+                                    <small class="text-muted d-block">Último login: ${author.ultimo_login ? new Date(author.ultimo_login).toLocaleDateString('pt-BR') : 'Nunca'}</small>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group btn-group-sm w-100">
+                                        <button class="btn btn-outline-info" onclick="viewAuthor(${author.id})" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="editAuthor(${author.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteAuthor(${author.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            authorsList.innerHTML = grid;
+        }
+        
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-authors');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchAuthors();
+                }
+            });
+            
+            // Author form
+            document.getElementById('authorForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitAuthor();
+            });
+            
+            // Avatar upload preview
+            document.getElementById('author-avatar').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('avatar-img').src = e.target.result;
+                        document.getElementById('avatar-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        function showAuthorModal(authorId = null) {
+            currentAuthorId = authorId;
+            const modal = document.getElementById('authorModal');
+            const title = document.getElementById('authorModalTitle');
+            const form = document.getElementById('authorForm');
+            
+            form.reset();
+            document.getElementById('avatar-preview').style.display = 'none';
+            
+            if (authorId) {
+                title.textContent = 'Editar Autor';
+                loadAuthorData(authorId);
+            } else {
+                title.textContent = 'Novo Autor';
+                document.getElementById('author-id').value = '';
+            }
+            
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+        }
+        
+        async function loadAuthorData(authorId) {
+            try {
+                const result = await adminPanel.apiGet(`admin/autores/${authorId}`);
+                
+                if (result.success) {
+                    const author = result.data;
+                    
+                    document.getElementById('author-id').value = author.id;
+                    document.getElementById('author-name').value = author.nome;
+                    document.getElementById('author-email').value = author.email;
+                    document.getElementById('author-specialty').value = author.especialidade || '';
+                    document.getElementById('author-status').value = author.status;
+                    document.getElementById('author-bio').value = author.biografia || '';
+                    document.getElementById('author-phone').value = author.telefone || '';
+                    document.getElementById('author-website').value = author.website || '';
+                    document.getElementById('author-twitter').value = author.twitter || '';
+                    document.getElementById('author-linkedin').value = author.linkedin || '';
+                    document.getElementById('author-can-publish').checked = author.pode_publicar;
+                    document.getElementById('author-can-moderate').checked = author.pode_moderar;
+                    
+                    if (author.foto) {
+                        document.getElementById('avatar-img').src = author.foto;
+                        document.getElementById('avatar-preview').style.display = 'block';
+                    }
+                } else {
+                    adminPanel.showNotification('Erro ao carregar dados do autor', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar autor:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function submitAuthor() {
+            const formData = new FormData();
+            
+            const authorId = document.getElementById('author-id').value;
+            const name = document.getElementById('author-name').value.trim();
+            const email = document.getElementById('author-email').value.trim();
+            const specialty = document.getElementById('author-specialty').value;
+            const status = document.getElementById('author-status').value;
+            const bio = document.getElementById('author-bio').value.trim();
+            const phone = document.getElementById('author-phone').value.trim();
+            const website = document.getElementById('author-website').value.trim();
+            const twitter = document.getElementById('author-twitter').value.trim();
+            const linkedin = document.getElementById('author-linkedin').value.trim();
+            const canPublish = document.getElementById('author-can-publish').checked;
+            const canModerate = document.getElementById('author-can-moderate').checked;
+            const avatarFile = document.getElementById('author-avatar').files[0];
+            
+            if (!name || !email) {
+                adminPanel.showNotification('Preencha todos os campos obrigatórios', 'warning');
+                return;
+            }
+            
+            // Add form data
+            if (authorId) formData.append('id', authorId);
+            formData.append('nome', name);
+            formData.append('email', email);
+            formData.append('especialidade', specialty);
+            formData.append('status', status);
+            formData.append('biografia', bio);
+            formData.append('telefone', phone);
+            formData.append('website', website);
+            formData.append('twitter', twitter);
+            formData.append('linkedin', linkedin);
+            formData.append('pode_publicar', canPublish);
+            formData.append('pode_moderar', canModerate);
+            if (avatarFile) formData.append('foto', avatarFile);
+            
+            try {
+                const url = authorId ? `admin/autores/${authorId}` : 'admin/autores';
+                const method = authorId ? 'PUT' : 'POST';
+                
+                const result = await adminPanel.apiRequest(method, url, formData);
+                
+                if (result.success) {
+                    adminPanel.showNotification(authorId ? 'Autor atualizado com sucesso!' : 'Autor criado com sucesso!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('authorModal')).hide();
+                    loadAuthors();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao salvar autor', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar autor:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function viewAuthor(authorId) {
+            // Redirect to author profile or show detailed modal
+            window.open(`../perfil.html?autor=${authorId}`, '_blank');
+        }
+        
+        function editAuthor(authorId) {
+            showAuthorModal(authorId);
+        }
+        
+        async function deleteAuthor(authorId) {
+            if (!confirm('Tem certeza que deseja excluir este autor? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiDelete(`admin/autores/${authorId}`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Autor excluído com sucesso!', 'success');
+                    loadAuthors();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao excluir autor', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir autor:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        // Utility functions
+        function getStatusBadge(status) {
+            const badges = {
+                'ativo': 'bg-success',
+                'inativo': 'bg-secondary',
+                'suspenso': 'bg-warning'
+            };
+            return badges[status] || 'bg-secondary';
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'ativo': 'Ativo',
+                'inativo': 'Inativo',
+                'suspenso': 'Suspenso'
+            };
+            return texts[status] || status;
+        }
+        
+        function setViewMode(mode) {
+            viewMode = mode;
+            loadAuthors();
+        }
+        
+        function updatePagination(pagination) {
+            // Implementation similar to other pages
+        }
+        
+        function updateAuthorsCount(total) {
+            const authorsCount = document.getElementById('authors-count');
+            authorsCount.textContent = `${total} autor${total !== 1 ? 'es' : ''} encontrado${total !== 1 ? 's' : ''}`;
+        }
+        
+        function searchAuthors() {
+            const searchTerm = document.getElementById('search-authors').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadAuthors();
+        }
+        
+        function filterAuthors() {
+            const status = document.getElementById('status-filter').value;
+            const specialty = document.getElementById('specialty-filter').value;
+            const period = document.getElementById('period-filter').value;
+            
+            currentFilters = {};
+            if (status) currentFilters.status = status;
+            if (specialty) currentFilters.especialidade = specialty;
+            if (period) currentFilters.periodo = period;
+            
+            currentPage = 1;
+            loadAuthors();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-authors').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('specialty-filter').value = '';
+            document.getElementById('period-filter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadAuthors();
+        }
+        
+        function sortAuthors() {
+            currentSort = document.getElementById('sort-authors').value;
+            currentPage = 1;
+            loadAuthors();
+        }
+        
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('per-page').value);
+            currentPage = 1;
+            loadAuthors();
+        }
+        
+        function exportAuthors() {
+            alert('Funcionalidade de exportação será implementada');
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anúncios - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Anúncios</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Gerenciamento de Anúncios</h2>
+                            <p class="page-subtitle">Gerencie anúncios e campanhas publicitárias</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="generateReport()">
+                                <i class="fas fa-chart-line me-2"></i>Relatório
+                            </button>
+                            <button class="btn btn-primary" onclick="showAdModal()">
+                                <i class="fas fa-plus me-2"></i>Novo Anúncio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-ads">0</h3>
+                                <p>Total de Anúncios</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="active-ads">0</h3>
+                                <p>Anúncios Ativos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-impressions">0</h3>
+                                <p>Impressões</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-mouse-pointer"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-clicks">0</h3>
+                                <p>Cliques</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <div class="input-group">
+                                    <input type="text" id="search-ads" class="form-control" placeholder="Nome do anúncio...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchAds()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Status</label>
+                                <select id="status-filter" class="form-select" onchange="filterAds()">
+                                    <option value="">Todos</option>
+                                    <option value="ativo">Ativo</option>
+                                    <option value="pausado">Pausado</option>
+                                    <option value="expirado">Expirado</option>
+                                    <option value="rascunho">Rascunho</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Posição</label>
+                                <select id="position-filter" class="form-select" onchange="filterAds()">
+                                    <option value="">Todas</option>
+                                    <option value="header">Cabeçalho</option>
+                                    <option value="sidebar">Barra Lateral</option>
+                                    <option value="content">Conteúdo</option>
+                                    <option value="footer">Rodapé</option>
+                                    <option value="popup">Pop-up</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Tipo</label>
+                                <select id="type-filter" class="form-select" onchange="filterAds()">
+                                    <option value="">Todos</option>
+                                    <option value="banner">Banner</option>
+                                    <option value="texto">Texto</option>
+                                    <option value="video">Vídeo</option>
+                                    <option value="nativo">Nativo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Ordenar por</label>
+                                <select id="sort-ads" class="form-select" onchange="sortAds()">
+                                    <option value="data_criacao-desc">Mais recentes</option>
+                                    <option value="data_criacao-asc">Mais antigos</option>
+                                    <option value="nome-asc">Nome A-Z</option>
+                                    <option value="nome-desc">Nome Z-A</option>
+                                    <option value="impressoes-desc">Mais impressões</option>
+                                    <option value="cliques-desc">Mais cliques</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-secondary d-block w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ads List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="ads-count">0 anúncios encontrados</span>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <input type="radio" class="btn-check" name="view-mode" id="list-view" checked>
+                            <label class="btn btn-outline-secondary" for="list-view" onclick="setViewMode('list')">
+                                <i class="fas fa-list"></i> Lista
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="view-mode" id="grid-view">
+                            <label class="btn btn-outline-secondary" for="grid-view" onclick="setViewMode('grid')">
+                                <i class="fas fa-th"></i> Grade
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="ads-list">
+                            <!-- Ads will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <select id="per-page" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage()">
+                                    <option value="25">25 por página</option>
+                                    <option value="50" selected>50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                            <nav id="ads-pagination">
+                                <!-- Pagination will be loaded here -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Ad Modal -->
+    <div class="modal fade" id="adModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adModalTitle">Novo Anúncio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="adForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="ad-id">
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label class="form-label">Nome do Anúncio *</label>
+                                    <input type="text" class="form-control" id="ad-name" required>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tipo *</label>
+                                            <select class="form-select" id="ad-type" required onchange="toggleAdFields()">
+                                                <option value="">Selecione...</option>
+                                                <option value="banner">Banner</option>
+                                                <option value="texto">Texto</option>
+                                                <option value="video">Vídeo</option>
+                                                <option value="nativo">Nativo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Posição *</label>
+                                            <select class="form-select" id="ad-position" required>
+                                                <option value="">Selecione...</option>
+                                                <option value="header">Cabeçalho</option>
+                                                <option value="sidebar">Barra Lateral</option>
+                                                <option value="content">Conteúdo</option>
+                                                <option value="footer">Rodapé</option>
+                                                <option value="popup">Pop-up</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-select" id="ad-status">
+                                                <option value="rascunho">Rascunho</option>
+                                                <option value="ativo">Ativo</option>
+                                                <option value="pausado">Pausado</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Banner Fields -->
+                                <div id="banner-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">Imagem do Banner</label>
+                                        <input type="file" class="form-control" id="ad-image" accept="image/*">
+                                        <div id="image-preview" class="mt-2" style="display: none;">
+                                            <img id="preview-img" src="" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Largura (px)</label>
+                                                <input type="number" class="form-control" id="ad-width" placeholder="300">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Altura (px)</label>
+                                                <input type="number" class="form-control" id="ad-height" placeholder="250">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Text Fields -->
+                                <div id="text-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">Título</label>
+                                        <input type="text" class="form-control" id="ad-title">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">Conteúdo</label>
+                                        <textarea class="form-control" id="ad-content" rows="4"></textarea>
+                                    </div>
+                                </div>
+                                
+                                <!-- Video Fields -->
+                                <div id="video-fields" style="display: none;">
+                                    <div class="mb-3">
+                                        <label class="form-label">URL do Vídeo</label>
+                                        <input type="url" class="form-control" id="ad-video-url" placeholder="https://...">
+                                    </div>
+                                    
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="ad-autoplay">
+                                        <label class="form-check-label" for="ad-autoplay">
+                                            Reprodução automática
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">URL de Destino</label>
+                                    <input type="url" class="form-control" id="ad-url" placeholder="https://...">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Texto Alternativo (Alt)</label>
+                                    <input type="text" class="form-control" id="ad-alt" placeholder="Descrição do anúncio">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label">Cliente/Anunciante</label>
+                                    <input type="text" class="form-control" id="ad-client">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Data de Início</label>
+                                    <input type="datetime-local" class="form-control" id="ad-start-date">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Data de Fim</label>
+                                    <input type="datetime-local" class="form-control" id="ad-end-date">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Prioridade</label>
+                                    <select class="form-select" id="ad-priority">
+                                        <option value="1">Baixa</option>
+                                        <option value="5" selected>Normal</option>
+                                        <option value="10">Alta</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Limite de Impressões</label>
+                                    <input type="number" class="form-control" id="ad-impression-limit" placeholder="0 = ilimitado">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Limite de Cliques</label>
+                                    <input type="number" class="form-control" id="ad-click-limit" placeholder="0 = ilimitado">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6>Segmentação</h6>
+                                    
+                                    <div class="mb-2">
+                                        <label class="form-label small">Categorias</label>
+                                        <select class="form-select" id="ad-categories" multiple>
+                                            <!-- Categories will be loaded -->
+                                        </select>
+                                        <small class="text-muted">Deixe vazio para todas</small>
+                                    </div>
+                                    
+                                    <div class="mb-2">
+                                        <label class="form-label small">Dispositivos</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="ad-desktop" checked>
+                                            <label class="form-check-label" for="ad-desktop">Desktop</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="ad-mobile" checked>
+                                            <label class="form-check-label" for="ad-mobile">Mobile</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="ad-tablet" checked>
+                                            <label class="form-check-label" for="ad-tablet">Tablet</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <h6>Configurações</h6>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ad-track-clicks" checked>
+                                        <label class="form-check-label" for="ad-track-clicks">
+                                            Rastrear cliques
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ad-track-impressions" checked>
+                                        <label class="form-check-label" for="ad-track-impressions">
+                                            Rastrear impressões
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ad-new-window">
+                                        <label class="form-check-label" for="ad-new-window">
+                                            Abrir em nova janela
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="previewAd()">Visualizar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Anúncio</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 50;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'data_criacao-desc';
+        let viewMode = 'list';
+        let currentAdId = null;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadAds();
+            loadCategories();
+            setupEventListeners();
+        });
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/anuncios/stats');
+                if (result.success) {
+                    document.getElementById('total-ads').textContent = result.data.total_anuncios || 0;
+                    document.getElementById('active-ads').textContent = result.data.anuncios_ativos || 0;
+                    document.getElementById('total-impressions').textContent = formatNumber(result.data.total_impressoes || 0);
+                    document.getElementById('total-clicks').textContent = formatNumber(result.data.total_cliques || 0);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadAds() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/anuncios?${params}`);
+                
+                if (result.success) {
+                    displayAds(result.data.items);
+                    updatePagination(result.data.pagination);
+                    updateAdsCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar anúncios', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar anúncios:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        async function loadCategories() {
+            try {
+                const result = await adminPanel.apiGet('admin/categorias');
+                if (result.success) {
+                    const select = document.getElementById('ad-categories');
+                    select.innerHTML = result.data.items.map(cat => 
+                        `<option value="${cat.id}">${cat.nome}</option>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias:', error);
+            }
+        }
+        
+        function displayAds(ads) {
+            const adsList = document.getElementById('ads-list');
+            
+            if (ads.length === 0) {
+                adsList.innerHTML = '<div class="text-center py-5"><i class="fas fa-ad fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum anúncio encontrado</p></div>';
+                return;
+            }
+            
+            if (viewMode === 'list') {
+                displayAdsList(ads);
+            } else {
+                displayAdsGrid(ads);
+            }
+        }
+        
+        function displayAdsList(ads) {
+            const adsList = document.getElementById('ads-list');
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Anúncio</th>
+                            <th width="100">Tipo</th>
+                            <th width="100">Posição</th>
+                            <th width="100">Status</th>
+                            <th width="80">Impressões</th>
+                            <th width="80">Cliques</th>
+                            <th width="80">CTR</th>
+                            <th width="120">Período</th>
+                            <th width="120">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${ads.map(ad => `
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="ad-preview me-3">
+                                            ${getAdPreview(ad)}
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">${ad.nome}</div>
+                                            <small class="text-muted">${ad.cliente || 'N/A'}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge ${getTypeBadge(ad.tipo)}">
+                                        ${ad.tipo.charAt(0).toUpperCase() + ad.tipo.slice(1)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">
+                                        ${getPositionText(ad.posicao)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge ${getStatusBadge(ad.status)}">
+                                        ${getStatusText(ad.status)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary">${formatNumber(ad.impressoes || 0)}</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">${formatNumber(ad.cliques || 0)}</span>
+                                </td>
+                                <td>
+                                    <small>${calculateCTR(ad.impressoes, ad.cliques)}%</small>
+                                </td>
+                                <td>
+                                    <small>
+                                        ${ad.data_inicio ? new Date(ad.data_inicio).toLocaleDateString('pt-BR') : 'N/A'}<br>
+                                        ${ad.data_fim ? new Date(ad.data_fim).toLocaleDateString('pt-BR') : 'Indefinido'}
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" onclick="viewAdStats(${ad.id})" title="Estatísticas">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="editAd(${ad.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-${ad.status === 'ativo' ? 'warning' : 'success'}" onclick="toggleAdStatus(${ad.id})" title="${ad.status === 'ativo' ? 'Pausar' : 'Ativar'}">
+                                            <i class="fas fa-${ad.status === 'ativo' ? 'pause' : 'play'}"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteAd(${ad.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            adsList.innerHTML = table;
+        }
+        
+        function displayAdsGrid(ads) {
+            const adsList = document.getElementById('ads-list');
+            
+            const grid = `
+                <div class="row g-3 p-3">
+                    ${ads.map(ad => `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h6 class="card-title mb-0">${ad.nome}</h6>
+                                        <span class="badge ${getStatusBadge(ad.status)}">
+                                            ${getStatusText(ad.status)}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="ad-preview-large mb-3">
+                                        ${getAdPreview(ad, true)}
+                                    </div>
+                                    
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <div class="small text-muted">Impressões</div>
+                                            <div class="fw-bold">${formatNumber(ad.impressoes || 0)}</div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="small text-muted">Cliques</div>
+                                            <div class="fw-bold">${formatNumber(ad.cliques || 0)}</div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="small text-muted">CTR</div>
+                                            <div class="fw-bold">${calculateCTR(ad.impressoes, ad.cliques)}%</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="badge ${getTypeBadge(ad.tipo)}">
+                                            ${ad.tipo.charAt(0).toUpperCase() + ad.tipo.slice(1)}
+                                        </span>
+                                        <span class="badge bg-info">
+                                            ${getPositionText(ad.posicao)}
+                                        </span>
+                                    </div>
+                                    
+                                    <small class="text-muted d-block mb-3">
+                                        ${ad.cliente || 'N/A'} • 
+                                        ${ad.data_inicio ? new Date(ad.data_inicio).toLocaleDateString('pt-BR') : 'N/A'}
+                                    </small>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group btn-group-sm w-100">
+                                        <button class="btn btn-outline-info" onclick="viewAdStats(${ad.id})" title="Estatísticas">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="editAd(${ad.id})" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-${ad.status === 'ativo' ? 'warning' : 'success'}" onclick="toggleAdStatus(${ad.id})" title="${ad.status === 'ativo' ? 'Pausar' : 'Ativar'}">
+                                            <i class="fas fa-${ad.status === 'ativo' ? 'pause' : 'play'}"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteAd(${ad.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            adsList.innerHTML = grid;
+        }
+        
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-ads');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchAds();
+                }
+            });
+            
+            // Ad form
+            document.getElementById('adForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitAd();
+            });
+            
+            // Image upload preview
+            document.getElementById('ad-image').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview-img').src = e.target.result;
+                        document.getElementById('image-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        
+        function toggleAdFields() {
+            const type = document.getElementById('ad-type').value;
+            
+            // Hide all type-specific fields
+            document.getElementById('banner-fields').style.display = 'none';
+            document.getElementById('text-fields').style.display = 'none';
+            document.getElementById('video-fields').style.display = 'none';
+            
+            // Show relevant fields
+            if (type === 'banner') {
+                document.getElementById('banner-fields').style.display = 'block';
+            } else if (type === 'texto') {
+                document.getElementById('text-fields').style.display = 'block';
+            } else if (type === 'video') {
+                document.getElementById('video-fields').style.display = 'block';
+            }
+        }
+        
+        function showAdModal(adId = null) {
+            currentAdId = adId;
+            const modal = document.getElementById('adModal');
+            const title = document.getElementById('adModalTitle');
+            const form = document.getElementById('adForm');
+            
+            form.reset();
+            document.getElementById('image-preview').style.display = 'none';
+            toggleAdFields();
+            
+            if (adId) {
+                title.textContent = 'Editar Anúncio';
+                loadAdData(adId);
+            } else {
+                title.textContent = 'Novo Anúncio';
+                document.getElementById('ad-id').value = '';
+            }
+            
+            const bootstrapModal = new bootstrap.Modal(modal);
+            bootstrapModal.show();
+        }
+        
+        async function loadAdData(adId) {
+            try {
+                const result = await adminPanel.apiGet(`admin/anuncios/${adId}`);
+                
+                if (result.success) {
+                    const ad = result.data;
+                    
+                    document.getElementById('ad-id').value = ad.id;
+                    document.getElementById('ad-name').value = ad.nome;
+                    document.getElementById('ad-type').value = ad.tipo;
+                    document.getElementById('ad-position').value = ad.posicao;
+                    document.getElementById('ad-status').value = ad.status;
+                    document.getElementById('ad-client').value = ad.cliente || '';
+                    document.getElementById('ad-url').value = ad.url || '';
+                    document.getElementById('ad-alt').value = ad.alt_text || '';
+                    document.getElementById('ad-priority').value = ad.prioridade || 5;
+                    document.getElementById('ad-impression-limit').value = ad.limite_impressoes || '';
+                    document.getElementById('ad-click-limit').value = ad.limite_cliques || '';
+                    
+                    if (ad.data_inicio) {
+                        document.getElementById('ad-start-date').value = new Date(ad.data_inicio).toISOString().slice(0, 16);
+                    }
+                    if (ad.data_fim) {
+                        document.getElementById('ad-end-date').value = new Date(ad.data_fim).toISOString().slice(0, 16);
+                    }
+                    
+                    // Type-specific fields
+                    if (ad.tipo === 'banner') {
+                        document.getElementById('ad-width').value = ad.largura || '';
+                        document.getElementById('ad-height').value = ad.altura || '';
+                        if (ad.imagem) {
+                            document.getElementById('preview-img').src = ad.imagem;
+                            document.getElementById('image-preview').style.display = 'block';
+                        }
+                    } else if (ad.tipo === 'texto') {
+                        document.getElementById('ad-title').value = ad.titulo || '';
+                        document.getElementById('ad-content').value = ad.conteudo || '';
+                    } else if (ad.tipo === 'video') {
+                        document.getElementById('ad-video-url').value = ad.video_url || '';
+                        document.getElementById('ad-autoplay').checked = ad.autoplay || false;
+                    }
+                    
+                    // Targeting
+                    if (ad.categorias) {
+                        const categorySelect = document.getElementById('ad-categories');
+                        Array.from(categorySelect.options).forEach(option => {
+                            option.selected = ad.categorias.includes(parseInt(option.value));
+                        });
+                    }
+                    
+                    // Device targeting
+                    document.getElementById('ad-desktop').checked = ad.desktop !== false;
+                    document.getElementById('ad-mobile').checked = ad.mobile !== false;
+                    document.getElementById('ad-tablet').checked = ad.tablet !== false;
+                    
+                    // Settings
+                    document.getElementById('ad-track-clicks').checked = ad.rastrear_cliques !== false;
+                    document.getElementById('ad-track-impressions').checked = ad.rastrear_impressoes !== false;
+                    document.getElementById('ad-new-window').checked = ad.nova_janela || false;
+                    
+                    toggleAdFields();
+                } else {
+                    adminPanel.showNotification('Erro ao carregar dados do anúncio', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar anúncio:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function submitAd() {
+            const formData = new FormData();
+            
+            const adId = document.getElementById('ad-id').value;
+            const name = document.getElementById('ad-name').value.trim();
+            const type = document.getElementById('ad-type').value;
+            const position = document.getElementById('ad-position').value;
+            const status = document.getElementById('ad-status').value;
+            
+            if (!name || !type || !position) {
+                adminPanel.showNotification('Preencha todos os campos obrigatórios', 'warning');
+                return;
+            }
+            
+            // Basic fields
+            if (adId) formData.append('id', adId);
+            formData.append('nome', name);
+            formData.append('tipo', type);
+            formData.append('posicao', position);
+            formData.append('status', status);
+            formData.append('cliente', document.getElementById('ad-client').value.trim());
+            formData.append('url', document.getElementById('ad-url').value.trim());
+            formData.append('alt_text', document.getElementById('ad-alt').value.trim());
+            formData.append('prioridade', document.getElementById('ad-priority').value);
+            formData.append('limite_impressoes', document.getElementById('ad-impression-limit').value || 0);
+            formData.append('limite_cliques', document.getElementById('ad-click-limit').value || 0);
+            
+            // Dates
+            const startDate = document.getElementById('ad-start-date').value;
+            const endDate = document.getElementById('ad-end-date').value;
+            if (startDate) formData.append('data_inicio', startDate);
+            if (endDate) formData.append('data_fim', endDate);
+            
+            // Type-specific fields
+            if (type === 'banner') {
+                const imageFile = document.getElementById('ad-image').files[0];
+                if (imageFile) formData.append('imagem', imageFile);
+                formData.append('largura', document.getElementById('ad-width').value || 0);
+                formData.append('altura', document.getElementById('ad-height').value || 0);
+            } else if (type === 'texto') {
+                formData.append('titulo', document.getElementById('ad-title').value.trim());
+                formData.append('conteudo', document.getElementById('ad-content').value.trim());
+            } else if (type === 'video') {
+                formData.append('video_url', document.getElementById('ad-video-url').value.trim());
+                formData.append('autoplay', document.getElementById('ad-autoplay').checked);
+            }
+            
+            // Targeting
+            const selectedCategories = Array.from(document.getElementById('ad-categories').selectedOptions).map(option => option.value);
+            formData.append('categorias', JSON.stringify(selectedCategories));
+            
+            formData.append('desktop', document.getElementById('ad-desktop').checked);
+            formData.append('mobile', document.getElementById('ad-mobile').checked);
+            formData.append('tablet', document.getElementById('ad-tablet').checked);
+            
+            // Settings
+            formData.append('rastrear_cliques', document.getElementById('ad-track-clicks').checked);
+            formData.append('rastrear_impressoes', document.getElementById('ad-track-impressions').checked);
+            formData.append('nova_janela', document.getElementById('ad-new-window').checked);
+            
+            try {
+                const url = adId ? `admin/anuncios/${adId}` : 'admin/anuncios';
+                const method = adId ? 'PUT' : 'POST';
+                
+                const result = await adminPanel.apiRequest(method, url, formData);
+                
+                if (result.success) {
+                    adminPanel.showNotification(adId ? 'Anúncio atualizado com sucesso!' : 'Anúncio criado com sucesso!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('adModal')).hide();
+                    loadAds();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao salvar anúncio', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar anúncio:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        // Utility functions
+        function getAdPreview(ad, large = false) {
+            const size = large ? 'height: 120px;' : 'height: 40px; width: 60px;';
+            
+            if (ad.tipo === 'banner' && ad.imagem) {
+                return `<img src="${ad.imagem}" alt="${ad.nome}" class="img-thumbnail" style="${size} object-fit: cover;">`;
+            } else if (ad.tipo === 'video') {
+                return `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="${size}"><i class="fas fa-video text-primary"></i></div>`;
+            } else if (ad.tipo === 'texto') {
+                return `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="${size}"><i class="fas fa-font text-info"></i></div>`;
+            } else {
+                return `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="${size}"><i class="fas fa-ad text-muted"></i></div>`;
+            }
+        }
+        
+        function getTypeBadge(type) {
+            const badges = {
+                'banner': 'bg-primary',
+                'texto': 'bg-info',
+                'video': 'bg-success',
+                'nativo': 'bg-warning'
+            };
+            return badges[type] || 'bg-secondary';
+        }
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'ativo': 'bg-success',
+                'pausado': 'bg-warning',
+                'expirado': 'bg-danger',
+                'rascunho': 'bg-secondary'
+            };
+            return badges[status] || 'bg-secondary';
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'ativo': 'Ativo',
+                'pausado': 'Pausado',
+                'expirado': 'Expirado',
+                'rascunho': 'Rascunho'
+            };
+            return texts[status] || status;
+        }
+        
+        function getPositionText(position) {
+            const texts = {
+                'header': 'Cabeçalho',
+                'sidebar': 'Barra Lateral',
+                'content': 'Conteúdo',
+                'footer': 'Rodapé',
+                'popup': 'Pop-up'
+            };
+            return texts[position] || position;
+        }
+        
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function calculateCTR(impressions, clicks) {
+            if (!impressions || impressions === 0) return '0.00';
+            return ((clicks / impressions) * 100).toFixed(2);
+        }
+        
+        function setViewMode(mode) {
+            viewMode = mode;
+            loadAds();
+        }
+        
+        function editAd(adId) {
+            showAdModal(adId);
+        }
+        
+        async function toggleAdStatus(adId) {
+            try {
+                const result = await adminPanel.apiPut(`admin/anuncios/${adId}/toggle-status`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Status do anúncio alterado!', 'success');
+                    loadAds();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification('Erro ao alterar status', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao alterar status:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function deleteAd(adId) {
+            if (!confirm('Tem certeza que deseja excluir este anúncio? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiDelete(`admin/anuncios/${adId}`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Anúncio excluído com sucesso!', 'success');
+                    loadAds();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro ao excluir anúncio', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir anúncio:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        function viewAdStats(adId) {
+            // Redirect to detailed stats page or show modal
+            alert('Estatísticas detalhadas do anúncio serão implementadas');
+        }
+        
+        function previewAd() {
+            alert('Visualização do anúncio será implementada');
+        }
+        
+        function generateReport() {
+            alert('Relatório de anúncios será implementado');
+        }
+        
+        function updatePagination(pagination) {
+            // Implementation similar to other pages
+        }
+        
+        function updateAdsCount(total) {
+            const adsCount = document.getElementById('ads-count');
+            adsCount.textContent = `${total} anúncio${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`;
+        }
+        
+        function searchAds() {
+            const searchTerm = document.getElementById('search-ads').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadAds();
+        }
+        
+        function filterAds() {
+            const status = document.getElementById('status-filter').value;
+            const position = document.getElementById('position-filter').value;
+            const type = document.getElementById('type-filter').value;
+            
+            currentFilters = {};
+            if (status) currentFilters.status = status;
+            if (position) currentFilters.posicao = position;
+            if (type) currentFilters.tipo = type;
+            
+            currentPage = 1;
+            loadAds();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-ads').value = '';
+            document.getElementById('status-filter').value = '';
+            document.getElementById('position-filter').value = '';
+            document.getElementById('type-filter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadAds();
+        }
+        
+        function sortAds() {
+            currentSort = document.getElementById('sort-ads').value;
+            currentPage = 1;
+            loadAds();
+        }
+        
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('per-page').value);
+            currentPage = 1;
+            loadAds();
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

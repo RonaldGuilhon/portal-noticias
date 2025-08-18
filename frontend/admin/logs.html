@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs do Sistema - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Logs do Sistema</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Logs do Sistema</h2>
+                            <p class="page-subtitle">Monitore atividades e eventos do sistema</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-danger" onclick="clearLogs()">
+                                <i class="fas fa-trash me-2"></i>Limpar Logs
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="exportLogs()">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                            <button class="btn btn-primary" onclick="refreshLogs()">
+                                <i class="fas fa-sync-alt me-2"></i>Atualizar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="info-logs">0</h3>
+                                <p>Info</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="warning-logs">0</h3>
+                                <p>Avisos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-danger">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="error-logs">0</h3>
+                                <p>Erros</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="security-logs">0</h3>
+                                <p>Segurança</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="log-level" class="form-label">Nível</label>
+                                <select class="form-select" id="log-level">
+                                    <option value="">Todos os níveis</option>
+                                    <option value="info">Info</option>
+                                    <option value="warning">Aviso</option>
+                                    <option value="error">Erro</option>
+                                    <option value="security">Segurança</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="log-category" class="form-label">Categoria</label>
+                                <select class="form-select" id="log-category">
+                                    <option value="">Todas as categorias</option>
+                                    <option value="auth">Autenticação</option>
+                                    <option value="admin">Administração</option>
+                                    <option value="user">Usuário</option>
+                                    <option value="system">Sistema</option>
+                                    <option value="database">Banco de Dados</option>
+                                    <option value="api">API</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="date-from" class="form-label">De</label>
+                                <input type="date" class="form-control" id="date-from">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="date-to" class="form-label">Até</label>
+                                <input type="date" class="form-control" id="date-to">
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">&nbsp;</label>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-primary" onclick="filterLogs()">
+                                        <i class="fas fa-filter"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="clearFilters()">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="search-logs" placeholder="Buscar nos logs...">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="logs-per-page">
+                                    <option value="25">25 por página</option>
+                                    <option value="50" selected>50 por página</option>
+                                    <option value="100">100 por página</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="auto-refresh">
+                                    <label class="form-check-label" for="auto-refresh">
+                                        Atualização Automática
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Logs Table -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Registros de Log</h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <span id="logs-count" class="text-muted">0 registros</span>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="real-time-logs">
+                                <label class="form-check-label" for="real-time-logs">
+                                    Tempo Real
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="150">Data/Hora</th>
+                                        <th width="80">Nível</th>
+                                        <th width="100">Categoria</th>
+                                        <th width="120">Usuário</th>
+                                        <th width="120">IP</th>
+                                        <th>Mensagem</th>
+                                        <th width="80">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logs-table-body">
+                                    <!-- Logs will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="logs-empty" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Nenhum log encontrado</h5>
+                            <p class="text-muted">Não há registros de log para os filtros selecionados.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                Mostrando <span id="showing-start">0</span> a <span id="showing-end">0</span> de <span id="total-logs">0</span> registros
+                            </div>
+                            <nav>
+                                <ul id="logs-pagination" class="pagination mb-0">
+                                    <!-- Pagination will be generated here -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Log Detail Modal -->
+    <div class="modal fade" id="logDetailModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Log</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Data/Hora:</strong>
+                            <p id="detail-datetime" class="mb-0"></p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Nível:</strong>
+                            <p id="detail-level" class="mb-0"></p>
+                        </div>
+                        <div class="col-md-3">
+                            <strong>Categoria:</strong>
+                            <p id="detail-category" class="mb-0"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Usuário:</strong>
+                            <p id="detail-user" class="mb-0"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Endereço IP:</strong>
+                            <p id="detail-ip" class="mb-0"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>User Agent:</strong>
+                        <p id="detail-user-agent" class="mb-0 text-muted small"></p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Mensagem:</strong>
+                        <div id="detail-message" class="border rounded p-3 bg-light"></div>
+                    </div>
+                    
+                    <div id="detail-context" class="mb-3" style="display: none;">
+                        <strong>Contexto Adicional:</strong>
+                        <pre id="detail-context-data" class="border rounded p-3 bg-light small"></pre>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let logsPerPage = 50;
+        let totalLogs = 0;
+        let autoRefreshInterval;
+        let realTimeInterval;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLogStats();
+            loadLogs();
+            setupEventListeners();
+            setDefaultDates();
+        });
+        
+        function setupEventListeners() {
+            // Search input
+            document.getElementById('search-logs').addEventListener('input', debounce(filterLogs, 500));
+            
+            // Logs per page change
+            document.getElementById('logs-per-page').addEventListener('change', function() {
+                logsPerPage = parseInt(this.value);
+                currentPage = 1;
+                loadLogs();
+            });
+            
+            // Auto refresh toggle
+            document.getElementById('auto-refresh').addEventListener('change', function() {
+                if (this.checked) {
+                    autoRefreshInterval = setInterval(loadLogs, 30000); // 30 seconds
+                } else {
+                    clearInterval(autoRefreshInterval);
+                }
+            });
+            
+            // Real-time logs toggle
+            document.getElementById('real-time-logs').addEventListener('change', function() {
+                if (this.checked) {
+                    realTimeInterval = setInterval(loadLogs, 5000); // 5 seconds
+                } else {
+                    clearInterval(realTimeInterval);
+                }
+            });
+        }
+        
+        function setDefaultDates() {
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('date-to').value = today.toISOString().split('T')[0];
+            document.getElementById('date-from').value = weekAgo.toISOString().split('T')[0];
+        }
+        
+        async function loadLogStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/logs/stats');
+                if (result.success) {
+                    const stats = result.data;
+                    
+                    document.getElementById('info-logs').textContent = stats.info || 0;
+                    document.getElementById('warning-logs').textContent = stats.warning || 0;
+                    document.getElementById('error-logs').textContent = stats.error || 0;
+                    document.getElementById('security-logs').textContent = stats.security || 0;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas dos logs:', error);
+            }
+        }
+        
+        async function loadLogs() {
+            try {
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: logsPerPage,
+                    level: document.getElementById('log-level').value,
+                    category: document.getElementById('log-category').value,
+                    date_from: document.getElementById('date-from').value,
+                    date_to: document.getElementById('date-to').value,
+                    search: document.getElementById('search-logs').value
+                });
+                
+                const result = await adminPanel.apiGet(`admin/logs?${params}`);
+                if (result.success) {
+                    displayLogs(result.data.logs);
+                    updatePagination(result.data.pagination);
+                    totalLogs = result.data.pagination.total;
+                    document.getElementById('logs-count').textContent = `${totalLogs} registros`;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar logs:', error);
+                showEmptyState();
+            }
+        }
+        
+        function displayLogs(logs) {
+            const tbody = document.getElementById('logs-table-body');
+            const emptyState = document.getElementById('logs-empty');
+            
+            if (logs.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            
+            tbody.innerHTML = logs.map(log => `
+                <tr>
+                    <td>
+                        <small class="text-muted">${formatDateTime(log.created_at)}</small>
+                    </td>
+                    <td>
+                        <span class="badge ${getLevelBadgeClass(log.level)}">${getLevelText(log.level)}</span>
+                    </td>
+                    <td>
+                        <span class="badge bg-secondary">${log.category || 'N/A'}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${log.user_avatar || '../assets/images/default-avatar.png'}" alt="User" class="rounded-circle me-2" width="24" height="24">
+                            <small>${log.user_name || 'Sistema'}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <small class="text-muted">${log.ip_address || 'N/A'}</small>
+                    </td>
+                    <td>
+                        <div class="log-message">
+                            ${truncateText(log.message, 100)}
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="viewLogDetail(${log.id})" title="Ver detalhes">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function showEmptyState() {
+            document.getElementById('logs-table-body').innerHTML = '';
+            document.getElementById('logs-empty').style.display = 'block';
+        }
+        
+        function updatePagination(pagination) {
+            const paginationEl = document.getElementById('logs-pagination');
+            const showingStart = document.getElementById('showing-start');
+            const showingEnd = document.getElementById('showing-end');
+            const totalLogsEl = document.getElementById('total-logs');
+            
+            // Update showing info
+            const start = (pagination.current_page - 1) * pagination.per_page + 1;
+            const end = Math.min(start + pagination.per_page - 1, pagination.total);
+            
+            showingStart.textContent = pagination.total > 0 ? start : 0;
+            showingEnd.textContent = pagination.total > 0 ? end : 0;
+            totalLogsEl.textContent = pagination.total;
+            
+            // Generate pagination
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <li class="page-item ${pagination.current_page === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${pagination.current_page - 1})">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+            
+            // Page numbers
+            const startPage = Math.max(1, pagination.current_page - 2);
+            const endPage = Math.min(pagination.total_pages, pagination.current_page + 2);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                paginationHTML += `
+                    <li class="page-item ${i === pagination.current_page ? 'active' : ''}">
+                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+            
+            // Next button
+            paginationHTML += `
+                <li class="page-item ${pagination.current_page === pagination.total_pages ? 'disabled' : ''}">
+                    <a class="page-link" href="#" onclick="changePage(${pagination.current_page + 1})">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+            
+            paginationEl.innerHTML = paginationHTML;
+        }
+        
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(totalLogs / logsPerPage)) return;
+            currentPage = page;
+            loadLogs();
+        }
+        
+        async function viewLogDetail(logId) {
+            try {
+                const result = await adminPanel.apiGet(`admin/logs/${logId}`);
+                if (result.success) {
+                    const log = result.data;
+                    
+                    document.getElementById('detail-datetime').textContent = formatDateTime(log.created_at);
+                    document.getElementById('detail-level').innerHTML = `<span class="badge ${getLevelBadgeClass(log.level)}">${getLevelText(log.level)}</span>`;
+                    document.getElementById('detail-category').innerHTML = `<span class="badge bg-secondary">${log.category || 'N/A'}</span>`;
+                    document.getElementById('detail-user').textContent = log.user_name || 'Sistema';
+                    document.getElementById('detail-ip').textContent = log.ip_address || 'N/A';
+                    document.getElementById('detail-user-agent').textContent = log.user_agent || 'N/A';
+                    document.getElementById('detail-message').textContent = log.message;
+                    
+                    // Show context if available
+                    if (log.context) {
+                        document.getElementById('detail-context').style.display = 'block';
+                        document.getElementById('detail-context-data').textContent = JSON.stringify(log.context, null, 2);
+                    } else {
+                        document.getElementById('detail-context').style.display = 'none';
+                    }
+                    
+                    new bootstrap.Modal(document.getElementById('logDetailModal')).show();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes do log:', error);
+                adminPanel.showAlert('Erro ao carregar detalhes do log', 'error');
+            }
+        }
+        
+        function filterLogs() {
+            currentPage = 1;
+            loadLogs();
+        }
+        
+        function clearFilters() {
+            document.getElementById('log-level').value = '';
+            document.getElementById('log-category').value = '';
+            document.getElementById('search-logs').value = '';
+            setDefaultDates();
+            filterLogs();
+        }
+        
+        function refreshLogs() {
+            loadLogStats();
+            loadLogs();
+        }
+        
+        async function clearLogs() {
+            if (confirm('Tem certeza que deseja limpar todos os logs? Esta ação não pode ser desfeita.')) {
+                try {
+                    const result = await adminPanel.apiDelete('admin/logs');
+                    if (result.success) {
+                        adminPanel.showAlert('Logs limpos com sucesso', 'success');
+                        refreshLogs();
+                    } else {
+                        adminPanel.showAlert(result.message || 'Erro ao limpar logs', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao limpar logs:', error);
+                    adminPanel.showAlert('Erro ao limpar logs', 'error');
+                }
+            }
+        }
+        
+        function exportLogs() {
+            const params = new URLSearchParams({
+                level: document.getElementById('log-level').value,
+                category: document.getElementById('log-category').value,
+                date_from: document.getElementById('date-from').value,
+                date_to: document.getElementById('date-to').value,
+                search: document.getElementById('search-logs').value,
+                format: 'csv'
+            });
+            
+            window.open(`/api/admin/logs/export?${params}`, '_blank');
+        }
+        
+        // Utility functions
+        function getLevelBadgeClass(level) {
+            switch (level) {
+                case 'info': return 'bg-info';
+                case 'warning': return 'bg-warning';
+                case 'error': return 'bg-danger';
+                case 'security': return 'bg-success';
+                default: return 'bg-secondary';
+            }
+        }
+        
+        function getLevelText(level) {
+            switch (level) {
+                case 'info': return 'Info';
+                case 'warning': return 'Aviso';
+                case 'error': return 'Erro';
+                case 'security': return 'Segurança';
+                default: return level;
+            }
+        }
+        
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-BR');
+        }
+        
+        function truncateText(text, maxLength) {
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+        
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+            if (realTimeInterval) clearInterval(realTimeInterval);
+        });
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

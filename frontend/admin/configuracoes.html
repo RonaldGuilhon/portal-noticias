@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Configurações</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Configurações do Sistema</h2>
+                            <p class="page-subtitle">Gerencie as configurações gerais do portal</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-secondary" onclick="resetToDefaults()">
+                                <i class="fas fa-undo me-2"></i>Restaurar Padrões
+                            </button>
+                            <button class="btn btn-success" onclick="saveAllSettings()">
+                                <i class="fas fa-save me-2"></i>Salvar Todas
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Tabs -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs card-header-tabs" id="settingsTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="general-tab" data-bs-toggle="tab" data-bs-target="#general" type="button" role="tab">
+                                            <i class="fas fa-cog me-2"></i>Geral
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="appearance-tab" data-bs-toggle="tab" data-bs-target="#appearance" type="button" role="tab">
+                                            <i class="fas fa-palette me-2"></i>Aparência
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="email-tab" data-bs-toggle="tab" data-bs-target="#email" type="button" role="tab">
+                                            <i class="fas fa-envelope me-2"></i>Email
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                                            <i class="fas fa-shield-alt me-2"></i>Segurança
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="seo-tab" data-bs-toggle="tab" data-bs-target="#seo" type="button" role="tab">
+                                            <i class="fas fa-search me-2"></i>SEO
+                                        </button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="social-tab" data-bs-toggle="tab" data-bs-target="#social" type="button" role="tab">
+                                            <i class="fas fa-share-alt me-2"></i>Redes Sociais
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="tab-content" id="settingsTabContent">
+                                    <!-- General Settings -->
+                                    <div class="tab-pane fade show active" id="general" role="tabpanel">
+                                        <form id="general-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="site-name" class="form-label">Nome do Site</label>
+                                                        <input type="text" class="form-control" id="site-name" name="site_name" required>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="site-tagline" class="form-label">Slogan</label>
+                                                        <input type="text" class="form-control" id="site-tagline" name="site_tagline">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="site-description" class="form-label">Descrição</label>
+                                                        <textarea class="form-control" id="site-description" name="site_description" rows="3"></textarea>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="admin-email" class="form-label">Email do Administrador</label>
+                                                        <input type="email" class="form-control" id="admin-email" name="admin_email" required>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="timezone" class="form-label">Fuso Horário</label>
+                                                        <select class="form-select" id="timezone" name="timezone">
+                                                            <option value="America/Sao_Paulo">América/São Paulo (UTC-3)</option>
+                                                            <option value="America/New_York">América/Nova York (UTC-5)</option>
+                                                            <option value="Europe/London">Europa/Londres (UTC+0)</option>
+                                                            <option value="Asia/Tokyo">Ásia/Tóquio (UTC+9)</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="language" class="form-label">Idioma Padrão</label>
+                                                        <select class="form-select" id="language" name="language">
+                                                            <option value="pt-BR">Português (Brasil)</option>
+                                                            <option value="en-US">English (US)</option>
+                                                            <option value="es-ES">Español</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="posts-per-page" class="form-label">Notícias por Página</label>
+                                                        <input type="number" class="form-control" id="posts-per-page" name="posts_per_page" min="1" max="50" value="10">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="maintenance-mode" name="maintenance_mode">
+                                                            <label class="form-check-label" for="maintenance-mode">
+                                                                Modo de Manutenção
+                                                            </label>
+                                                        </div>
+                                                        <small class="form-text text-muted">Ativa uma página de manutenção para visitantes</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Configurações Gerais
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Appearance Settings -->
+                                    <div class="tab-pane fade" id="appearance" role="tabpanel">
+                                        <form id="appearance-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="theme" class="form-label">Tema</label>
+                                                        <select class="form-select" id="theme" name="theme">
+                                                            <option value="light">Claro</option>
+                                                            <option value="dark">Escuro</option>
+                                                            <option value="auto">Automático</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="primary-color" class="form-label">Cor Primária</label>
+                                                        <input type="color" class="form-control form-control-color" id="primary-color" name="primary_color" value="#0d6efd">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="secondary-color" class="form-label">Cor Secundária</label>
+                                                        <input type="color" class="form-control form-control-color" id="secondary-color" name="secondary_color" value="#6c757d">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="logo-upload" class="form-label">Logo do Site</label>
+                                                        <input type="file" class="form-control" id="logo-upload" name="logo" accept="image/*">
+                                                        <div id="logo-preview" class="mt-2"></div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="favicon-upload" class="form-label">Favicon</label>
+                                                        <input type="file" class="form-control" id="favicon-upload" name="favicon" accept="image/*">
+                                                        <div id="favicon-preview" class="mt-2"></div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="header-layout" class="form-label">Layout do Cabeçalho</label>
+                                                        <select class="form-select" id="header-layout" name="header_layout">
+                                                            <option value="default">Padrão</option>
+                                                            <option value="centered">Centralizado</option>
+                                                            <option value="minimal">Minimalista</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="footer-layout" class="form-label">Layout do Rodapé</label>
+                                                        <select class="form-select" id="footer-layout" name="footer_layout">
+                                                            <option value="default">Padrão</option>
+                                                            <option value="minimal">Minimalista</option>
+                                                            <option value="extended">Estendido</option>
+                                                        </select>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="show-breadcrumbs" name="show_breadcrumbs" checked>
+                                                            <label class="form-check-label" for="show-breadcrumbs">
+                                                                Mostrar Breadcrumbs
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="show-sidebar" name="show_sidebar" checked>
+                                                            <label class="form-check-label" for="show-sidebar">
+                                                                Mostrar Barra Lateral
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Aparência
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Email Settings -->
+                                    <div class="tab-pane fade" id="email" role="tabpanel">
+                                        <form id="email-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="smtp-host" class="form-label">Servidor SMTP</label>
+                                                        <input type="text" class="form-control" id="smtp-host" name="smtp_host" placeholder="smtp.gmail.com">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="smtp-port" class="form-label">Porta SMTP</label>
+                                                        <input type="number" class="form-control" id="smtp-port" name="smtp_port" value="587">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="smtp-username" class="form-label">Usuário SMTP</label>
+                                                        <input type="text" class="form-control" id="smtp-username" name="smtp_username">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="smtp-password" class="form-label">Senha SMTP</label>
+                                                        <input type="password" class="form-control" id="smtp-password" name="smtp_password">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="from-email" class="form-label">Email Remetente</label>
+                                                        <input type="email" class="form-control" id="from-email" name="from_email">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="from-name" class="form-label">Nome Remetente</label>
+                                                        <input type="text" class="form-control" id="from-name" name="from_name">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="smtp-auth" name="smtp_auth" checked>
+                                                            <label class="form-check-label" for="smtp-auth">
+                                                                Autenticação SMTP
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="smtp-secure" name="smtp_secure" checked>
+                                                            <label class="form-check-label" for="smtp-secure">
+                                                                Conexão Segura (TLS)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <button type="button" class="btn btn-outline-primary" onclick="testEmailConnection()">
+                                                            <i class="fas fa-paper-plane me-2"></i>Testar Conexão
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Configurações de Email
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Security Settings -->
+                                    <div class="tab-pane fade" id="security" role="tabpanel">
+                                        <form id="security-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="session-timeout" class="form-label">Timeout de Sessão (minutos)</label>
+                                                        <input type="number" class="form-control" id="session-timeout" name="session_timeout" value="30" min="5" max="1440">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="max-login-attempts" class="form-label">Máximo de Tentativas de Login</label>
+                                                        <input type="number" class="form-control" id="max-login-attempts" name="max_login_attempts" value="5" min="1" max="20">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="lockout-duration" class="form-label">Duração do Bloqueio (minutos)</label>
+                                                        <input type="number" class="form-control" id="lockout-duration" name="lockout_duration" value="15" min="1" max="1440">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="two-factor-auth" name="two_factor_auth">
+                                                            <label class="form-check-label" for="two-factor-auth">
+                                                                Autenticação de Dois Fatores
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="force-https" name="force_https" checked>
+                                                            <label class="form-check-label" for="force-https">
+                                                                Forçar HTTPS
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-captcha" name="enable_captcha">
+                                                            <label class="form-check-label" for="enable-captcha">
+                                                                Habilitar CAPTCHA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="log-failed-logins" name="log_failed_logins" checked>
+                                                            <label class="form-check-label" for="log-failed-logins">
+                                                                Registrar Tentativas de Login Falhadas
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-firewall" name="enable_firewall">
+                                                            <label class="form-check-label" for="enable-firewall">
+                                                                Habilitar Firewall Básico
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Configurações de Segurança
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- SEO Settings -->
+                                    <div class="tab-pane fade" id="seo" role="tabpanel">
+                                        <form id="seo-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="meta-title" class="form-label">Título Meta Padrão</label>
+                                                        <input type="text" class="form-control" id="meta-title" name="meta_title">
+                                                        <small class="form-text text-muted">Máximo 60 caracteres</small>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="meta-description" class="form-label">Descrição Meta Padrão</label>
+                                                        <textarea class="form-control" id="meta-description" name="meta_description" rows="3"></textarea>
+                                                        <small class="form-text text-muted">Máximo 160 caracteres</small>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="meta-keywords" class="form-label">Palavras-chave Meta</label>
+                                                        <input type="text" class="form-control" id="meta-keywords" name="meta_keywords">
+                                                        <small class="form-text text-muted">Separadas por vírgula</small>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="google-analytics" class="form-label">Google Analytics ID</label>
+                                                        <input type="text" class="form-control" id="google-analytics" name="google_analytics" placeholder="G-XXXXXXXXXX">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="mb-3">
+                                                        <label for="google-search-console" class="form-label">Google Search Console</label>
+                                                        <input type="text" class="form-control" id="google-search-console" name="google_search_console">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-sitemap" name="enable_sitemap" checked>
+                                                            <label class="form-check-label" for="enable-sitemap">
+                                                                Gerar Sitemap Automaticamente
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-robots" name="enable_robots" checked>
+                                                            <label class="form-check-label" for="enable-robots">
+                                                                Gerar robots.txt
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-schema" name="enable_schema" checked>
+                                                            <label class="form-check-label" for="enable-schema">
+                                                                Habilitar Schema.org
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-amp" name="enable_amp">
+                                                            <label class="form-check-label" for="enable-amp">
+                                                                Habilitar AMP (Accelerated Mobile Pages)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Configurações de SEO
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Social Media Settings -->
+                                    <div class="tab-pane fade" id="social" role="tabpanel">
+                                        <form id="social-form">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h6 class="mb-3">Redes Sociais</h6>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="facebook-url" class="form-label">Facebook</label>
+                                                        <input type="url" class="form-control" id="facebook-url" name="facebook_url" placeholder="https://facebook.com/">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="twitter-url" class="form-label">Twitter/X</label>
+                                                        <input type="url" class="form-control" id="twitter-url" name="twitter_url" placeholder="https://twitter.com/">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="instagram-url" class="form-label">Instagram</label>
+                                                        <input type="url" class="form-control" id="instagram-url" name="instagram_url" placeholder="https://instagram.com/">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="youtube-url" class="form-label">YouTube</label>
+                                                        <input type="url" class="form-control" id="youtube-url" name="youtube_url" placeholder="https://youtube.com/">
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="linkedin-url" class="form-label">LinkedIn</label>
+                                                        <input type="url" class="form-control" id="linkedin-url" name="linkedin_url" placeholder="https://linkedin.com/">
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <h6 class="mb-3">Configurações de Compartilhamento</h6>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-social-sharing" name="enable_social_sharing" checked>
+                                                            <label class="form-check-label" for="enable-social-sharing">
+                                                                Habilitar Botões de Compartilhamento
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-og-tags" name="enable_og_tags" checked>
+                                                            <label class="form-check-label" for="enable-og-tags">
+                                                                Habilitar Open Graph Tags
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <div class="form-check form-switch">
+                                                            <input class="form-check-input" type="checkbox" id="enable-twitter-cards" name="enable_twitter_cards" checked>
+                                                            <label class="form-check-label" for="enable-twitter-cards">
+                                                                Habilitar Twitter Cards
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="default-share-image" class="form-label">Imagem Padrão para Compartilhamento</label>
+                                                        <input type="file" class="form-control" id="default-share-image" name="default_share_image" accept="image/*">
+                                                        <div id="share-image-preview" class="mt-2"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>Salvar Configurações Sociais
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllSettings();
+            setupFormHandlers();
+            setupFilePreviewHandlers();
+        });
+        
+        async function loadAllSettings() {
+            try {
+                const result = await adminPanel.apiGet('admin/configuracoes');
+                if (result.success) {
+                    populateSettings(result.data);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar configurações:', error);
+                adminPanel.showAlert('Erro ao carregar configurações', 'error');
+            }
+        }
+        
+        function populateSettings(settings) {
+            // General settings
+            if (settings.general) {
+                Object.keys(settings.general).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.general[key];
+                        } else {
+                            element.value = settings.general[key] || '';
+                        }
+                    }
+                });
+            }
+            
+            // Appearance settings
+            if (settings.appearance) {
+                Object.keys(settings.appearance).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.appearance[key];
+                        } else {
+                            element.value = settings.appearance[key] || '';
+                        }
+                    }
+                });
+            }
+            
+            // Email settings
+            if (settings.email) {
+                Object.keys(settings.email).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.email[key];
+                        } else {
+                            element.value = settings.email[key] || '';
+                        }
+                    }
+                });
+            }
+            
+            // Security settings
+            if (settings.security) {
+                Object.keys(settings.security).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.security[key];
+                        } else {
+                            element.value = settings.security[key] || '';
+                        }
+                    }
+                });
+            }
+            
+            // SEO settings
+            if (settings.seo) {
+                Object.keys(settings.seo).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.seo[key];
+                        } else {
+                            element.value = settings.seo[key] || '';
+                        }
+                    }
+                });
+            }
+            
+            // Social settings
+            if (settings.social) {
+                Object.keys(settings.social).forEach(key => {
+                    const element = document.querySelector(`[name="${key}"]`);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = settings.social[key];
+                        } else {
+                            element.value = settings.social[key] || '';
+                        }
+                    }
+                });
+            }
+        }
+        
+        function setupFormHandlers() {
+            // General form
+            document.getElementById('general-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('general', new FormData(this));
+            });
+            
+            // Appearance form
+            document.getElementById('appearance-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('appearance', new FormData(this));
+            });
+            
+            // Email form
+            document.getElementById('email-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('email', new FormData(this));
+            });
+            
+            // Security form
+            document.getElementById('security-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('security', new FormData(this));
+            });
+            
+            // SEO form
+            document.getElementById('seo-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('seo', new FormData(this));
+            });
+            
+            // Social form
+            document.getElementById('social-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                await saveSettings('social', new FormData(this));
+            });
+        }
+        
+        async function saveSettings(category, formData) {
+            try {
+                const result = await adminPanel.apiPost(`admin/configuracoes/${category}`, formData);
+                if (result.success) {
+                    adminPanel.showAlert(`Configurações de ${category} salvas com sucesso!`, 'success');
+                } else {
+                    adminPanel.showAlert(result.message || 'Erro ao salvar configurações', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar configurações:', error);
+                adminPanel.showAlert('Erro ao salvar configurações', 'error');
+            }
+        }
+        
+        async function saveAllSettings() {
+            const forms = ['general-form', 'appearance-form', 'email-form', 'security-form', 'seo-form', 'social-form'];
+            let success = true;
+            
+            for (const formId of forms) {
+                try {
+                    const form = document.getElementById(formId);
+                    const category = formId.replace('-form', '');
+                    const formData = new FormData(form);
+                    
+                    const result = await adminPanel.apiPost(`admin/configuracoes/${category}`, formData);
+                    if (!result.success) {
+                        success = false;
+                        console.error(`Erro ao salvar ${category}:`, result.message);
+                    }
+                } catch (error) {
+                    success = false;
+                    console.error(`Erro ao salvar ${formId}:`, error);
+                }
+            }
+            
+            if (success) {
+                adminPanel.showAlert('Todas as configurações foram salvas com sucesso!', 'success');
+            } else {
+                adminPanel.showAlert('Algumas configurações não puderam ser salvas. Verifique o console para detalhes.', 'warning');
+            }
+        }
+        
+        async function resetToDefaults() {
+            if (confirm('Tem certeza que deseja restaurar todas as configurações para os valores padrão? Esta ação não pode ser desfeita.')) {
+                try {
+                    const result = await adminPanel.apiPost('admin/configuracoes/reset');
+                    if (result.success) {
+                        adminPanel.showAlert('Configurações restauradas para os valores padrão', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        adminPanel.showAlert(result.message || 'Erro ao restaurar configurações', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao restaurar configurações:', error);
+                    adminPanel.showAlert('Erro ao restaurar configurações', 'error');
+                }
+            }
+        }
+        
+        async function testEmailConnection() {
+            const form = document.getElementById('email-form');
+            const formData = new FormData(form);
+            
+            try {
+                const result = await adminPanel.apiPost('admin/configuracoes/test-email', formData);
+                if (result.success) {
+                    adminPanel.showAlert('Conexão de email testada com sucesso!', 'success');
+                } else {
+                    adminPanel.showAlert(result.message || 'Falha no teste de conexão de email', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao testar conexão de email:', error);
+                adminPanel.showAlert('Erro ao testar conexão de email', 'error');
+            }
+        }
+        
+        function setupFilePreviewHandlers() {
+            // Logo preview
+            document.getElementById('logo-upload').addEventListener('change', function(e) {
+                previewImage(e.target, 'logo-preview');
+            });
+            
+            // Favicon preview
+            document.getElementById('favicon-upload').addEventListener('change', function(e) {
+                previewImage(e.target, 'favicon-preview');
+            });
+            
+            // Share image preview
+            document.getElementById('default-share-image').addEventListener('change', function(e) {
+                previewImage(e.target, 'share-image-preview');
+            });
+        }
+        
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">`;
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.innerHTML = '';
+            }
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>
