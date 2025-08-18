@@ -864,8 +864,8 @@
             document.getElementById('profile-bio').textContent = userData.bio || 'Nenhuma biografia adicionada.';
             
             // Avatar
-            if (userData.avatar) {
-                document.getElementById('avatar-img').src = userData.avatar;
+            if (userData.foto_perfil) {
+                document.getElementById('avatar-img').src = userData.foto_perfil;
             }
             
             // Stats
@@ -1085,33 +1085,36 @@
             const file = e.target.files[0];
             if (!file) return;
             
-            // Validate file
+            // Validate file type
             if (!file.type.startsWith('image/')) {
                 showError('Por favor, selecione uma imagem.');
                 return;
             }
             
-            if (file.size > 5 * 1024 * 1024) { // 5MB
-                showError('A imagem deve ter no máximo 5MB.');
-                return;
-            }
-            
-            const formData = new FormData();
-            formData.append('avatar', file);
+            // Show loading state
+            const avatarUpload = document.getElementById('avatar-upload');
+            const originalContent = avatarUpload.innerHTML;
+            avatarUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
             
             try {
-                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=avatar', {
+                // Process and resize image automatically
+                const base64 = await processImage(file, 150, 150, 500);
+                
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=upload_avatar', {
                     method: 'POST',
                     headers: {
+                        'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + getAuthToken()
                     },
-                    body: formData
+                    body: JSON.stringify({
+                        image: base64
+                    })
                 });
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    document.getElementById('avatar-img').src = result.data.avatar_url;
+                    document.getElementById('avatar-img').src = result.avatar_url;
                     showSuccess('Avatar atualizado com sucesso!');
                 } else {
                     showError(result.message || 'Erro ao fazer upload do avatar.');
@@ -1119,7 +1122,87 @@
             } catch (error) {
                 console.error('Erro no upload:', error);
                 showError('Erro de conexão.');
+            } finally {
+                // Restore original content
+                avatarUpload.innerHTML = originalContent;
             }
+        }
+        
+        // Helper function to process and resize image with automatic compression
+        function processImage(file, maxWidth = 150, maxHeight = 150, targetSizeKB = 500) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    // Calculate new dimensions maintaining aspect ratio
+                    let { width, height } = img;
+                    
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = (height * maxWidth) / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = (width * maxHeight) / height;
+                            height = maxHeight;
+                        }
+                    }
+                    
+                    // Set canvas dimensions
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw image
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    // Function to compress with automatic quality adjustment
+                    const compressImage = (quality) => {
+                        return new Promise((resolveCompress) => {
+                            canvas.toBlob((blob) => {
+                                if (blob) {
+                                    const sizeKB = blob.size / 1024;
+                                    
+                                    // If size is acceptable or quality is too low, use this version
+                                    if (sizeKB <= targetSizeKB || quality <= 0.1) {
+                                        const reader = new FileReader();
+                                        reader.onload = () => resolveCompress(reader.result);
+                                        reader.readAsDataURL(blob);
+                                    } else {
+                                        // Try with lower quality
+                                        compressImage(quality - 0.1).then(resolveCompress);
+                                    }
+                                } else {
+                                    reject(new Error('Erro ao processar imagem'));
+                                }
+                            }, 'image/jpeg', quality);
+                        });
+                    };
+                    
+                    // Start compression with quality 0.8
+                    compressImage(0.8).then(resolve).catch(reject);
+                };
+                
+                img.onerror = () => reject(new Error('Erro ao carregar imagem'));
+                
+                // Load image
+                const reader = new FileReader();
+                reader.onload = (e) => img.src = e.target.result;
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Helper function to convert file to base64 (legacy)
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
         }
         
         async function loadUserActivity() {

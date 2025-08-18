@@ -60,6 +60,9 @@ class AuthController {
                     case 'social-login':
                         $this->loginSocial();
                         break;
+                    case 'upload_avatar':
+                        $this->uploadAvatar();
+                        break;
                     default:
                         jsonResponse(['erro' => 'Ação não encontrada'], 404);
                 }
@@ -818,12 +821,12 @@ class AuthController {
 
             // Buscar atividades recentes
             $stmt = $this->db->prepare("
-                SELECT 'comment' as tipo, c.data_comentario as data_atividade, 
+                SELECT 'comment' as tipo, c.data_criacao as data_atividade, 
                        n.titulo as titulo_noticia, n.id as noticia_id
                 FROM comentarios c
                 JOIN noticias n ON n.id = c.noticia_id
                 WHERE c.usuario_id = ?
-                ORDER BY c.data_comentario DESC
+                ORDER BY c.data_criacao DESC
                 LIMIT 10
             ");
             $stmt->execute([$usuario['id']]);
@@ -855,7 +858,7 @@ class AuthController {
                 FROM comentarios c
                 JOIN noticias n ON n.id = c.noticia_id
                 WHERE c.usuario_id = ?
-                ORDER BY c.data_comentario DESC
+                ORDER BY c.data_criacao DESC
                 LIMIT 10
             ");
             $stmt->execute([$usuario['id']]);
@@ -1038,6 +1041,197 @@ class AuthController {
         // Por simplicidade, retornando null aqui
         return null;
     }
+    
+    /**
+     * Upload de avatar em base64
+     */
+    private function uploadAvatar() {
+        try {
+            // Verificar autenticação JWT
+            $headers = getallheaders();
+            $token = null;
+
+            // Verificar token no header Authorization
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+                if (preg_match('/Bearer\s+(\S+)/', $authHeader, $matches)) {
+                    $token = $matches[1];
+                }
+            }
+
+            if (!$token) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => 'Token de autenticação não fornecido']);
+                return;
+            }
+
+            try {
+                $payload = $this->jwtHelper->validarToken($token);
+                $userId = $payload['id'];
+            } catch (Exception $e) {
+                http_response_code(401);
+                echo json_encode(['success' => false, 'message' => 'Token inválido']);
+                return;
+            }
+
+            // Verificar se os dados foram enviados
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (!$input || !isset($input['image'])) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Dados de imagem não fornecidos']);
+                return;
+            }
+
+            $imageData = $input['image'];
+
+            // Validar formato base64
+            if (!preg_match('/^data:image\/(jpeg|jpg|png|gif|webp);base64,/', $imageData, $matches)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Formato de imagem inválido']);
+                return;
+            }
+
+            $imageType = $matches[1];
+            $base64Data = preg_replace('/^data:image\/[a-z]+;base64,/', '', $imageData);
+            $decodedData = base64_decode($base64Data);
+
+            if ($decodedData === false) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Erro ao decodificar imagem']);
+                return;
+            }
+
+            // Verificar tamanho do arquivo
+            require_once __DIR__ . '/../config/upload.php';
+            if (strlen($decodedData) > UploadConfig::MAX_FILE_SIZE) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'message' => 'Arquivo muito grande. Máximo: 5MB']);
+                return;
+            }
+
+            // Garantir que o diretório existe
+            UploadConfig::ensureUploadDirectoryExists();
+
+            // Gerar nome único para o arquivo
+            $fileName = UploadConfig::generateUniqueFileName($userId, $imageType);
+            $filePath = UploadConfig::PROFILE_PHOTOS_DIR . '/' . $fileName;
+
+            // Salvar arquivo
+            if (file_put_contents($filePath, $decodedData) === false) {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Erro ao salvar arquivo']);
+                return;
+            }
+
+            // Redimensionar a imagem usando solução alternativa
+        $this->redimensionarImagemAlternativa($filePath, $imageType);
+
+            // Atualizar URL no banco de dados
+            $avatarUrl = UploadConfig::PROFILE_PHOTOS_URL . '/' . $fileName;
+            $usuario = new Usuario($this->db);
+            
+            // Remover avatar anterior se existir
+            $this->removerAvatarAnterior($userId);
+            
+            if ($usuario->atualizarAvatar($userId, $avatarUrl)) {
+                http_response_code(200);
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Avatar atualizado com sucesso!',
+                    'avatar_url' => UploadConfig::PROFILE_PHOTOS_URL . $fileName,
+                    'file_name' => $fileName
+                ]);
+            } else {
+                // Se falhou ao atualizar BD, remover arquivo
+                unlink($filePath);
+                http_response_code(500);
+                echo json_encode(['success' => false, 'message' => 'Erro ao atualizar avatar no banco de dados']);
+            }
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
+        }
+    }
+    
+    /**
+     * Remover avatar anterior do usuário
+     */
+    private function removerAvatarAnterior($userId) {
+        try {
+            $usuario = new Usuario($this->db);
+            $avatarAtual = $usuario->obterAvatar($userId);
+            
+            if ($avatarAtual && $usuario->temAvatar($userId)) {
+                // Extrair nome do arquivo da URL
+                $fileName = basename($avatarAtual);
+                $filePath = UploadConfig::PROFILE_PHOTOS_DIR . '/' . $fileName;
+                
+                // Remover arquivo se existir
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+        } catch (Exception $e) {
+            error_log('Erro ao remover avatar anterior: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Redimensionar avatar para otimizar tamanho
+     * Método removido - requer extensão GD do PHP
+     */
+    private function redimensionarAvatar($filePath, $imageType) {
+        // Método desabilitado - extensão GD não disponível
+        return;
+    }
+    
+    /**
+     * Otimizar imagem sem redimensionamento (validação e logs)
+     */
+    private function redimensionarImagemAlternativa($filePath, $imageType) {
+        try {
+            // Verificar se o arquivo existe
+            if (!file_exists($filePath)) {
+                error_log("Arquivo não encontrado: $filePath");
+                return false;
+            }
+            
+            // Obter informações da imagem usando getimagesize (não requer GD)
+            $imageInfo = getimagesize($filePath);
+            if (!$imageInfo) {
+                error_log("Não foi possível obter informações da imagem: $filePath");
+                return false;
+            }
+            
+            $originalWidth = $imageInfo[0];
+             $originalHeight = $imageInfo[1];
+             $fileSize = filesize($filePath);
+             $maxSize = 150; // Tamanho máximo reduzido para economizar espaço
+            
+            // Log das informações da imagem
+            error_log("Avatar carregado - Dimensões: {$originalWidth}x{$originalHeight}, Tamanho: " . round($fileSize/1024, 2) . "KB, Tipo: $imageType");
+            
+            // Verificar se a imagem é muito grande
+            if ($originalWidth > $maxSize || $originalHeight > $maxSize) {
+                error_log("AVISO: Imagem maior que o recomendado ({$maxSize}x{$maxSize}). Para melhor performance, considere redimensionar.");
+            }
+            
+            // Verificar tamanho do arquivo (limite de 500KB)
+             if ($fileSize > 500 * 1024) {
+                 error_log("AVISO: Arquivo muito grande (" . round($fileSize/1024, 2) . "KB). Recomendado: máximo 500KB.");
+             }
+            
+            return true;
+            
+        } catch (Exception $e) {
+            error_log('Erro na otimização da imagem: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+
+
 }
 
 // Processar requisição se chamado diretamente

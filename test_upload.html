@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Upload Avatar</title>
+</head>
+<body>
+    <h1>Teste Upload Avatar</h1>
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="testUpload()">Testar Upload</button>
+    <div id="result"></div>
+    
+    <script>
+    function getAuthToken() {
+        const userData = localStorage.getItem('portal-user');
+        if (userData) {
+            try {
+                const user = JSON.parse(userData);
+                return user.token;
+            } catch (error) {
+                console.error('Erro ao obter token:', error);
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    async function testUpload() {
+        const fileInput = document.getElementById('fileInput');
+        const resultDiv = document.getElementById('result');
+        
+        if (!fileInput.files[0]) {
+            resultDiv.innerHTML = '<p style="color: red;">Selecione uma imagem primeiro!</p>';
+            return;
+        }
+        
+        const token = getAuthToken();
+        if (!token) {
+            resultDiv.innerHTML = '<p style="color: red;">Token não encontrado! Faça login primeiro.</p>';
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = async function(e) {
+            try {
+                const base64Data = e.target.result;
+                
+                resultDiv.innerHTML = '<p>Enviando imagem...</p>';
+                
+                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=upload_avatar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        image: base64Data
+                    })
+                });
+                
+                const result = await response.json();
+                
+                resultDiv.innerHTML = '<h3>Resposta do servidor:</h3>';
+                resultDiv.innerHTML += '<p>Status: ' + response.status + '</p>';
+                resultDiv.innerHTML += '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: red;">Erro: ' + error.message + '</p>';
+                console.error('Erro no upload:', error);
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    </script>
+</body>
+</html>

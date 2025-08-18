@@ -663,5 +663,60 @@ class Usuario {
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    
+    /**
+     * Atualizar avatar do usuário
+     */
+    public function atualizarAvatar($user_id, $avatar_url) {
+        try {
+            $query = "UPDATE " . $this->table_name . " 
+                      SET foto_perfil = :avatar_url, 
+                          data_atualizacao = NOW() 
+                      WHERE id = :user_id";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":avatar_url", $avatar_url);
+            $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+            
+            if ($stmt->execute()) {
+                return true;
+            }
+            
+            return false;
+            
+        } catch (PDOException $e) {
+            error_log('Erro ao atualizar avatar: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Obter avatar do usuário
+     */
+    public function obterAvatar($user_id) {
+        try {
+            $query = "SELECT foto_perfil FROM " . $this->table_name . " WHERE id = :user_id";
+            
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":user_id", $user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            return $result ? $result['foto_perfil'] : null;
+            
+        } catch (PDOException $e) {
+            error_log('Erro ao obter avatar: ' . $e->getMessage());
+            return null;
+        }
+    }
+    
+    /**
+     * Verificar se usuário tem avatar
+     */
+    public function temAvatar($user_id) {
+        $avatar = $this->obterAvatar($user_id);
+        return !empty($avatar);
+    }
 }
 ?>
