@@ -733,11 +733,47 @@
         }
         
         /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+            color: var(--pure-white);
+            padding: 3rem 0 1rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+        
+        .footer .container {
+            position: relative;
+            z-index: 1;
+        }
+        
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 2rem;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            opacity: 0.9;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
         
         .footer-section h4 {
@@ -1288,52 +1324,134 @@
                                     <div class="card-body">
                                         <form id="notifications-form">
                                             <div class="mb-4">
-                                                <h6>Notificações por E-mail</h6>
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" class="form-check-input" id="email-news" name="email_notifications[]" value="news">
-                                                    <label class="form-check-label" for="email-news">
-                                                        <i class="fas fa-newspaper"></i>
-                                                        Novas notícias das categorias favoritas
+                                                <h6 class="text-primary">
+                                                    <i class="fas fa-envelope me-2"></i>
+                                                    Notificações por E-mail
+                                                </h6>
+                                                <p class="text-muted small mb-3">Receba atualizações importantes diretamente no seu e-mail</p>
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="email_newsletter" name="email_newsletter">
+                                                    <label class="form-check-label" for="email_newsletter">
+                                                        <i class="fas fa-newspaper text-info me-2"></i>
+                                                        <strong>Newsletter Semanal</strong>
+                                                        <small class="d-block text-muted">Resumo das principais notícias da semana</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" class="form-check-input" id="email-comments" name="email_notifications[]" value="comments">
-                                                    <label class="form-check-label" for="email-comments">
-                                                        <i class="fas fa-comment"></i>
-                                                        Respostas aos meus comentários
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="email_breaking" name="email_breaking">
+                                                    <label class="form-check-label" for="email_breaking">
+                                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                                        <strong>Notícias Urgentes</strong>
+                                                        <small class="d-block text-muted">Alertas imediatos sobre notícias importantes</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" class="form-check-input" id="email-newsletter" name="email_notifications[]" value="newsletter">
-                                                    <label class="form-check-label" for="email-newsletter">
-                                                        <i class="fas fa-envelope"></i>
-                                                        Newsletter semanal
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="email_comments" name="email_comments">
+                                                    <label class="form-check-label" for="email_comments">
+                                                        <i class="fas fa-comment text-success me-2"></i>
+                                                        <strong>Respostas aos Comentários</strong>
+                                                        <small class="d-block text-muted">Notificações quando alguém responder seus comentários</small>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="email_marketing" name="email_marketing">
+                                                    <label class="form-check-label" for="email_marketing">
+                                                        <i class="fas fa-tag text-danger me-2"></i>
+                                                        <strong>Ofertas e Promoções</strong>
+                                                        <small class="d-block text-muted">Receba ofertas especiais e conteúdo promocional</small>
                                                     </label>
                                                 </div>
                                             </div>
                                             
                                             <div class="mb-4">
-                                                <h6>Notificações Push</h6>
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" class="form-check-input" id="push-breaking" name="push_notifications[]" value="breaking">
-                                                    <label class="form-check-label" for="push-breaking">
-                                                        <i class="fas fa-exclamation-triangle"></i>
-                                                        Notícias urgentes
+                                                <h6 class="text-primary">
+                                                    <i class="fas fa-mobile-alt me-2"></i>
+                                                    Notificações Push
+                                                </h6>
+                                                <p class="text-muted small mb-3">Notificações instantâneas no seu dispositivo</p>
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="push_breaking" name="push_breaking">
+                                                    <label class="form-check-label" for="push_breaking">
+                                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                                                        <strong>Notícias Urgentes</strong>
+                                                        <small class="d-block text-muted">Alertas push para notícias de última hora</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check mb-2">
-                                                    <input type="checkbox" class="form-check-input" id="push-favorites" name="push_notifications[]" value="favorites">
-                                                    <label class="form-check-label" for="push-favorites">
-                                                        <i class="fas fa-star"></i>
-                                                        Categorias favoritas
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="push_interests" name="push_interests">
+                                                    <label class="form-check-label" for="push_interests">
+                                                        <i class="fas fa-star text-primary me-2"></i>
+                                                        <strong>Notícias dos Meus Interesses</strong>
+                                                        <small class="d-block text-muted">Conteúdo baseado nas suas categorias favoritas</small>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-3">
+                                                    <input type="checkbox" class="form-check-input" id="push_comments" name="push_comments">
+                                                    <label class="form-check-label" for="push_comments">
+                                                        <i class="fas fa-reply text-success me-2"></i>
+                                                        <strong>Respostas aos Comentários</strong>
+                                                        <small class="d-block text-muted">Notificações push quando receberem respostas</small>
                                                     </label>
                                                 </div>
                                             </div>
                                             
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i>
-                                                Salvar Configurações
-                                            </button>
+                                            <div class="mb-4">
+                                                <h6 class="text-primary">
+                                                    <i class="fas fa-clock me-2"></i>
+                                                    Frequência de Notificações
+                                                </h6>
+                                                <p class="text-muted small mb-3">Com que frequência você deseja receber notificações por e-mail</p>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input type="radio" class="form-check-input" id="freq_imediato" name="notification_frequency" value="imediato">
+                                                    <label class="form-check-label" for="freq_imediato">
+                                                        <strong>Imediato</strong>
+                                                        <small class="d-block text-muted">Receber notificações assim que acontecerem</small>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input type="radio" class="form-check-input" id="freq_diario" name="notification_frequency" value="diario">
+                                                    <label class="form-check-label" for="freq_diario">
+                                                        <strong>Diário</strong>
+                                                        <small class="d-block text-muted">Resumo diário das notificações</small>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input type="radio" class="form-check-input" id="freq_semanal" name="notification_frequency" value="semanal">
+                                                    <label class="form-check-label" for="freq_semanal">
+                                                        <strong>Semanal</strong>
+                                                        <small class="d-block text-muted">Resumo semanal das notificações</small>
+                                                    </label>
+                                                </div>
+                                                
+                                                <div class="form-check mb-2">
+                                                    <input type="radio" class="form-check-input" id="freq_nunca" name="notification_frequency" value="nunca">
+                                                    <label class="form-check-label" for="freq_nunca">
+                                                        <strong>Nunca</strong>
+                                                        <small class="d-block text-muted">Não receber notificações por e-mail</small>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="d-flex justify-content-between">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-save me-2"></i>
+                                                    Salvar Configurações
+                                                </button>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="resetNotificationForm()">
+                                                    <i class="fas fa-undo me-2"></i>
+                                                    Restaurar Padrões
+                                                </button>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -1571,17 +1689,23 @@
         
         async function loadUserData() {
             try {
+                const token = getAuthToken();
+                console.log('Token de autenticação:', token);
+                
                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
                     headers: {
-                        'Authorization': 'Bearer ' + getAuthToken()
+                        'Authorization': 'Bearer ' + token
                     }
                 });
                 
+                console.log('Status da resposta:', response.status);
                 const result = await response.json();
+                console.log('Resultado completo da API:', result);
                 
                 if (result.success) {
                     populateUserData(result.data);
                 } else {
+                    console.error('Erro na API:', result.message);
                     showError('Erro ao carregar dados do usuário.');
                 }
             } catch (error) {
@@ -1591,14 +1715,20 @@
         }
         
         function populateUserData(data) {
+             console.log('Dados recebidos da API:', data);
+             console.log('Campo foto_perfil:', data.foto_perfil);
+             
              // Profile header
              document.getElementById('profile-name').textContent = data.nome || 'Nome do Usuário';
              document.getElementById('user-name').textContent = data.nome || 'Usuário';
              document.getElementById('profile-bio').textContent = data.bio || 'Biografia do usuário...';
              
              // Avatar
-             if (data.avatar) {
-                 document.getElementById('avatar-img').src = data.avatar;
+             if (data.foto_perfil) {
+                 console.log('Definindo src do avatar para:', data.foto_perfil);
+                 document.getElementById('avatar-img').src = data.foto_perfil;
+             } else {
+                 console.log('Campo foto_perfil não encontrado ou vazio');
              }
              
              // Form fields
@@ -1622,6 +1752,24 @@
              document.getElementById('show-images').checked = data.show_images === true;
              document.getElementById('auto-play-videos').checked = data.auto_play_videos === true;
              document.getElementById('dark-mode').checked = data.dark_mode === true;
+             
+             // Notification settings - Email
+             document.getElementById('email_newsletter').checked = data.email_newsletter === true;
+             document.getElementById('email_breaking').checked = data.email_breaking === true;
+             document.getElementById('email_comments').checked = data.email_comments === true;
+             document.getElementById('email_marketing').checked = data.email_marketing === true;
+             
+             // Notification settings - Push
+             document.getElementById('push_breaking').checked = data.push_breaking === true;
+             document.getElementById('push_interests').checked = data.push_interests === true;
+             document.getElementById('push_comments').checked = data.push_comments === true;
+             
+             // Notification frequency
+             const frequency = data.notification_frequency || 'diario';
+             const frequencyRadio = document.getElementById(`freq_${frequency}`);
+             if (frequencyRadio) {
+                 frequencyRadio.checked = true;
+             }
              
              // Stats
              document.getElementById('comments-count').textContent = data.total_comentarios || 0;
@@ -2132,6 +2280,25 @@
                  hour: '2-digit',
                  minute: '2-digit'
              });
+         }
+         
+         // Reset notification form to defaults
+         function resetNotificationForm() {
+             // Email notifications - set defaults
+             document.getElementById('email_newsletter').checked = true;
+             document.getElementById('email_breaking').checked = false;
+             document.getElementById('email_comments').checked = true;
+             document.getElementById('email_marketing').checked = false;
+             
+             // Push notifications - set defaults
+             document.getElementById('push_breaking').checked = true;
+             document.getElementById('push_interests').checked = false;
+             document.getElementById('push_comments').checked = true;
+             
+             // Frequency - set default to daily
+             document.getElementById('freq_diario').checked = true;
+             
+             showMessage('Configurações restauradas para os valores padrão', 'info');
          }
      </script>
 
