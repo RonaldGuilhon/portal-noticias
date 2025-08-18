@@ -220,19 +220,9 @@
                                     </div>
                                     <div class="card-body">
                                         <form id="personal-form">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="nome" class="form-label">Nome *</label>
-                                                        <input type="text" class="form-control" id="nome" name="nome" required>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group mb-3">
-                                                        <label for="sobrenome" class="form-label">Sobrenome *</label>
-                                                        <input type="text" class="form-control" id="sobrenome" name="sobrenome" required>
-                                                    </div>
-                                                </div>
+                                            <div class="form-group mb-3">
+                                                <label for="nome" class="form-label">Nome Completo *</label>
+                                                <input type="text" class="form-control" id="nome" name="nome" required placeholder="Digite seu nome completo">
                                             </div>
                                             
                                             <div class="form-group mb-3">
@@ -551,67 +541,78 @@
                                         <form id="notifications-form">
                                             <!-- Email Notifications -->
                                             <div class="notification-section mb-4">
-                                                <h6>Notificações por E-mail</h6>
-                                                <div class="form-check">
+                                                <h6><i class="fas fa-envelope me-2"></i>Notificações por E-mail</h6>
+                                                <p class="text-muted small mb-3">Escolha quais tipos de e-mail você deseja receber</p>
+                                                
+                                                <div class="form-check mb-2">
                                                     <input type="checkbox" class="form-check-input" id="email-newsletter" name="email_newsletter" checked>
                                                     <label class="form-check-label" for="email-newsletter">
-                                                        Newsletter semanal
+                                                        <strong>Newsletter</strong>
+                                                        <small class="d-block text-muted">Resumo das principais notícias</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check">
+                                                <div class="form-check mb-2">
                                                     <input type="checkbox" class="form-check-input" id="email-breaking" name="email_breaking">
                                                     <label class="form-check-label" for="email-breaking">
-                                                        Notícias urgentes
+                                                        <strong>Notícias Urgentes</strong>
+                                                        <small class="d-block text-muted">Alertas imediatos sobre notícias importantes</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check">
+                                                <div class="form-check mb-2">
                                                     <input type="checkbox" class="form-check-input" id="email-comments" name="email_comments">
                                                     <label class="form-check-label" for="email-comments">
-                                                        Respostas aos meus comentários
+                                                        <strong>Respostas aos Comentários</strong>
+                                                        <small class="d-block text-muted">Quando alguém responder seus comentários</small>
                                                     </label>
                                                 </div>
-                                                <div class="form-check">
+                                                <div class="form-check mb-2">
                                                     <input type="checkbox" class="form-check-input" id="email-marketing" name="email_marketing">
                                                     <label class="form-check-label" for="email-marketing">
-                                                        Ofertas e promoções
+                                                        <strong>Ofertas e Promoções</strong>
+                                                        <small class="d-block text-muted">Descontos e ofertas especiais</small>
                                                     </label>
                                                 </div>
                                             </div>
                                             
                                             <!-- Push Notifications -->
                                             <div class="notification-section mb-4">
-                                                <h6>Notificações Push</h6>
+                                                <h6><i class="fas fa-mobile-alt me-2"></i>Notificações Push</h6>
+                                                <p class="text-muted small mb-3">Receba notificações instantâneas no seu dispositivo</p>
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input" id="push-breaking" name="push_breaking">
                                                     <label class="form-check-label" for="push-breaking">
-                                                        Notícias urgentes
+                                                        <strong>Notícias Urgentes</strong>
+                                                        <small class="d-block text-muted">Alertas imediatos sobre notícias importantes</small>
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input" id="push-interests" name="push_interests">
                                                     <label class="form-check-label" for="push-interests">
-                                                        Notícias dos meus interesses
+                                                        <strong>Notícias dos Meus Interesses</strong>
+                                                        <small class="d-block text-muted">Conteúdo baseado nas suas categorias favoritas</small>
                                                     </label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input type="checkbox" class="form-check-input" id="push-comments" name="push_comments">
                                                     <label class="form-check-label" for="push-comments">
-                                                        Respostas aos meus comentários
+                                                        <strong>Respostas aos Comentários</strong>
+                                                        <small class="d-block text-muted">Seja notificado quando alguém responder seus comentários</small>
                                                     </label>
                                                 </div>
                                             </div>
                                             
                                             <!-- Frequency Settings -->
                                             <div class="notification-section mb-4">
-                                                <h6>Frequência</h6>
+                                                <h6><i class="fas fa-clock me-2"></i>Frequência de Notificações</h6>
+                                                <p class="text-muted small mb-3">Defina com que frequência deseja receber as notificações</p>
                                                 <div class="form-group">
-                                                    <label for="notification-frequency" class="form-label">Newsletter</label>
+                                                    <label for="notification-frequency" class="form-label"><strong>Frequência da Newsletter</strong></label>
                                                     <select class="form-control" id="notification-frequency" name="notification_frequency">
-                                                        <option value="daily">Diária</option>
-                                                        <option value="weekly" selected>Semanal</option>
-                                                        <option value="monthly">Mensal</option>
-                                                        <option value="never">Nunca</option>
+                                                        <option value="imediato">Imediato - Receba assim que publicado</option>
+                                                        <option value="diario" selected>Diário - Resumo diário das principais notícias</option>
+                                                        <option value="semanal">Semanal - Resumo semanal dos destaques</option>
                                                     </select>
+                                                    <small class="text-muted">Esta configuração afeta apenas a newsletter por e-mail</small>
                                                 </div>
                                             </div>
                                             
@@ -859,7 +860,7 @@
         function populateUserData(userData) {
             // Header info
             document.getElementById('user-name').textContent = userData.nome;
-            document.getElementById('profile-name').textContent = `${userData.nome} ${userData.sobrenome}`;
+            document.getElementById('profile-name').textContent = userData.nome;
             document.getElementById('profile-bio').textContent = userData.bio || 'Nenhuma biografia adicionada.';
             
             // Avatar
@@ -874,7 +875,6 @@
             
             // Personal form
             document.getElementById('nome').value = userData.nome || '';
-            document.getElementById('sobrenome').value = userData.sobrenome || '';
             document.getElementById('email').value = userData.email || '';
             document.getElementById('bio').value = userData.bio || '';
             document.getElementById('data-nascimento').value = userData.data_nascimento || '';
@@ -891,20 +891,19 @@
             }
             
             // Display settings
-            document.getElementById('show-images').checked = userData.configuracoes?.show_images !== false;
-            document.getElementById('auto-play-videos').checked = userData.configuracoes?.auto_play_videos === true;
-            document.getElementById('dark-mode').checked = userData.configuracoes?.dark_mode === true;
+            document.getElementById('show-images').checked = userData.show_images === true;
+            document.getElementById('auto-play-videos').checked = userData.auto_play_videos === true;
+            document.getElementById('dark-mode').checked = userData.dark_mode === true;
             
             // Notifications
-            const notifications = userData.configuracoes?.notifications || {};
-            document.getElementById('email-newsletter').checked = notifications.email_newsletter !== false;
-            document.getElementById('email-breaking').checked = notifications.email_breaking === true;
-            document.getElementById('email-comments').checked = notifications.email_comments === true;
-            document.getElementById('email-marketing').checked = notifications.email_marketing === true;
-            document.getElementById('push-breaking').checked = notifications.push_breaking === true;
-            document.getElementById('push-interests').checked = notifications.push_interests === true;
-            document.getElementById('push-comments').checked = notifications.push_comments === true;
-            document.getElementById('notification-frequency').value = notifications.frequency || 'weekly';
+            document.getElementById('email-newsletter').checked = userData.email_newsletter === true;
+            document.getElementById('email-breaking').checked = userData.email_breaking === true;
+            document.getElementById('email-comments').checked = userData.email_comments === true;
+            document.getElementById('email-marketing').checked = userData.email_marketing === true;
+            document.getElementById('push-breaking').checked = userData.push_breaking === true;
+            document.getElementById('push-interests').checked = userData.push_interests === true;
+            document.getElementById('push-comments').checked = userData.push_comments === true;
+            document.getElementById('notification-frequency').value = userData.notification_frequency || 'diario';
             
             updateBioCount();
         }
@@ -934,6 +933,19 @@
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);
             
+            // Validar nome completo
+            const nomeCompleto = data.nome.trim();
+            if (!nomeCompleto) {
+                showError('Por favor, digite seu nome completo.');
+                return;
+            }
+            
+            const partesNome = nomeCompleto.split(' ').filter(parte => parte.length > 0);
+            if (partesNome.length < 2) {
+                showError('Por favor, digite seu nome e sobrenome.');
+                return;
+            }
+            
             try {
                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
                     method: 'PUT',
@@ -950,7 +962,7 @@
                     showSuccess('Dados pessoais atualizados com sucesso!');
                     // Update header info
                     document.getElementById('user-name').textContent = data.nome;
-                    document.getElementById('profile-name').textContent = `${data.nome} ${data.sobrenome}`;
+                    document.getElementById('profile-name').textContent = data.nome;
                     document.getElementById('profile-bio').textContent = data.bio || 'Nenhuma biografia adicionada.';
                 } else {
                     showError(result.mensagem || 'Erro ao atualizar dados.');

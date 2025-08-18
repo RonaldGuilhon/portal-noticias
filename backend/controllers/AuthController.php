@@ -510,7 +510,28 @@ class AuthController {
                     'foto_perfil' => $this->usuario->foto_perfil,
                     'tipo' => $this->usuario->tipo_usuario,
                     'data_criacao' => $this->usuario->data_criacao,
-                    'preferencias' => json_decode($this->usuario->preferencias, true)
+                    'preferencias' => json_decode($this->usuario->preferencias, true),
+                    
+                    // Informações pessoais
+                    'data_nascimento' => $this->usuario->data_nascimento,
+                    'genero' => $this->usuario->genero,
+                    'telefone' => $this->usuario->telefone,
+                    'cidade' => $this->usuario->cidade,
+                    
+                    // Configurações de exibição
+                    'show_images' => (bool)$this->usuario->show_images,
+                    'auto_play_videos' => (bool)$this->usuario->auto_play_videos,
+                    'dark_mode' => (bool)$this->usuario->dark_mode,
+                    
+                    // Configurações de notificação
+                    'email_newsletter' => (bool)$this->usuario->email_newsletter,
+                    'email_breaking' => (bool)$this->usuario->email_breaking,
+                    'email_comments' => (bool)$this->usuario->email_comments,
+                    'email_marketing' => (bool)$this->usuario->email_marketing,
+                    'push_breaking' => (bool)$this->usuario->push_breaking,
+                    'push_interests' => (bool)$this->usuario->push_interests,
+                    'push_comments' => (bool)$this->usuario->push_comments,
+                    'notification_frequency' => $this->usuario->notification_frequency
                 ]
             ]);
         } catch(Exception $e) {
@@ -532,9 +553,34 @@ class AuthController {
             $dados = json_decode(file_get_contents('php://input'), true);
             
             $this->usuario->id = $usuario['id'];
+            
+            // Informações pessoais
             $this->usuario->nome = $dados['nome'] ?? '';
             $this->usuario->bio = $dados['bio'] ?? '';
+            $this->usuario->data_nascimento = $dados['data_nascimento'] ?? null;
+            $this->usuario->genero = $dados['genero'] ?? null;
+            $this->usuario->telefone = $dados['telefone'] ?? null;
+            $this->usuario->cidade = $dados['cidade'] ?? null;
             $this->usuario->preferencias = json_encode($dados['preferencias'] ?? []);
+            
+            // Configurações de exibição
+            $this->usuario->show_images = isset($dados['show_images']) ? 1 : 0;
+            $this->usuario->auto_play_videos = isset($dados['auto_play_videos']) ? 1 : 0;
+            $this->usuario->dark_mode = isset($dados['dark_mode']) ? 1 : 0;
+            
+            // Notificações por email
+            $this->usuario->email_newsletter = isset($dados['email_newsletter']) ? 1 : 0;
+            $this->usuario->email_breaking = isset($dados['email_breaking']) ? 1 : 0;
+            $this->usuario->email_comments = isset($dados['email_comments']) ? 1 : 0;
+            $this->usuario->email_marketing = isset($dados['email_marketing']) ? 1 : 0;
+            
+            // Notificações push
+            $this->usuario->push_breaking = isset($dados['push_breaking']) ? 1 : 0;
+            $this->usuario->push_interests = isset($dados['push_interests']) ? 1 : 0;
+            $this->usuario->push_comments = isset($dados['push_comments']) ? 1 : 0;
+            
+            // Frequência de notificações
+            $this->usuario->notification_frequency = $dados['notification_frequency'] ?? 'diario';
             
             // Upload de foto se fornecida
             if(!empty($dados['foto_perfil'])) {
@@ -569,9 +615,9 @@ class AuthController {
 
             $dados = json_decode(file_get_contents('php://input'), true);
             
-            $senha_atual = $dados['senha_atual'] ?? '';
-            $nova_senha = $dados['nova_senha'] ?? '';
-            $confirmar_senha = $dados['confirmar_senha'] ?? '';
+            $senha_atual = $dados['current_password'] ?? '';
+            $nova_senha = $dados['new_password'] ?? '';
+            $confirmar_senha = $dados['new_password'] ?? '';
 
             if(empty($senha_atual) || empty($nova_senha) || empty($confirmar_senha)) {
                 jsonResponse(['erro' => 'Todos os campos são obrigatórios'], 400);
@@ -605,7 +651,24 @@ class AuthController {
      * Verificar se usuário está logado
      */
     private function estaLogado() {
-        return isset($_SESSION['logado']) && $_SESSION['logado'] === true;
+        require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+        $authMiddleware = new AuthMiddleware();
+        $resultado = $authMiddleware->verificarToken();
+        
+        if ($resultado['valido']) {
+            // Definir dados do usuário na sessão se não existirem
+            if (!isset($_SESSION['usuario_id'])) {
+                session_start();
+                $_SESSION['usuario_id'] = $resultado['usuario']['id'];
+                $_SESSION['usuario_nome'] = $resultado['usuario']['nome'];
+                $_SESSION['usuario_email'] = $resultado['usuario']['email'];
+                $_SESSION['usuario_tipo'] = $resultado['usuario']['tipo'];
+                $_SESSION['logado'] = true;
+            }
+            return true;
+        }
+        
+        return false;
     }
 
     /**
@@ -847,23 +910,29 @@ class AuthController {
         $input = json_decode(file_get_contents('php://input'), true);
         
         try {
-            // Atualizar configurações do usuário
-            $configuracoes = [
-                'show_images' => $input['show-images'] ?? true,
-                'auto_play_videos' => $input['auto-play-videos'] ?? false,
-                'dark_mode' => $input['dark-mode'] ?? false
-            ];
-
+            // Coletar preferências de categorias
+            $preferencias = $input['preferencias'] ?? [];
+            
             $stmt = $this->db->prepare("
                 UPDATE usuarios 
-                SET configuracoes = ?
+                SET preferencias = ?,
+                    show_images = ?,
+                    auto_play_videos = ?,
+                    dark_mode = ?
                 WHERE id = ?
             ");
-            $stmt->execute([json_encode($configuracoes), $usuario['id']]);
+            
+            $stmt->execute([
+                json_encode($preferencias),
+                isset($input['show_images']) ? 1 : 0,
+                isset($input['auto_play_videos']) ? 1 : 0,
+                isset($input['dark_mode']) ? 1 : 0,
+                $usuario['id']
+            ]);
 
             jsonResponse([
                 'success' => true,
-                'message' => 'Preferências atualizadas com success'
+                'message' => 'Preferências atualizadas com sucesso'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar preferências: " . $e->getMessage());
@@ -884,15 +953,26 @@ class AuthController {
             // Atualizar configurações de notificação
             $stmt = $this->db->prepare("
                 UPDATE usuarios 
-                SET email_newsletter = ?, 
-                    notificacoes_email = ?,
-                    notificacoes_push = ?
+                SET email_newsletter = ?,
+                    email_breaking = ?,
+                    email_comments = ?,
+                    email_marketing = ?,
+                    push_breaking = ?,
+                    push_interests = ?,
+                    push_comments = ?,
+                    notification_frequency = ?
                 WHERE id = ?
             ");
+            
             $stmt->execute([
-                $input['email-newsletter'] ?? false,
-                $input['email-notifications'] ?? false,
-                $input['push-notifications'] ?? false,
+                isset($input['email_newsletter']) ? 1 : 0,
+                isset($input['email_breaking']) ? 1 : 0,
+                isset($input['email_comments']) ? 1 : 0,
+                isset($input['email_marketing']) ? 1 : 0,
+                isset($input['push_breaking']) ? 1 : 0,
+                isset($input['push_interests']) ? 1 : 0,
+                isset($input['push_comments']) ? 1 : 0,
+                $input['notification_frequency'] ?? 'diario',
                 $usuario['id']
             ]);
 

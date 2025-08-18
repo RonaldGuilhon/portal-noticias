@@ -30,7 +30,24 @@ class Usuario {
     public $provider_id;
     public $data_nascimento;
     public $genero;
-    public $newsletter;
+    public $telefone;
+    public $cidade;
+
+    
+    // Configurações de exibição
+    public $show_images;
+    public $auto_play_videos;
+    public $dark_mode;
+    
+    // Configurações de notificação
+    public $email_newsletter;
+    public $email_breaking;
+    public $email_comments;
+    public $email_marketing;
+    public $push_breaking;
+    public $push_interests;
+    public $push_comments;
+    public $notification_frequency;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -43,7 +60,7 @@ class Usuario {
         $query = "INSERT INTO " . $this->table_name . " 
                   SET nome=:nome, email=:email, senha=:senha, tipo_usuario=:tipo_usuario, 
                       token_verificacao=:token_verificacao, provider=:provider, provider_id=:provider_id,
-                      data_nascimento=:data_nascimento, genero=:genero, newsletter=:newsletter";
+                      data_nascimento=:data_nascimento, genero=:genero, preferencias=:preferencias";
 
         $stmt = $this->conn->prepare($query);
 
@@ -65,7 +82,8 @@ class Usuario {
         $stmt->bindParam(":provider_id", $this->provider_id);
         $stmt->bindParam(":data_nascimento", $this->data_nascimento);
         $stmt->bindParam(":genero", $this->genero);
-        $stmt->bindParam(":newsletter", $this->newsletter);
+
+        $stmt->bindParam(":preferencias", $this->preferencias);
 
         if($stmt->execute()) {
             $this->id = $this->conn->lastInsertId();
@@ -177,6 +195,26 @@ class Usuario {
             $this->email_verificado = $row['email_verificado'];
             $this->data_criacao = $row['data_criacao'];
             $this->preferencias = $row['preferencias'];
+            $this->data_nascimento = $row['data_nascimento'];
+            $this->genero = $row['genero'];
+            $this->telefone = $row['telefone'];
+            $this->cidade = $row['cidade'];
+            
+            // Configurações de exibição
+            $this->show_images = $row['show_images'];
+            $this->auto_play_videos = $row['auto_play_videos'];
+            $this->dark_mode = $row['dark_mode'];
+            
+            // Configurações de notificação
+
+            $this->email_newsletter = $row['email_newsletter'];
+            $this->email_breaking = $row['email_breaking'];
+            $this->email_comments = $row['email_comments'];
+            $this->email_marketing = $row['email_marketing'];
+            $this->push_breaking = $row['push_breaking'];
+            $this->push_interests = $row['push_interests'];
+            $this->push_comments = $row['push_comments'];
+            $this->notification_frequency = $row['notification_frequency'];
             return true;
         }
         
@@ -204,18 +242,51 @@ class Usuario {
      */
     public function atualizarPerfil() {
         $query = "UPDATE " . $this->table_name . " 
-                  SET nome=:nome, bio=:bio, foto_perfil=:foto_perfil, preferencias=:preferencias 
+                  SET nome=:nome, bio=:bio, foto_perfil=:foto_perfil, preferencias=:preferencias,
+                      data_nascimento=:data_nascimento, genero=:genero, telefone=:telefone, cidade=:cidade,
+                      show_images=:show_images, auto_play_videos=:auto_play_videos, dark_mode=:dark_mode,
+                      email_newsletter=:email_newsletter, email_breaking=:email_breaking, 
+                      email_comments=:email_comments, email_marketing=:email_marketing,
+                      push_breaking=:push_breaking, push_interests=:push_interests, 
+                      push_comments=:push_comments, notification_frequency=:notification_frequency
                   WHERE id=:id";
 
         $stmt = $this->conn->prepare($query);
 
         $this->nome = sanitizeInput($this->nome);
         $this->bio = sanitizeInput($this->bio);
+        $this->telefone = sanitizeInput($this->telefone);
+        $this->cidade = sanitizeInput($this->cidade);
 
         $stmt->bindParam(":nome", $this->nome);
         $stmt->bindParam(":bio", $this->bio);
         $stmt->bindParam(":foto_perfil", $this->foto_perfil);
         $stmt->bindParam(":preferencias", $this->preferencias);
+        $stmt->bindParam(":data_nascimento", $this->data_nascimento);
+        $stmt->bindParam(":genero", $this->genero);
+        $stmt->bindParam(":telefone", $this->telefone);
+        $stmt->bindParam(":cidade", $this->cidade);
+        
+        // Configurações de exibição
+        $stmt->bindParam(":show_images", $this->show_images);
+        $stmt->bindParam(":auto_play_videos", $this->auto_play_videos);
+        $stmt->bindParam(":dark_mode", $this->dark_mode);
+        
+        // Notificações por email
+
+        $stmt->bindParam(":email_newsletter", $this->email_newsletter);
+        $stmt->bindParam(":email_breaking", $this->email_breaking);
+        $stmt->bindParam(":email_comments", $this->email_comments);
+        $stmt->bindParam(":email_marketing", $this->email_marketing);
+        
+        // Notificações push
+        $stmt->bindParam(":push_breaking", $this->push_breaking);
+        $stmt->bindParam(":push_interests", $this->push_interests);
+        $stmt->bindParam(":push_comments", $this->push_comments);
+        
+        // Frequência de notificações
+        $stmt->bindParam(":notification_frequency", $this->notification_frequency);
+        
         $stmt->bindParam(":id", $this->id);
 
         return $stmt->execute();
