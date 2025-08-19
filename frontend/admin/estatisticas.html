@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Estatísticas</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Estatísticas e Relatórios</h2>
+                            <p class="page-subtitle">Análise detalhada do desempenho do portal</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <div class="btn-group">
+                                <button class="btn btn-outline-primary" onclick="setPeriod('7d')" id="period-7d">7 dias</button>
+                                <button class="btn btn-outline-primary active" onclick="setPeriod('30d')" id="period-30d">30 dias</button>
+                                <button class="btn btn-outline-primary" onclick="setPeriod('90d')" id="period-90d">90 dias</button>
+                                <button class="btn btn-outline-primary" onclick="setPeriod('1y')" id="period-1y">1 ano</button>
+                            </div>
+                            <button class="btn btn-primary" onclick="exportReport()">
+                                <i class="fas fa-download me-2"></i>Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Overview Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-views">0</h3>
+                                <p>Visualizações</p>
+                                <small class="text-success" id="views-change">+0%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="unique-visitors">0</h3>
+                                <p>Visitantes Únicos</p>
+                                <small class="text-success" id="visitors-change">+0%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="avg-session">0m</h3>
+                                <p>Tempo Médio</p>
+                                <small class="text-success" id="session-change">+0%</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-percentage"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="bounce-rate">0%</h3>
+                                <p>Taxa de Rejeição</p>
+                                <small class="text-danger" id="bounce-change">+0%</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row 1 -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Visualizações ao Longo do Tempo</h5>
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-secondary active" onclick="setChartType('views', 'daily')">Diário</button>
+                                    <button class="btn btn-outline-secondary" onclick="setChartType('views', 'weekly')">Semanal</button>
+                                    <button class="btn btn-outline-secondary" onclick="setChartType('views', 'monthly')">Mensal</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="viewsChart" height="100"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Dispositivos</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="devicesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts Row 2 -->
+                <div class="row mb-4">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Fontes de Tráfego</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="trafficChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Categorias Mais Populares</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="categoriesChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Content -->
+                <div class="row mb-4">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Notícias Mais Lidas</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="top-news" class="list-group list-group-flush">
+                                    <!-- Top news will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Autores Mais Ativos</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="top-authors" class="list-group list-group-flush">
+                                    <!-- Top authors will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Geographic Data -->
+                <div class="row mb-4">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Localização dos Visitantes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="geographic-data">
+                                    <!-- Geographic data will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Horários de Pico</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="hoursChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Real-time Stats -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0">Atividade em Tempo Real</h5>
+                                <span class="badge bg-success">Ao vivo</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <h3 id="online-users" class="text-primary">0</h3>
+                                            <p class="mb-0">Usuários Online</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <h3 id="active-sessions" class="text-success">0</h3>
+                                            <p class="mb-0">Sessões Ativas</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <h3 id="page-views-today" class="text-info">0</h3>
+                                            <p class="mb-0">Visualizações Hoje</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="text-center">
+                                            <h3 id="new-users-today" class="text-warning">0</h3>
+                                            <p class="mb-0">Novos Usuários Hoje</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="row">
+                                    <div class="col-12">
+                                        <h6>Páginas Mais Visitadas (Últimas 24h)</h6>
+                                        <div id="real-time-pages">
+                                            <!-- Real-time pages will be loaded here -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPeriod = '30d';
+        let charts = {};
+        let realTimeInterval;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadOverviewStats();
+            initializeCharts();
+            loadTopContent();
+            loadGeographicData();
+            startRealTimeUpdates();
+        });
+        
+        async function loadOverviewStats() {
+            try {
+                const result = await adminPanel.apiGet(`admin/estatisticas/overview?period=${currentPeriod}`);
+                if (result.success) {
+                    const stats = result.data;
+                    
+                    document.getElementById('total-views').textContent = formatNumber(stats.total_views || 0);
+                    document.getElementById('unique-visitors').textContent = formatNumber(stats.unique_visitors || 0);
+                    document.getElementById('avg-session').textContent = formatTime(stats.avg_session_duration || 0);
+                    document.getElementById('bounce-rate').textContent = (stats.bounce_rate || 0).toFixed(1) + '%';
+                    
+                    // Update change indicators
+                    updateChangeIndicator('views-change', stats.views_change || 0);
+                    updateChangeIndicator('visitors-change', stats.visitors_change || 0);
+                    updateChangeIndicator('session-change', stats.session_change || 0);
+                    updateChangeIndicator('bounce-change', stats.bounce_change || 0, true);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        function updateChangeIndicator(elementId, change, inverse = false) {
+            const element = document.getElementById(elementId);
+            const isPositive = change > 0;
+            const className = inverse ? (isPositive ? 'text-danger' : 'text-success') : (isPositive ? 'text-success' : 'text-danger');
+            const symbol = isPositive ? '+' : '';
+            
+            element.className = `small ${className}`;
+            element.textContent = `${symbol}${change.toFixed(1)}%`;
+        }
+        
+        async function initializeCharts() {
+            try {
+                // Views Chart
+                const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+                charts.views = new Chart(viewsCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Visualizações',
+                            data: [],
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // Devices Chart
+                const devicesCtx = document.getElementById('devicesChart').getContext('2d');
+                charts.devices = new Chart(devicesCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Desktop', 'Mobile', 'Tablet'],
+                        datasets: [{
+                            data: [0, 0, 0],
+                            backgroundColor: ['#0d6efd', '#198754', '#ffc107']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                // Traffic Sources Chart
+                const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+                charts.traffic = new Chart(trafficCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Direto', 'Busca Orgânica', 'Redes Sociais', 'Referências', 'Email'],
+                        datasets: [{
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: ['#0d6efd', '#198754', '#dc3545', '#ffc107', '#6f42c1']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                // Categories Chart
+                const categoriesCtx = document.getElementById('categoriesChart').getContext('2d');
+                charts.categories = new Chart(categoriesCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Visualizações',
+                            data: [],
+                            backgroundColor: '#0d6efd'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // Hours Chart
+                const hoursCtx = document.getElementById('hoursChart').getContext('2d');
+                charts.hours = new Chart(hoursCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                        datasets: [{
+                            label: 'Visitantes',
+                            data: new Array(24).fill(0),
+                            backgroundColor: '#198754'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+                
+                // Load chart data
+                loadChartData();
+                
+            } catch (error) {
+                console.error('Erro ao inicializar gráficos:', error);
+            }
+        }
+        
+        async function loadChartData() {
+            try {
+                const result = await adminPanel.apiGet(`admin/estatisticas/charts?period=${currentPeriod}`);
+                if (result.success) {
+                    const data = result.data;
+                    
+                    // Update Views Chart
+                    if (data.views) {
+                        charts.views.data.labels = data.views.labels;
+                        charts.views.data.datasets[0].data = data.views.data;
+                        charts.views.update();
+                    }
+                    
+                    // Update Devices Chart
+                    if (data.devices) {
+                        charts.devices.data.datasets[0].data = data.devices.data;
+                        charts.devices.update();
+                    }
+                    
+                    // Update Traffic Chart
+                    if (data.traffic) {
+                        charts.traffic.data.datasets[0].data = data.traffic.data;
+                        charts.traffic.update();
+                    }
+                    
+                    // Update Categories Chart
+                    if (data.categories) {
+                        charts.categories.data.labels = data.categories.labels;
+                        charts.categories.data.datasets[0].data = data.categories.data;
+                        charts.categories.update();
+                    }
+                    
+                    // Update Hours Chart
+                    if (data.hours) {
+                        charts.hours.data.datasets[0].data = data.hours.data;
+                        charts.hours.update();
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados dos gráficos:', error);
+            }
+        }
+        
+        async function loadTopContent() {
+            try {
+                const result = await adminPanel.apiGet(`admin/estatisticas/top-content?period=${currentPeriod}`);
+                if (result.success) {
+                    const data = result.data;
+                    
+                    // Top News
+                    if (data.news) {
+                        displayTopNews(data.news);
+                    }
+                    
+                    // Top Authors
+                    if (data.authors) {
+                        displayTopAuthors(data.authors);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar conteúdo popular:', error);
+            }
+        }
+        
+        function displayTopNews(news) {
+            const container = document.getElementById('top-news');
+            
+            if (news.length === 0) {
+                container.innerHTML = '<div class="p-3 text-muted text-center">Nenhum dado disponível</div>';
+                return;
+            }
+            
+            container.innerHTML = news.map((item, index) => `
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="me-auto">
+                        <div class="fw-bold">${index + 1}. ${item.titulo}</div>
+                        <small class="text-muted">${item.categoria || 'N/A'}</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary rounded-pill">${formatNumber(item.visualizacoes)}</span>
+                        <small class="d-block text-muted">${item.data_publicacao ? new Date(item.data_publicacao).toLocaleDateString('pt-BR') : 'N/A'}</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function displayTopAuthors(authors) {
+            const container = document.getElementById('top-authors');
+            
+            if (authors.length === 0) {
+                container.innerHTML = '<div class="p-3 text-muted text-center">Nenhum dado disponível</div>';
+                return;
+            }
+            
+            container.innerHTML = authors.map((author, index) => `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <img src="${author.avatar || '../assets/images/default-avatar.png'}" alt="${author.nome}" class="rounded-circle me-3" width="40" height="40">
+                        <div>
+                            <div class="fw-bold">${index + 1}. ${author.nome}</div>
+                            <small class="text-muted">${author.especialidade || 'Autor'}</small>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-success rounded-pill">${author.total_artigos}</span>
+                        <small class="d-block text-muted">${formatNumber(author.total_visualizacoes)} views</small>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async function loadGeographicData() {
+            try {
+                const result = await adminPanel.apiGet(`admin/estatisticas/geographic?period=${currentPeriod}`);
+                if (result.success) {
+                    displayGeographicData(result.data);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados geográficos:', error);
+            }
+        }
+        
+        function displayGeographicData(data) {
+            const container = document.getElementById('geographic-data');
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div class="text-muted text-center py-4">Nenhum dado geográfico disponível</div>';
+                return;
+            }
+            
+            const table = `
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>País/Estado</th>
+                                <th>Visitantes</th>
+                                <th>Sessões</th>
+                                <th>Taxa de Rejeição</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.map(item => `
+                                <tr>
+                                    <td>
+                                        <i class="fas fa-map-marker-alt text-muted me-2"></i>
+                                        ${item.location}
+                                    </td>
+                                    <td>${formatNumber(item.visitors)}</td>
+                                    <td>${formatNumber(item.sessions)}</td>
+                                    <td>${(item.bounce_rate || 0).toFixed(1)}%</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = table;
+        }
+        
+        function startRealTimeUpdates() {
+            loadRealTimeStats();
+            realTimeInterval = setInterval(loadRealTimeStats, 30000); // Update every 30 seconds
+        }
+        
+        async function loadRealTimeStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/estatisticas/realtime');
+                if (result.success) {
+                    const stats = result.data;
+                    
+                    document.getElementById('online-users').textContent = stats.online_users || 0;
+                    document.getElementById('active-sessions').textContent = stats.active_sessions || 0;
+                    document.getElementById('page-views-today').textContent = formatNumber(stats.page_views_today || 0);
+                    document.getElementById('new-users-today').textContent = stats.new_users_today || 0;
+                    
+                    if (stats.top_pages) {
+                        displayRealTimePages(stats.top_pages);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas em tempo real:', error);
+            }
+        }
+        
+        function displayRealTimePages(pages) {
+            const container = document.getElementById('real-time-pages');
+            
+            if (pages.length === 0) {
+                container.innerHTML = '<div class="text-muted">Nenhuma atividade recente</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="list-group list-group-flush">
+                    ${pages.map(page => `
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <div class="fw-medium">${page.title}</div>
+                                <small class="text-muted">${page.url}</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">${page.active_users}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        function setPeriod(period) {
+            // Update active button
+            document.querySelectorAll('[id^="period-"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`period-${period}`).classList.add('active');
+            
+            currentPeriod = period;
+            loadOverviewStats();
+            loadChartData();
+            loadTopContent();
+            loadGeographicData();
+        }
+        
+        function setChartType(chart, type) {
+            // Implementation for changing chart granularity
+            console.log(`Changing ${chart} chart to ${type} view`);
+        }
+        
+        function exportReport() {
+            // Implementation for exporting reports
+            alert('Funcionalidade de exportação será implementada');
+        }
+        
+        // Utility functions
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            
+            if (minutes > 0) {
+                return `${minutes}m ${remainingSeconds}s`;
+            }
+            return `${remainingSeconds}s`;
+        }
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (realTimeInterval) {
+                clearInterval(realTimeInterval);
+            }
+        });
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>

@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploads - Portal de Notícias Admin</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+    <link href="assets/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Carregando...</span>
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <button id="sidebar-toggle" class="btn btn-link text-dark p-0 me-3">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h1 class="h4 mb-0">Uploads</h1>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <!-- Notifications -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 position-relative" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell fs-5"></i>
+                        <span id="notification-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">0</span>
+                    </button>
+                    <ul id="notifications-list" class="dropdown-menu dropdown-menu-end" style="min-width: 300px;">
+                        <li><span class="dropdown-item-text text-muted">Carregando...</span></li>
+                    </ul>
+                </div>
+                
+                <!-- User Menu -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <span id="admin-name">Admin</span>
+                        <i class="fas fa-chevron-down ms-2 small"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="../perfil.html"><i class="fas fa-user me-2"></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="configuracoes.html"><i class="fas fa-cog me-2"></i>Configurações</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside id="admin-sidebar" class="admin-sidebar">
+            <div class="sidebar-brand">
+                <i class="fas fa-newspaper text-primary"></i>
+                <span class="brand-text">Portal Admin</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.html">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Notícias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categorias.html">
+                            <i class="fas fa-folder"></i>
+                            <span>Categorias</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="tags.html">
+                            <i class="fas fa-tags"></i>
+                            <span>Tags</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="comentarios.html">
+                            <i class="fas fa-comments"></i>
+                            <span>Comentários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="newsletter.html">
+                            <i class="fas fa-envelope"></i>
+                            <span>Newsletter</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="usuarios.html">
+                            <i class="fas fa-users"></i>
+                            <span>Usuários</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="autores.html">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Autores</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="uploads.html">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Uploads</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="anuncios.html">
+                            <i class="fas fa-ad"></i>
+                            <span>Anúncios</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="estatisticas.html">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Estatísticas</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="configuracoes.html">
+                            <i class="fas fa-cog"></i>
+                            <span>Configurações</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="logs.html">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Logs</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="container-fluid">
+                <!-- Page Header -->
+                <div class="page-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="page-title">Gerenciamento de Uploads</h2>
+                            <p class="page-subtitle">Gerencie arquivos de mídia do portal</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-danger" onclick="cleanupFiles()">
+                                <i class="fas fa-trash me-2"></i>Limpeza
+                            </button>
+                            <button class="btn btn-primary" onclick="showUploadModal()">
+                                <i class="fas fa-upload me-2"></i>Fazer Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-primary">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-files">0</h3>
+                                <p>Total de Arquivos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-success">
+                                <i class="fas fa-images"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-images">0</h3>
+                                <p>Imagens</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-info">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="total-videos">0</h3>
+                                <p>Vídeos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-card">
+                            <div class="stats-icon bg-warning">
+                                <i class="fas fa-hdd"></i>
+                            </div>
+                            <div class="stats-content">
+                                <h3 id="storage-used">0 MB</h3>
+                                <p>Espaço Usado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upload Area -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div id="upload-area" class="upload-area text-center p-5 border-2 border-dashed rounded">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <h5>Arraste arquivos aqui ou clique para selecionar</h5>
+                            <p class="text-muted">Suporte para imagens (JPG, PNG, GIF, WebP), vídeos (MP4, WebM) e documentos (PDF)</p>
+                            <input type="file" id="file-input" multiple accept="image/*,video/*,.pdf" style="display: none;">
+                            <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                                <i class="fas fa-plus me-2"></i>Selecionar Arquivos
+                            </button>
+                        </div>
+                        
+                        <!-- Upload Progress -->
+                        <div id="upload-progress" class="mt-3" style="display: none;">
+                            <div class="progress">
+                                <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span id="upload-status">Preparando upload...</span>
+                                <span id="upload-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filters -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label">Buscar</label>
+                                <div class="input-group">
+                                    <input type="text" id="search-files" class="form-control" placeholder="Nome do arquivo...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchFiles()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Tipo</label>
+                                <select id="type-filter" class="form-select" onchange="filterFiles()">
+                                    <option value="">Todos</option>
+                                    <option value="image">Imagens</option>
+                                    <option value="video">Vídeos</option>
+                                    <option value="document">Documentos</option>
+                                    <option value="other">Outros</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Período</label>
+                                <select id="period-filter" class="form-select" onchange="filterFiles()">
+                                    <option value="">Todos</option>
+                                    <option value="today">Hoje</option>
+                                    <option value="week">Esta semana</option>
+                                    <option value="month">Este mês</option>
+                                    <option value="year">Este ano</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Tamanho</label>
+                                <select id="size-filter" class="form-select" onchange="filterFiles()">
+                                    <option value="">Todos</option>
+                                    <option value="small">< 1MB</option>
+                                    <option value="medium">1MB - 10MB</option>
+                                    <option value="large">10MB - 50MB</option>
+                                    <option value="xlarge">> 50MB</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label">Ordenar por</label>
+                                <select id="sort-files" class="form-select" onchange="sortFiles()">
+                                    <option value="data_upload-desc">Mais recentes</option>
+                                    <option value="data_upload-asc">Mais antigos</option>
+                                    <option value="nome-asc">Nome A-Z</option>
+                                    <option value="nome-desc">Nome Z-A</option>
+                                    <option value="tamanho-desc">Maior tamanho</option>
+                                    <option value="tamanho-asc">Menor tamanho</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <label class="form-label">&nbsp;</label>
+                                <button class="btn btn-outline-secondary d-block w-100" onclick="clearFilters()">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Files List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span id="files-count">0 arquivos encontrados</span>
+                        <div class="d-flex gap-2">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <input type="radio" class="btn-check" name="view-mode" id="grid-view" checked>
+                                <label class="btn btn-outline-secondary" for="grid-view" onclick="setViewMode('grid')">
+                                    <i class="fas fa-th"></i> Grade
+                                </label>
+                                
+                                <input type="radio" class="btn-check" name="view-mode" id="list-view">
+                                <label class="btn btn-outline-secondary" for="list-view" onclick="setViewMode('list')">
+                                    <i class="fas fa-list"></i> Lista
+                                </label>
+                            </div>
+                            <button class="btn btn-outline-danger btn-sm" onclick="deleteSelected()" id="delete-selected" style="display: none;">
+                                <i class="fas fa-trash me-1"></i>Excluir Selecionados
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="files-list">
+                            <!-- Files will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <select id="per-page" class="form-select form-select-sm" style="width: auto;" onchange="changePerPage()">
+                                    <option value="24">24 por página</option>
+                                    <option value="48" selected>48 por página</option>
+                                    <option value="96">96 por página</option>
+                                </select>
+                            </div>
+                            <nav id="files-pagination">
+                                <!-- Pagination will be loaded here -->
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- File Details Modal -->
+    <div class="modal fade" id="fileDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Arquivo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="file-preview" class="text-center mb-3">
+                                <!-- File preview will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <td><strong>Nome:</strong></td>
+                                    <td id="file-name">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tipo:</strong></td>
+                                    <td id="file-type">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Tamanho:</strong></td>
+                                    <td id="file-size">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dimensões:</strong></td>
+                                    <td id="file-dimensions">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Upload:</strong></td>
+                                    <td id="file-upload-date">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Autor:</strong></td>
+                                    <td id="file-author">-</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>URL:</strong></td>
+                                    <td><input type="text" id="file-url" class="form-control form-control-sm" readonly></td>
+                                </tr>
+                            </table>
+                            
+                            <div class="mt-3">
+                                <label class="form-label">Alt Text (SEO)</label>
+                                <input type="text" id="file-alt" class="form-control" placeholder="Texto alternativo...">
+                            </div>
+                            
+                            <div class="mt-3">
+                                <label class="form-label">Descrição</label>
+                                <textarea id="file-description" class="form-control" rows="3" placeholder="Descrição do arquivo..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-primary" onclick="copyFileUrl()">
+                        <i class="fas fa-copy me-2"></i>Copiar URL
+                    </button>
+                    <button type="button" class="btn btn-outline-success" onclick="downloadFile()">
+                        <i class="fas fa-download me-2"></i>Download
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="updateFileInfo()">
+                        <i class="fas fa-save me-2"></i>Salvar Alterações
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" onclick="deleteFile()">
+                        <i class="fas fa-trash me-2"></i>Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="../assets/js/main.js"></script>
+    <script src="assets/js/admin.js"></script>
+    
+    <script>
+        let currentPage = 1;
+        let perPage = 48;
+        let totalPages = 1;
+        let currentFilters = {};
+        let currentSort = 'data_upload-desc';
+        let viewMode = 'grid';
+        let selectedFiles = new Set();
+        let currentFileId = null;
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+            loadFiles();
+            setupEventListeners();
+            setupDragAndDrop();
+        });
+        
+        async function loadStats() {
+            try {
+                const result = await adminPanel.apiGet('admin/uploads/stats');
+                if (result.success) {
+                    document.getElementById('total-files').textContent = result.data.total_arquivos || 0;
+                    document.getElementById('total-images').textContent = result.data.total_imagens || 0;
+                    document.getElementById('total-videos').textContent = result.data.total_videos || 0;
+                    document.getElementById('storage-used').textContent = formatFileSize(result.data.espaco_usado || 0);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+        
+        async function loadFiles() {
+            try {
+                adminPanel.showLoading(true);
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: perPage,
+                    sort: currentSort,
+                    ...currentFilters
+                });
+                
+                const result = await adminPanel.apiGet(`admin/uploads?${params}`);
+                
+                if (result.success) {
+                    displayFiles(result.data.items);
+                    updatePagination(result.data.pagination);
+                    updateFilesCount(result.data.pagination.total);
+                } else {
+                    adminPanel.showNotification('Erro ao carregar arquivos', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar arquivos:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            } finally {
+                adminPanel.showLoading(false);
+            }
+        }
+        
+        function displayFiles(files) {
+            const filesList = document.getElementById('files-list');
+            
+            if (files.length === 0) {
+                filesList.innerHTML = '<div class="text-center py-5"><i class="fas fa-file fa-3x text-muted mb-3"></i><p class="text-muted">Nenhum arquivo encontrado</p></div>';
+                return;
+            }
+            
+            if (viewMode === 'grid') {
+                displayFilesGrid(files);
+            } else {
+                displayFilesList(files);
+            }
+        }
+        
+        function displayFilesGrid(files) {
+            const filesList = document.getElementById('files-list');
+            
+            const grid = `
+                <div class="row g-3 p-3">
+                    ${files.map(file => `
+                        <div class="col-md-3 col-lg-2">
+                            <div class="card file-card h-100" data-file-id="${file.id}">
+                                <div class="position-relative">
+                                    <input type="checkbox" class="form-check-input position-absolute top-0 start-0 m-2" 
+                                           onchange="toggleFileSelection(${file.id}, this.checked)" style="z-index: 10;">
+                                    <div class="file-thumbnail" onclick="viewFile(${file.id})">
+                                        ${getFileThumbnail(file)}
+                                    </div>
+                                </div>
+                                <div class="card-body p-2">
+                                    <h6 class="card-title small mb-1" title="${file.nome_original}">
+                                        ${truncateText(file.nome_original, 20)}
+                                    </h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">${formatFileSize(file.tamanho)}</small>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="dropdown">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li><a class="dropdown-item" href="#" onclick="viewFile(${file.id})"><i class="fas fa-eye me-2"></i>Visualizar</a></li>
+                                                <li><a class="dropdown-item" href="#" onclick="copyFileUrl(${file.id})"><i class="fas fa-copy me-2"></i>Copiar URL</a></li>
+                                                <li><a class="dropdown-item" href="${file.url}" download><i class="fas fa-download me-2"></i>Download</a></li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li><a class="dropdown-item text-danger" href="#" onclick="deleteFileConfirm(${file.id})"><i class="fas fa-trash me-2"></i>Excluir</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted d-block">${new Date(file.data_upload).toLocaleDateString('pt-BR')}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            filesList.innerHTML = grid;
+        }
+        
+        function displayFilesList(files) {
+            const filesList = document.getElementById('files-list');
+            
+            const table = `
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="40">
+                                <input type="checkbox" class="form-check-input" onchange="toggleAllFiles(this.checked)">
+                            </th>
+                            <th>Arquivo</th>
+                            <th width="100">Tipo</th>
+                            <th width="100">Tamanho</th>
+                            <th width="120">Data Upload</th>
+                            <th width="100">Autor</th>
+                            <th width="120">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${files.map(file => `
+                            <tr>
+                                <td>
+                                    <input type="checkbox" class="form-check-input" 
+                                           onchange="toggleFileSelection(${file.id}, this.checked)">
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="file-icon me-3">
+                                            ${getFileIcon(file.tipo)}
+                                        </div>
+                                        <div>
+                                            <div class="fw-medium">${file.nome_original}</div>
+                                            <small class="text-muted">${file.nome_arquivo}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge ${getTypeBadge(file.tipo)}">
+                                        ${file.tipo.toUpperCase()}
+                                    </span>
+                                </td>
+                                <td>${formatFileSize(file.tamanho)}</td>
+                                <td>
+                                    <small>${new Date(file.data_upload).toLocaleDateString('pt-BR')}</small>
+                                </td>
+                                <td>
+                                    <small>${file.autor_nome || 'Sistema'}</small>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-info" onclick="viewFile(${file.id})" title="Visualizar">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="copyFileUrl(${file.id})" title="Copiar URL">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="deleteFileConfirm(${file.id})" title="Excluir">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            filesList.innerHTML = table;
+        }
+        
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-files');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchFiles();
+                }
+            });
+            
+            // File input
+            document.getElementById('file-input').addEventListener('change', function(e) {
+                handleFileSelect(e.target.files);
+            });
+        }
+        
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('upload-area');
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                handleFileSelect(e.dataTransfer.files);
+            });
+        }
+        
+        async function handleFileSelect(files) {
+            if (files.length === 0) return;
+            
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('files[]', file);
+            }
+            
+            try {
+                showUploadProgress();
+                
+                const result = await adminPanel.apiRequest('POST', 'admin/uploads', formData, {
+                    onUploadProgress: function(progressEvent) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        updateUploadProgress(percentCompleted);
+                    }
+                });
+                
+                if (result.success) {
+                    adminPanel.showNotification(`${files.length} arquivo(s) enviado(s) com sucesso!`, 'success');
+                    loadFiles();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification(result.message || 'Erro no upload', 'error');
+                }
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                adminPanel.showNotification('Erro no upload', 'error');
+            } finally {
+                hideUploadProgress();
+            }
+        }
+        
+        function showUploadProgress() {
+            document.getElementById('upload-progress').style.display = 'block';
+            document.getElementById('upload-status').textContent = 'Enviando arquivos...';
+        }
+        
+        function updateUploadProgress(percentage) {
+            const progressBar = document.getElementById('progress-bar');
+            const percentageSpan = document.getElementById('upload-percentage');
+            
+            progressBar.style.width = percentage + '%';
+            percentageSpan.textContent = percentage + '%';
+        }
+        
+        function hideUploadProgress() {
+            setTimeout(() => {
+                document.getElementById('upload-progress').style.display = 'none';
+                document.getElementById('progress-bar').style.width = '0%';
+                document.getElementById('upload-percentage').textContent = '0%';
+            }, 1000);
+        }
+        
+        async function viewFile(fileId) {
+            try {
+                const result = await adminPanel.apiGet(`admin/uploads/${fileId}`);
+                
+                if (result.success) {
+                    const file = result.data;
+                    currentFileId = fileId;
+                    
+                    // Populate modal
+                    document.getElementById('file-name').textContent = file.nome_original;
+                    document.getElementById('file-type').textContent = file.tipo_mime;
+                    document.getElementById('file-size').textContent = formatFileSize(file.tamanho);
+                    document.getElementById('file-dimensions').textContent = file.largura && file.altura ? `${file.largura}x${file.altura}px` : 'N/A';
+                    document.getElementById('file-upload-date').textContent = new Date(file.data_upload).toLocaleString('pt-BR');
+                    document.getElementById('file-author').textContent = file.autor_nome || 'Sistema';
+                    document.getElementById('file-url').value = file.url;
+                    document.getElementById('file-alt').value = file.alt_text || '';
+                    document.getElementById('file-description').value = file.descricao || '';
+                    
+                    // File preview
+                    const preview = document.getElementById('file-preview');
+                    if (file.tipo.startsWith('image/')) {
+                        preview.innerHTML = `<img src="${file.url}" alt="${file.nome_original}" class="img-fluid rounded" style="max-height: 300px;">`;
+                    } else if (file.tipo.startsWith('video/')) {
+                        preview.innerHTML = `<video controls class="img-fluid rounded" style="max-height: 300px;"><source src="${file.url}" type="${file.tipo}"></video>`;
+                    } else {
+                        preview.innerHTML = `<div class="text-center p-4"><i class="${getFileIconClass(file.tipo)} fa-4x text-muted mb-3"></i><p>${file.nome_original}</p></div>`;
+                    }
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('fileDetailsModal'));
+                    modal.show();
+                } else {
+                    adminPanel.showNotification('Erro ao carregar arquivo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar arquivo:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        // Utility functions
+        function getFileThumbnail(file) {
+            if (file.tipo.startsWith('image/')) {
+                return `<img src="${file.url}" alt="${file.nome_original}" class="img-fluid rounded" style="height: 120px; object-fit: cover; width: 100%;">`;
+            } else if (file.tipo.startsWith('video/')) {
+                return `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 120px;"><i class="fas fa-play-circle fa-3x text-primary"></i></div>`;
+            } else {
+                return `<div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 120px;"><i class="${getFileIconClass(file.tipo)} fa-3x text-muted"></i></div>`;
+            }
+        }
+        
+        function getFileIcon(type) {
+            return `<i class="${getFileIconClass(type)} fa-2x text-muted"></i>`;
+        }
+        
+        function getFileIconClass(type) {
+            if (type.startsWith('image/')) return 'fas fa-image';
+            if (type.startsWith('video/')) return 'fas fa-video';
+            if (type.includes('pdf')) return 'fas fa-file-pdf';
+            if (type.includes('word')) return 'fas fa-file-word';
+            if (type.includes('excel')) return 'fas fa-file-excel';
+            if (type.includes('powerpoint')) return 'fas fa-file-powerpoint';
+            if (type.includes('zip') || type.includes('rar')) return 'fas fa-file-archive';
+            return 'fas fa-file';
+        }
+        
+        function getTypeBadge(type) {
+            if (type.startsWith('image/')) return 'bg-success';
+            if (type.startsWith('video/')) return 'bg-info';
+            if (type.includes('pdf')) return 'bg-danger';
+            return 'bg-secondary';
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function truncateText(text, maxLength) {
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+        }
+        
+        function setViewMode(mode) {
+            viewMode = mode;
+            loadFiles();
+        }
+        
+        function toggleFileSelection(fileId, checked) {
+            if (checked) {
+                selectedFiles.add(fileId);
+            } else {
+                selectedFiles.delete(fileId);
+            }
+            
+            const deleteBtn = document.getElementById('delete-selected');
+            deleteBtn.style.display = selectedFiles.size > 0 ? 'block' : 'none';
+        }
+        
+        function toggleAllFiles(checked) {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"][onchange*="toggleFileSelection"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = checked;
+                const fileId = parseInt(checkbox.getAttribute('onchange').match(/\d+/)[0]);
+                toggleFileSelection(fileId, checked);
+            });
+        }
+        
+        function updatePagination(pagination) {
+            // Implementation similar to other pages
+        }
+        
+        function updateFilesCount(total) {
+            const filesCount = document.getElementById('files-count');
+            filesCount.textContent = `${total} arquivo${total !== 1 ? 's' : ''} encontrado${total !== 1 ? 's' : ''}`;
+        }
+        
+        function searchFiles() {
+            const searchTerm = document.getElementById('search-files').value.trim();
+            currentFilters.search = searchTerm;
+            currentPage = 1;
+            loadFiles();
+        }
+        
+        function filterFiles() {
+            const type = document.getElementById('type-filter').value;
+            const period = document.getElementById('period-filter').value;
+            const size = document.getElementById('size-filter').value;
+            
+            currentFilters = {};
+            if (type) currentFilters.tipo = type;
+            if (period) currentFilters.periodo = period;
+            if (size) currentFilters.tamanho = size;
+            
+            currentPage = 1;
+            loadFiles();
+        }
+        
+        function clearFilters() {
+            document.getElementById('search-files').value = '';
+            document.getElementById('type-filter').value = '';
+            document.getElementById('period-filter').value = '';
+            document.getElementById('size-filter').value = '';
+            
+            currentFilters = {};
+            currentPage = 1;
+            loadFiles();
+        }
+        
+        function sortFiles() {
+            currentSort = document.getElementById('sort-files').value;
+            currentPage = 1;
+            loadFiles();
+        }
+        
+        function changePerPage() {
+            perPage = parseInt(document.getElementById('per-page').value);
+            currentPage = 1;
+            loadFiles();
+        }
+        
+        function copyFileUrl(fileId) {
+            const url = document.getElementById('file-url').value;
+            navigator.clipboard.writeText(url).then(() => {
+                adminPanel.showNotification('URL copiada!', 'success');
+            });
+        }
+        
+        function downloadFile() {
+            const url = document.getElementById('file-url').value;
+            window.open(url, '_blank');
+        }
+        
+        async function updateFileInfo() {
+            if (!currentFileId) return;
+            
+            const altText = document.getElementById('file-alt').value.trim();
+            const description = document.getElementById('file-description').value.trim();
+            
+            try {
+                const result = await adminPanel.apiPut(`admin/uploads/${currentFileId}`, {
+                    alt_text: altText,
+                    descricao: description
+                });
+                
+                if (result.success) {
+                    adminPanel.showNotification('Informações atualizadas!', 'success');
+                } else {
+                    adminPanel.showNotification('Erro ao atualizar', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar arquivo:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function deleteFile() {
+            if (!currentFileId) return;
+            
+            if (!confirm('Tem certeza que deseja excluir este arquivo? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiDelete(`admin/uploads/${currentFileId}`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Arquivo excluído!', 'success');
+                    bootstrap.Modal.getInstance(document.getElementById('fileDetailsModal')).hide();
+                    loadFiles();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification('Erro ao excluir arquivo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir arquivo:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function deleteFileConfirm(fileId) {
+            if (!confirm('Tem certeza que deseja excluir este arquivo?')) {
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiDelete(`admin/uploads/${fileId}`);
+                
+                if (result.success) {
+                    adminPanel.showNotification('Arquivo excluído!', 'success');
+                    loadFiles();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification('Erro ao excluir arquivo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir arquivo:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        async function deleteSelected() {
+            if (selectedFiles.size === 0) return;
+            
+            if (!confirm(`Tem certeza que deseja excluir ${selectedFiles.size} arquivo(s) selecionado(s)?`)) {
+                return;
+            }
+            
+            try {
+                const result = await adminPanel.apiDelete('admin/uploads/bulk', {
+                    ids: Array.from(selectedFiles)
+                });
+                
+                if (result.success) {
+                    adminPanel.showNotification(`${selectedFiles.size} arquivo(s) excluído(s)!`, 'success');
+                    selectedFiles.clear();
+                    document.getElementById('delete-selected').style.display = 'none';
+                    loadFiles();
+                    loadStats();
+                } else {
+                    adminPanel.showNotification('Erro ao excluir arquivos', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir arquivos:', error);
+                adminPanel.showNotification('Erro de conexão', 'error');
+            }
+        }
+        
+        function cleanupFiles() {
+            if (!confirm('Deseja executar a limpeza de arquivos não utilizados? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            alert('Funcionalidade de limpeza será implementada');
+        }
+        
+        function showUploadModal() {
+            document.getElementById('file-input').click();
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('admin_token');
+                localStorage.removeItem('admin_user');
+                window.location.href = '../login.html';
+            }
+        }
+        
+        // Initialize admin panel
+        const adminPanel = new AdminPanel();
+    </script>
+</body>
+</html>
