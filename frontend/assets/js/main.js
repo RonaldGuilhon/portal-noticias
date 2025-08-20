@@ -580,8 +580,6 @@ class PortalNoticias {
         const loggedOutElements = document.querySelectorAll('.logged-out-only');
         const adminOnlyElements = document.querySelectorAll('.admin-only');
         
-        console.log(`Elementos encontrados: logged-in: ${loggedInElements.length}, logged-out: ${loggedOutElements.length}, admin-only: ${adminOnlyElements.length}`);
-        
         // Elementos para usuários logados
         loggedInElements.forEach(el => {
             if (this.currentUser) {
@@ -607,8 +605,8 @@ class PortalNoticias {
         // Mostra elementos administrativos apenas para admin/editor
         adminOnlyElements.forEach(el => {
             const isAdmin = this.currentUser && 
-                           (this.currentUser.tipo_usuario === 'admin' || 
-                            this.currentUser.tipo_usuario === 'editor');
+                           (this.currentUser.tipo === 'admin' || 
+                            this.currentUser.tipo === 'editor');
             if (isAdmin) {
                 el.style.display = 'block';
                 el.style.visibility = 'visible';
@@ -617,8 +615,6 @@ class PortalNoticias {
                 el.style.visibility = 'hidden';
             }
         });
-        
-        console.log('updateUserInterface concluída');
     }
 
     // Utilitários de UI
