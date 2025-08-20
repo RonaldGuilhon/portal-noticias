@@ -199,7 +199,7 @@ class AuthController {
             $this->usuario->senha = $dados['senha'] ?? '';
             $this->usuario->data_nascimento = !empty($dados['data_nascimento']) ? $dados['data_nascimento'] : null;
             $this->usuario->genero = !empty($dados['genero']) ? $dados['genero'] : null;
-            $this->usuario->newsletter = isset($dados['newsletter']) ? (bool)$dados['newsletter'] : false;
+            $this->usuario->email_newsletter = isset($dados['newsletter']) ? (bool)$dados['newsletter'] : false;
             
             // Processar preferências (categorias de interesse)
             $preferencias = [];
