@@ -407,12 +407,10 @@
     
     <script>
         // Initialize dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check admin authentication
-            if (!isAdminLoggedIn()) {
-                window.location.href = '../login.html?admin=1';
-                return;
-            }
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize AdminPanel
+            const adminPanel = new AdminPanel();
+            await adminPanel.init();
             
             // Load dashboard data
             loadDashboardData();
@@ -667,7 +665,7 @@
         function isAdminLoggedIn() {
             const token = getAuthToken();
             const userData = JSON.parse(localStorage.getItem('portal-user') || '{}');
-            return token && (userData.tipo_usuario === 'admin' || userData.tipo_usuario === 'editor');
+            return token && (userData.tipo === 'admin' || userData.tipo === 'editor');
         }
         
         function getAuthToken() {

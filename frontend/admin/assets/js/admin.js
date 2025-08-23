@@ -48,14 +48,14 @@ class AdminPanel {
     }
     
     async checkAuthentication() {
-        if (!this.authToken || (this.userData.tipo_usuario !== 'admin' && this.userData.tipo_usuario !== 'editor')) {
+        if (!this.authToken || (this.userData.tipo !== 'admin' && this.userData.tipo !== 'editor')) {
             this.redirectToLogin();
             return false;
         }
         
         // Verificar se o token ainda é válido no servidor
         try {
-            const response = await fetch('http://localhost:8001/auth?action=check-auth', {
+            const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=check-auth', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,
