@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Salvamento de Preferências</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .section {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste de Salvamento de Preferências</h1>
+        
+        <div class="info">
+            <strong>Objetivo:</strong> Testar se as preferências do usuário estão sendo salvas corretamente no banco de dados.
+        </div>
+
+        <!-- Login Form -->
+        <div class="section" id="loginSection">
+            <h3>1. Login</h3>
+            <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" value="admin@teste.com" placeholder="Digite seu email">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Senha:</label>
+                <input type="password" id="loginPassword" value="123456" placeholder="Digite sua senha">
+            </div>
+            <button onclick="login()">Fazer Login</button>
+            <div id="loginResult"></div>
+        </div>
+
+        <!-- Preferences Form -->
+        <div class="section" id="preferencesSection" style="display: none;">
+            <h3>2. Preferências do Usuário</h3>
+            
+            <form id="preferencesForm">
+                <!-- Notificações -->
+                <div class="form-group">
+                    <label>Notificações:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="email_notifications" name="email_notifications">
+                            <label for="email_notifications">Email</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="push_notifications" name="push_notifications">
+                            <label for="push_notifications">Push</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="newsletter" name="newsletter">
+                            <label for="newsletter">Newsletter</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacidade -->
+                <div class="form-group">
+                    <label>Privacidade:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="profile_public" name="profile_public" checked>
+                            <label for="profile_public">Perfil Público</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="show_activity" name="show_activity" checked>
+                            <label for="show_activity">Mostrar Atividade</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="allow_messages" name="allow_messages" checked>
+                            <label for="allow_messages">Permitir Mensagens</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categorias Favoritas -->
+                <div class="form-group">
+                    <label>Categorias Favoritas:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cat_politica" name="favorite_categories" value="politica">
+                            <label for="cat_politica">Política</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cat_economia" name="favorite_categories" value="economia">
+                            <label for="cat_economia">Economia</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cat_esportes" name="favorite_categories" value="esportes">
+                            <label for="cat_esportes">Esportes</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cat_tecnologia" name="favorite_categories" value="tecnologia">
+                            <label for="cat_tecnologia">Tecnologia</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Idioma -->
+                <div class="form-group">
+                    <label for="language_preference">Idioma Preferido:</label>
+                    <select id="language_preference" name="language_preference">
+                        <option value="pt-BR">Português (Brasil)</option>
+                        <option value="en-US">English (US)</option>
+                        <option value="es-ES">Español</option>
+                    </select>
+                </div>
+
+                <button type="submit">Salvar Preferências</button>
+                <button type="button" onclick="loadCurrentPreferences()">Carregar Preferências Atuais</button>
+            </form>
+            
+            <div id="preferencesResult"></div>
+        </div>
+
+        <!-- Debug Info -->
+        <div class="section">
+            <h3>3. Informações de Debug</h3>
+            <div id="debugInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        let authToken = null;
+        const API_BASE = 'http://localhost:8001/api';
+
+        function showMessage(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${type}">${message}</div>`;
+        }
+
+        function debugLog(message) {
+            const debugInfo = document.getElementById('debugInfo');
+            const timestamp = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showMessage('loginResult', 'Por favor, preencha email e senha.', 'error');
+                return;
+            }
+
+            try {
+                debugLog(`Tentando login com email: ${email}`);
+                
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        senha: password
+                    })
+                });
+
+                const data = await response.json();
+                debugLog(`Resposta do login: ${JSON.stringify(data)}`);
+
+                if (response.ok && data.token) {
+                    authToken = data.token;
+                    localStorage.setItem('authToken', authToken);
+                    showMessage('loginResult', 'Login realizado com sucesso!', 'success');
+                    document.getElementById('preferencesSection').style.display = 'block';
+                    loadCurrentPreferences();
+                } else {
+                    showMessage('loginResult', `Erro no login: ${data.erro || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                debugLog(`Erro na requisição de login: ${error.message}`);
+                showMessage('loginResult', `Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadCurrentPreferences() {
+            if (!authToken) {
+                showMessage('preferencesResult', 'Faça login primeiro.', 'error');
+                return;
+            }
+
+            try {
+                debugLog('Carregando preferências atuais...');
+                
+                const response = await fetch(`${API_BASE}/auth/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                debugLog(`Dados do perfil: ${JSON.stringify(data)}`);
+
+                if (response.ok && data.usuario) {
+                    const user = data.usuario;
+                    
+                    // Preencher formulário com dados atuais
+                    document.getElementById('email_notifications').checked = user.email_newsletter == 1;
+                    document.getElementById('push_notifications').checked = user.push_breaking == 1;
+                    document.getElementById('newsletter').checked = user.email_newsletter == 1;
+                    document.getElementById('profile_public').checked = user.profile_public == 1;
+                    document.getElementById('show_activity').checked = user.show_activity == 1;
+                    document.getElementById('allow_messages').checked = user.allow_messages == 1;
+                    document.getElementById('language_preference').value = user.language_preference || 'pt-BR';
+                    
+                    // Categorias favoritas
+                    if (user.favorite_categories) {
+                        try {
+                            const categories = JSON.parse(user.favorite_categories);
+                            categories.forEach(cat => {
+                                const checkbox = document.querySelector(`input[name="favorite_categories"][value="${cat}"]`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        } catch (e) {
+                            debugLog(`Erro ao parsear categorias favoritas: ${e.message}`);
+                        }
+                    }
+                    
+                    showMessage('preferencesResult', 'Preferências carregadas com sucesso!', 'success');
+                } else {
+                    showMessage('preferencesResult', `Erro ao carregar preferências: ${data.erro || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                debugLog(`Erro ao carregar preferências: ${error.message}`);
+                showMessage('preferencesResult', `Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('preferencesForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!authToken) {
+                showMessage('preferencesResult', 'Faça login primeiro.', 'error');
+                return;
+            }
+
+            // Coletar dados do formulário
+            const formData = new FormData(this);
+            const preferences = {};
+            
+            // Notificações
+            preferences.email_notifications = document.getElementById('email_notifications').checked;
+            preferences.push_notifications = document.getElementById('push_notifications').checked;
+            preferences.newsletter = document.getElementById('newsletter').checked;
+            
+            // Privacidade
+            preferences.profile_public = document.getElementById('profile_public').checked;
+            preferences.show_activity = document.getElementById('show_activity').checked;
+            preferences.allow_messages = document.getElementById('allow_messages').checked;
+            
+            // Categorias favoritas
+            const favoriteCategories = [];
+            document.querySelectorAll('input[name="favorite_categories"]:checked').forEach(checkbox => {
+                favoriteCategories.push(checkbox.value);
+            });
+            preferences.favorite_categories = favoriteCategories;
+            
+            // Idioma
+            preferences.language_preference = document.getElementById('language_preference').value;
+
+            debugLog(`Dados a serem enviados: ${JSON.stringify(preferences)}`);
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+
+                const data = await response.json();
+                debugLog(`Resposta do salvamento: ${JSON.stringify(data)}`);
+
+                if (response.ok) {
+                    showMessage('preferencesResult', 'Preferências salvas com sucesso!', 'success');
+                    // Recarregar para verificar se foi salvo
+                    setTimeout(() => loadCurrentPreferences(), 1000);
+                } else {
+                    showMessage('preferencesResult', `Erro ao salvar: ${data.erro || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                debugLog(`Erro ao salvar preferências: ${error.message}`);
+                showMessage('preferencesResult', `Erro na requisição: ${error.message}`, 'error');
+            }
+        });
+
+        // Verificar se já existe token salvo
+        window.addEventListener('load', function() {
+            const savedToken = localStorage.getItem('authToken');
+            if (savedToken) {
+                authToken = savedToken;
+                document.getElementById('preferencesSection').style.display = 'block';
+                debugLog('Token encontrado no localStorage');
+            }
+        });
+    </script>
+</body>
+</html>

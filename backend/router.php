@@ -15,6 +15,15 @@ if (preg_match('/^api\/user\/profile\/?$/', $uri)) {
     return;
 }
 
+// Roteamento para upload de avatar
+if (preg_match('/^api\/user\/avatar\/?$/', $uri)) {
+    $_GET['action'] = 'upload_avatar';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
 // Roteamento para autenticação
 if (preg_match('/^auth\/login\/?$/', $uri)) {
     $_GET['action'] = 'login';

@@ -289,7 +289,7 @@
                         <div class="card">
                             <div class="card-body text-center">
                                 <div class="profile-avatar mb-3">
-                                    <img src="https://via.placeholder.com/150" alt="Avatar" class="rounded-circle" id="profile-avatar">
+                    <img src="assets/img/default-avatar.svg" alt="Avatar" class="rounded-circle" id="profile-avatar">
                                     <div class="avatar-upload">
                                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
                                         <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('avatar-input').click()">
@@ -830,10 +830,12 @@
             document.getElementById('edit-state').value = userData.estado || '';
             
             // Update avatar if available
-            if (userData.foto_perfil) {
-                const avatarElement = document.getElementById('profile-avatar');
-                if (avatarElement) {
+            const avatarElement = document.getElementById('profile-avatar');
+            if (avatarElement) {
+                if (userData.foto_perfil) {
                     avatarElement.src = userData.foto_perfil;
+                } else {
+                    avatarElement.src = 'assets/img/default-avatar.svg';
                 }
             }
         }

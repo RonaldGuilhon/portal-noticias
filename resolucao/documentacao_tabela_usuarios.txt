@@ -1,0 +1,292 @@
+=================================================================
+DOCUMENTAÇÃO DA TABELA USUARIOS
+Portal de Notícias - Sistema de Gerenciamento de Usuários
+=================================================================
+
+1. INFORMAÇÕES GERAIS
+=====================
+
+Tipo de Arquivo: Tabela de banco de dados MySQL
+Nome da Tabela: usuarios
+Charset: utf8mb4
+Collation: utf8mb4_unicode_ci
+Engine: InnoDB (padrão)
+
+2. ESTRUTURA DA TABELA
+======================
+
+A tabela usuarios contém os seguintes campos:
+
+--- CAMPOS PRINCIPAIS ---
+• id (INT, AUTO_INCREMENT, PRIMARY KEY)
+  - Identificador único do usuário
+  - Gerado automaticamente pelo sistema
+
+• nome (VARCHAR(100), NOT NULL)
+  - Nome completo do usuário
+  - Origem: Formulário de cadastro (cadastro.html)
+  - Campo obrigatório
+
+• email (VARCHAR(150), UNIQUE, NOT NULL)
+  - Endereço de email do usuário
+  - Origem: Formulário de cadastro (cadastro.html)
+  - Campo obrigatório e único no sistema
+  - Usado para login e comunicações
+
+• senha (VARCHAR(255), NOT NULL)
+  - Senha criptografada do usuário
+  - Origem: Formulário de cadastro (cadastro.html)
+  - Armazenada com hash de segurança
+
+--- CAMPOS DE PERFIL ---
+• foto_perfil (VARCHAR(255), DEFAULT NULL)
+  - Caminho para a foto do perfil do usuário
+  - Origem: Upload no formulário de perfil (perfil.html)
+  - Campo opcional
+
+• bio (TEXT, DEFAULT NULL)
+  - Biografia/descrição do usuário
+  - Origem: Formulário de perfil (perfil.html)
+  - Campo opcional
+
+• data_nascimento (DATE, DEFAULT NULL)
+  - Data de nascimento do usuário
+  - Origem: Formulário de cadastro (cadastro.html) e perfil (perfil.html)
+  - Campo opcional
+
+• genero (ENUM('masculino', 'feminino', 'outro', 'prefiro-nao-informar'), DEFAULT NULL)
+  - Gênero do usuário
+  - Origem: Formulário de perfil (perfil.html)
+  - Campo opcional
+
+• telefone (VARCHAR(20), DEFAULT NULL)
+  - Número de telefone do usuário
+  - Origem: Formulário de perfil (perfil.html)
+  - Campo opcional
+
+• cidade (VARCHAR(100), DEFAULT NULL)
+  - Cidade onde o usuário reside
+  - Origem: Formulário de perfil (perfil.html)
+  - Campo opcional
+
+• estado (VARCHAR(100), DEFAULT NULL)
+  - Estado onde o usuário reside
+  - Origem: Formulário de perfil (perfil.html)
+  - Campo opcional
+
+--- CAMPOS DE SISTEMA ---
+• tipo_usuario (ENUM('admin', 'editor', 'leitor'), DEFAULT 'leitor')
+  - Tipo/nível de acesso do usuário
+  - Origem: Definido pelo administrador (usuarios.html - admin)
+  - Controla permissões no sistema
+
+• ativo (BOOLEAN, DEFAULT TRUE)
+  - Status de ativação da conta
+  - Origem: Definido pelo administrador (usuarios.html - admin)
+  - Controla se o usuário pode acessar o sistema
+
+• email_verificado (BOOLEAN, DEFAULT FALSE)
+  - Status de verificação do email
+  - Origem: Sistema de verificação por email
+  - Atualizado automaticamente após verificação
+
+• token_verificacao (VARCHAR(100), DEFAULT NULL)
+  - Token para verificação de email
+  - Origem: Gerado automaticamente pelo sistema
+  - Usado no processo de verificação
+
+• token_recuperacao (VARCHAR(100), DEFAULT NULL)
+  - Token para recuperação de senha
+  - Origem: Gerado automaticamente pelo sistema
+  - Usado no processo de reset de senha
+
+• data_criacao (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
+  - Data e hora de criação da conta
+  - Origem: Gerado automaticamente pelo sistema
+  - Não pode ser alterado
+
+• data_atualizacao (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP)
+  - Data e hora da última atualização
+  - Origem: Atualizado automaticamente pelo sistema
+  - Atualizado a cada modificação no registro
+
+• ultimo_login (TIMESTAMP, NULL)
+  - Data e hora do último acesso
+  - Origem: Atualizado automaticamente no login
+  - Usado para estatísticas de uso
+
+--- CAMPOS DE AUTENTICAÇÃO SOCIAL ---
+• provider (VARCHAR(50), DEFAULT 'local')
+  - Provedor de autenticação (local, google, facebook)
+  - Origem: Sistema de login social
+  - Indica como o usuário se cadastrou
+
+• provider_id (VARCHAR(100), DEFAULT NULL)
+  - ID do usuário no provedor externo
+  - Origem: Sistema de login social
+  - Usado para vincular contas sociais
+
+--- CAMPOS DE PREFERÊNCIAS ---
+• preferencias (LONGTEXT, DEFAULT NULL)
+  - Preferências gerais do usuário em formato JSON
+  - Origem: Formulário de preferências (perfil.html)
+  - Armazena configurações personalizadas
+
+• favorite_categories (LONGTEXT, DEFAULT NULL)
+  - Categorias favoritas do usuário em formato JSON
+  - Origem: Formulário de preferências (perfil.html)
+  - Usado para personalização de conteúdo
+
+--- CAMPOS DE CONFIGURAÇÕES DE EXIBIÇÃO ---
+• show_images (TINYINT(1), DEFAULT 1)
+  - Exibir imagens automaticamente
+  - Origem: Formulário de configurações (perfil.html)
+  - Controla exibição de imagens
+
+• auto_play_videos (TINYINT(1), DEFAULT 0)
+  - Reproduzir vídeos automaticamente
+  - Origem: Formulário de configurações (perfil.html)
+  - Controla reprodução automática
+
+• dark_mode (TINYINT(1), DEFAULT 0)
+  - Modo escuro ativado
+  - Origem: Formulário de configurações (perfil.html)
+  - Controla tema da interface
+
+--- CAMPOS DE NOTIFICAÇÕES POR EMAIL ---
+• email_newsletter (TINYINT(1), DEFAULT 1)
+  - Receber newsletter por email
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla envio de newsletters
+
+• email_breaking (TINYINT(1), DEFAULT 1)
+  - Receber emails de notícias urgentes
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla notificações urgentes
+
+• email_comments (TINYINT(1), DEFAULT 1)
+  - Receber emails de novos comentários
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla notificações de comentários
+
+• email_marketing (TINYINT(1), DEFAULT 0)
+  - Receber emails de marketing
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla emails promocionais
+
+--- CAMPOS DE NOTIFICAÇÕES PUSH ---
+• push_breaking (TINYINT(1), DEFAULT 1)
+  - Receber push de notícias urgentes
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla notificações push urgentes
+
+• push_interests (TINYINT(1), DEFAULT 1)
+  - Receber push baseado em interesses
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla notificações personalizadas
+
+• push_comments (TINYINT(1), DEFAULT 1)
+  - Receber push de novos comentários
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla notificações de comentários
+
+--- CAMPOS DE CONFIGURAÇÕES DE PRIVACIDADE ---
+• profile_public (TINYINT(1), DEFAULT 1)
+  - Perfil público visível
+  - Origem: Formulário de privacidade (perfil.html)
+  - Controla visibilidade do perfil
+
+• show_activity (TINYINT(1), DEFAULT 1)
+  - Mostrar atividade do usuário
+  - Origem: Formulário de privacidade (perfil.html)
+  - Controla exibição de atividades
+
+• allow_messages (TINYINT(1), DEFAULT 1)
+  - Permitir mensagens de outros usuários
+  - Origem: Formulário de privacidade (perfil.html)
+  - Controla recebimento de mensagens
+
+--- CAMPOS DE PREFERÊNCIAS DE CONTEÚDO ---
+• language_preference (VARCHAR(10), DEFAULT 'pt-BR')
+  - Idioma preferido do usuário
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla idioma da interface
+
+• notification_frequency (ENUM('immediate', 'daily', 'weekly', 'never'), DEFAULT 'daily')
+  - Frequência de notificações
+  - Origem: Formulário de preferências (perfil.html)
+  - Controla periodicidade das notificações
+
+3. ÍNDICES DA TABELA
+====================
+
+• PRIMARY KEY (id)
+• UNIQUE KEY (email)
+• INDEX idx_email (email)
+• INDEX idx_tipo_usuario (tipo_usuario)
+• INDEX idx_ativo (ativo)
+
+4. ORIGEM DOS DADOS
+===================
+
+4.1 FORMULÁRIO DE CADASTRO (cadastro.html)
+- nome (obrigatório)
+- email (obrigatório)
+- senha (obrigatório)
+- data_nascimento (opcional)
+
+4.2 FORMULÁRIO DE PERFIL (perfil.html)
+- Informações pessoais: nome, email, telefone, data_nascimento, bio, cidade, estado
+- Upload de foto de perfil
+- Configurações de exibição: show_images, auto_play_videos, dark_mode
+- Preferências de notificação: email_*, push_*
+- Configurações de privacidade: profile_public, show_activity, allow_messages
+- Preferências de conteúdo: favorite_categories, language_preference, notification_frequency
+
+4.3 PAINEL ADMINISTRATIVO (usuarios.html)
+- tipo_usuario (admin, editor, leitor)
+- ativo (ativo/inativo)
+- email_verificado
+- Todos os campos de perfil podem ser editados pelo admin
+
+4.4 SISTEMA AUTOMÁTICO
+- id (auto increment)
+- data_criacao (timestamp automático)
+- data_atualizacao (timestamp automático)
+- ultimo_login (atualizado no login)
+- token_verificacao (gerado para verificação de email)
+- token_recuperacao (gerado para reset de senha)
+- provider e provider_id (login social)
+
+5. RELACIONAMENTOS
+==================
+
+A tabela usuarios se relaciona com:
+- Tabela noticias (autor das notícias)
+- Tabela comentarios (autor dos comentários)
+- Tabela categorias (através de favorite_categories)
+- Tabela push_preferences (notificações push)
+
+6. OBSERVAÇÕES IMPORTANTES
+==========================
+
+• Todos os campos de preferências têm valores padrão definidos
+• Campos JSON (preferencias, favorite_categories) permitem estruturas flexíveis
+• Sistema suporta autenticação local e social (Google, Facebook)
+• Implementa sistema completo de verificação de email
+• Possui controle granular de notificações e privacidade
+• Estrutura preparada para expansão futura
+
+7. ARQUIVOS RELACIONADOS
+========================
+
+• Backend: Usuario.php (modelo), AuthController.php (controlador)
+• Frontend: cadastro.html, perfil.html, usuarios.html (admin)
+• Database: portal_noticias.sql, add_profile_fields.sql, add_missing_fields.sql
+• Scripts: get_usuarios_structure.php, check_specific_columns.php
+
+=================================================================
+Documentação gerada automaticamente
+Data: Janeiro 2025
+Versão: 1.0
+=================================================================

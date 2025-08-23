@@ -48,6 +48,15 @@ class Usuario {
     public $push_breaking;
     public $push_interests;
     public $push_comments;
+    
+    // Configurações de privacidade
+    public $profile_public;
+    public $show_activity;
+    public $allow_messages;
+    
+    // Preferências de conteúdo
+    public $favorite_categories;
+    public $language_preference;
     public $notification_frequency;
 
     public function __construct($db) {
@@ -285,8 +294,31 @@ class Usuario {
                       email_newsletter=:email_newsletter, email_breaking=:email_breaking, 
                       email_comments=:email_comments, email_marketing=:email_marketing,
                       push_breaking=:push_breaking, push_interests=:push_interests, 
-                      push_comments=:push_comments, notification_frequency=:notification_frequency
-                  WHERE id=:id";
+                      push_comments=:push_comments, notification_frequency=:notification_frequency";
+        
+        // Adicionar campos opcionais se estiverem definidos
+        $optional_fields = [];
+        if (isset($this->profile_public)) {
+            $optional_fields[] = "profile_public=:profile_public";
+        }
+        if (isset($this->show_activity)) {
+            $optional_fields[] = "show_activity=:show_activity";
+        }
+        if (isset($this->allow_messages)) {
+            $optional_fields[] = "allow_messages=:allow_messages";
+        }
+        if (isset($this->favorite_categories)) {
+            $optional_fields[] = "favorite_categories=:favorite_categories";
+        }
+        if (isset($this->language_preference)) {
+            $optional_fields[] = "language_preference=:language_preference";
+        }
+        
+        if (!empty($optional_fields)) {
+            $query .= ", " . implode(", ", $optional_fields);
+        }
+        
+        $query .= " WHERE id=:id";
 
         $stmt = $this->conn->prepare($query);
 
@@ -335,6 +367,23 @@ class Usuario {
         
         // Frequência de notificações
         $stmt->bindParam(":notification_frequency", $this->notification_frequency);
+        
+        // Bind dos campos opcionais
+        if (isset($this->profile_public)) {
+            $stmt->bindParam(":profile_public", $this->profile_public);
+        }
+        if (isset($this->show_activity)) {
+            $stmt->bindParam(":show_activity", $this->show_activity);
+        }
+        if (isset($this->allow_messages)) {
+            $stmt->bindParam(":allow_messages", $this->allow_messages);
+        }
+        if (isset($this->favorite_categories)) {
+            $stmt->bindParam(":favorite_categories", $this->favorite_categories);
+        }
+        if (isset($this->language_preference)) {
+            $stmt->bindParam(":language_preference", $this->language_preference);
+        }
         
         $stmt->bindParam(":id", $this->id);
 

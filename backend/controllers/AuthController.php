@@ -586,19 +586,39 @@ class AuthController {
             $this->usuario->auto_play_videos = isset($dados['auto_play_videos']) ? 1 : 0;
             $this->usuario->dark_mode = isset($dados['dark_mode']) ? 1 : 0;
             
+            // Mapear campos do frontend para campos do backend
             // Notificações por email
-            $this->usuario->email_newsletter = isset($dados['email_newsletter']) ? 1 : 0;
+            $this->usuario->email_newsletter = isset($dados['email_notifications']) || isset($dados['newsletter']) || isset($dados['email_newsletter']) ? 1 : 0;
             $this->usuario->email_breaking = isset($dados['email_breaking']) ? 1 : 0;
             $this->usuario->email_comments = isset($dados['email_comments']) ? 1 : 0;
             $this->usuario->email_marketing = isset($dados['email_marketing']) ? 1 : 0;
             
             // Notificações push
-            $this->usuario->push_breaking = isset($dados['push_breaking']) ? 1 : 0;
+            $this->usuario->push_breaking = isset($dados['push_notifications']) || isset($dados['push_breaking']) ? 1 : 0;
             $this->usuario->push_interests = isset($dados['push_interests']) ? 1 : 0;
             $this->usuario->push_comments = isset($dados['push_comments']) ? 1 : 0;
             
             // Frequência de notificações
             $this->usuario->notification_frequency = $dados['notification_frequency'] ?? 'diario';
+            
+            // Configurações de privacidade (novos campos)
+            if (isset($dados['profile_public'])) {
+                $this->usuario->profile_public = $dados['profile_public'] ? 1 : 0;
+            }
+            if (isset($dados['show_activity'])) {
+                $this->usuario->show_activity = $dados['show_activity'] ? 1 : 0;
+            }
+            if (isset($dados['allow_messages'])) {
+                $this->usuario->allow_messages = $dados['allow_messages'] ? 1 : 0;
+            }
+            
+            // Categorias favoritas e idioma
+            if (isset($dados['favorite_categories'])) {
+                $this->usuario->favorite_categories = json_encode($dados['favorite_categories']);
+            }
+            if (isset($dados['language_preference'])) {
+                $this->usuario->language_preference = $dados['language_preference'];
+            }
             
             // Upload de foto se fornecida
             if(!empty($dados['foto_perfil'])) {

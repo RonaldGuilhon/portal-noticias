@@ -677,7 +677,7 @@
             
             // Author info
             document.getElementById('author-name').textContent = article.autor;
-            document.getElementById('author-avatar').src = article.autor_foto || '/assets/img/default-avatar.png';
+            document.getElementById('author-avatar').src = article.autor_foto || '/assets/img/default-avatar.svg';
             document.getElementById('article-date').textContent = formatDate(article.data_publicacao);
             
             // Stats
@@ -723,7 +723,7 @@
             if (article.autor_bio) {
                 document.getElementById('author-bio-container').style.display = 'block';
                 document.getElementById('author-bio-name').textContent = article.autor;
-                document.getElementById('author-bio-avatar').src = article.autor_foto || '/assets/img/default-avatar.png';
+                document.getElementById('author-bio-avatar').src = article.autor_foto || '/assets/img/default-avatar.svg';
                 document.getElementById('author-bio-description').textContent = article.autor_bio;
             }
             
