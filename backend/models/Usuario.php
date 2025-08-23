@@ -32,6 +32,7 @@ class Usuario {
     public $genero;
     public $telefone;
     public $cidade;
+    public $estado;
 
     
     // Configurações de exibição
@@ -199,6 +200,7 @@ class Usuario {
             $this->genero = $row['genero'];
             $this->telefone = $row['telefone'];
             $this->cidade = $row['cidade'];
+            $this->estado = $row['estado'];
             
             // Configurações de exibição
             $this->show_images = $row['show_images'];
@@ -241,9 +243,44 @@ class Usuario {
      * Atualizar perfil
      */
     public function atualizarPerfil() {
+        // Primeiro, obter os dados atuais do usuário
+        $current_data = $this->obterPorId($this->id);
+        if (!$current_data) {
+            return false;
+        }
+        
+        // Preservar dados existentes se os novos valores estão vazios
+        if (empty($this->nome) || trim($this->nome) === '') {
+            $this->nome = $current_data['nome'];
+        }
+        if (empty($this->email) || trim($this->email) === '') {
+            $this->email = $current_data['email'];
+        }
+        if (empty($this->bio) || trim($this->bio) === '') {
+            $this->bio = $current_data['bio'];
+        }
+        if (empty($this->telefone) || trim($this->telefone) === '') {
+            $this->telefone = $current_data['telefone'];
+        }
+        if (empty($this->cidade) || trim($this->cidade) === '') {
+            $this->cidade = $current_data['cidade'];
+        }
+        if (empty($this->estado) || trim($this->estado) === '') {
+            $this->estado = $current_data['estado'];
+        }
+        if (is_null($this->data_nascimento) || $this->data_nascimento === '') {
+            $this->data_nascimento = $current_data['data_nascimento'];
+        }
+        if (is_null($this->genero) || $this->genero === '') {
+            $this->genero = $current_data['genero'];
+        }
+        if (is_null($this->foto_perfil) || $this->foto_perfil === '') {
+            $this->foto_perfil = $current_data['foto_perfil'];
+        }
+        
         $query = "UPDATE " . $this->table_name . " 
-                  SET nome=:nome, bio=:bio, foto_perfil=:foto_perfil, preferencias=:preferencias,
-                      data_nascimento=:data_nascimento, genero=:genero, telefone=:telefone, cidade=:cidade,
+                  SET nome=:nome, email=:email, bio=:bio, foto_perfil=:foto_perfil, preferencias=:preferencias,
+                      data_nascimento=:data_nascimento, genero=:genero, telefone=:telefone, cidade=:cidade, estado=:estado,
                       show_images=:show_images, auto_play_videos=:auto_play_videos, dark_mode=:dark_mode,
                       email_newsletter=:email_newsletter, email_breaking=:email_breaking, 
                       email_comments=:email_comments, email_marketing=:email_marketing,
@@ -254,11 +291,22 @@ class Usuario {
         $stmt = $this->conn->prepare($query);
 
         $this->nome = sanitizeInput($this->nome);
+        $this->email = sanitizeInput($this->email);
         $this->bio = sanitizeInput($this->bio);
         $this->telefone = sanitizeInput($this->telefone);
         $this->cidade = sanitizeInput($this->cidade);
+        $this->estado = sanitizeInput($this->estado);
+        
+        // Corrigir preferencias para ser JSON válido ou NULL
+        if (empty($this->preferencias) || $this->preferencias === '') {
+            $this->preferencias = $current_data['preferencias']; // Preservar preferências existentes
+        } elseif (!is_null($this->preferencias) && !json_decode($this->preferencias)) {
+            // Se não for JSON válido, converter para JSON
+            $this->preferencias = json_encode($this->preferencias);
+        }
 
         $stmt->bindParam(":nome", $this->nome);
+        $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":bio", $this->bio);
         $stmt->bindParam(":foto_perfil", $this->foto_perfil);
         $stmt->bindParam(":preferencias", $this->preferencias);
@@ -266,6 +314,7 @@ class Usuario {
         $stmt->bindParam(":genero", $this->genero);
         $stmt->bindParam(":telefone", $this->telefone);
         $stmt->bindParam(":cidade", $this->cidade);
+        $stmt->bindParam(":estado", $this->estado);
         
         // Configurações de exibição
         $stmt->bindParam(":show_images", $this->show_images);

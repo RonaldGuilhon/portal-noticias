@@ -479,6 +479,47 @@ a:hover {
     color: var(--text-muted);
 }
 
+/* Password Input with Toggle */
+.password-input {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input .form-control {
+    padding-right: 45px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: var(--border-radius-sm);
+    transition: all var(--transition-fast);
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: var(--secondary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.password-toggle:focus {
+    outline: none;
+    color: var(--secondary-color);
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.password-toggle i {
+    font-size: 14px;
+}
+
 /* Search */
 .search-form {
     position: relative;
@@ -783,6 +824,67 @@ a:hover {
     h1 { font-size: var(--font-size-2xl); }
     h2 { font-size: var(--font-size-xl); }
     h3 { font-size: var(--font-size-lg); }
+}
+
+/* Main Content */
+.main-content {
+    padding: var(--spacing-xl) 0;
+    min-height: calc(100vh - 200px);
+}
+
+/* Profile Styles */
+.profile-sidebar {
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-avatar {
+    position: relative;
+    display: inline-block;
+}
+
+.avatar-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: var(--bg-primary);
+    border-radius: 50%;
+    padding: var(--spacing-xs);
+    box-shadow: var(--shadow-sm);
+}
+
+.profile-stats .stat {
+    text-align: center;
+}
+
+.profile-stats .stat h5 {
+    margin-bottom: var(--spacing-xs);
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+.profile-stats .stat small {
+    color: var(--text-muted);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-content {
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-section {
+    display: none;
+}
+
+.profile-section.active {
+    display: block;
+}
+
+.profile-section h3 {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--secondary-color);
 }
 
 /* Loading Animation */

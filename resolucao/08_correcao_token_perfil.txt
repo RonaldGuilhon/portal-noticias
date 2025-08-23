@@ -1,0 +1,84 @@
+PROBLEMA: Token de autenticação não encontrado no perfil
+DATA: 2024-12-23
+STATUS: RESOLVIDO
+
+=== DESCRIÇÃO DO PROBLEMA ===
+O usuário relatou que ao clicar no perfil, aparecia a mensagem:
+"Nenhum token de autenticação encontrado. Você será redirecionado para a página de login."
+
+Em seguida, ocorria um redirecionamento rápido para a tela de login e depois para a home, criando um loop.
+
+=== CAUSA RAIZ ===
+Incompatibilidade no armazenamento de tokens entre login.html e perfil.html:
+
+1. login.html salvava o token como objeto JSON na chave 'portal-user':
+   localStorage.setItem('portal-user', JSON.stringify(data.dados));
+   
+2. perfil.html procurava o token como string simples na chave 'authToken':
+   const token = localStorage.getItem('authToken');
+
+Essa incompatibilidade fazia com que o perfil.html não encontrasse o token, mesmo após login bem-sucedido.
+
+=== SOLUÇÃO IMPLEMENTADA ===
+Modificado o arquivo perfil.html para implementar lógica de compatibilidade:
+
+1. Prioriza a busca em 'portal-user' (padrão do sistema)
+2. Usa 'authToken' como fallback (compatibilidade)
+3. Aplica essa lógica em todas as funções que usam token:
+   - loadUserData()
+   - Formulário de atualização de perfil
+   - Alteração de senha
+   - Upload de avatar
+   - Função de logout
+
+=== CÓDIGO DA SOLUÇÃO ===
+```javascript
+// Verifica primeiro 'portal-user' (padrão do sistema)
+let token = null;
+const portalUser = localStorage.getItem('portal-user');
+
+if (portalUser) {
+    try {
+        const userData = JSON.parse(portalUser);
+        token = userData.token;
+    } catch (e) {
+        console.log('Erro ao parsear portal-user:', e);
+    }
+}
+
+// Fallback para 'authToken' (compatibilidade)
+if (!token) {
+    token = localStorage.getItem('authToken');
+}
+
+if (!token) {
+    alert('Nenhum token de autenticação encontrado. Você será redirecionado para a página de login.');
+    window.location.href = 'login.html';
+    return;
+}
+```
+
+=== ARQUIVOS MODIFICADOS ===
+- frontend/perfil.html
+
+=== ARQUIVOS DE TESTE CRIADOS ===
+- arquivos_teste/perfil_usuario/test_token_compatibility.php
+- arquivos_teste/perfil_usuario/test_login_perfil_flow.html
+
+=== VALIDAÇÃO ===
+1. Criado teste PHP que confirma a incompatibilidade
+2. Criado teste HTML que simula o fluxo completo login → perfil
+3. Implementada lógica de compatibilidade que resolve o problema
+4. Função de logout atualizada para limpar ambos os tokens
+
+=== RESULTADO ===
+✅ Problema resolvido
+✅ Compatibilidade mantida com sistemas existentes
+✅ Fluxo de autenticação funcionando corretamente
+✅ Redirecionamentos desnecessários eliminados
+
+=== OBSERVAÇÕES ===
+- A solução mantém compatibilidade com ambos os formatos de token
+- Prioriza o formato padrão do sistema ('portal-user')
+- Inclui tratamento de erros para JSON malformado
+- Todos os pontos de uso do token foram atualizados consistentemente

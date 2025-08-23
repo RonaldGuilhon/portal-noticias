@@ -1,0 +1,46 @@
+METODOLOGIA DE DEBUGGING E TESTES UTILIZADOS
+
+ESTRATÉGIA GERAL:
+1. Identificação do problema através de sintomas observados
+2. Isolamento do problema usando testes específicos
+3. Verificação da API backend independentemente do frontend
+4. Correção sistemática dos problemas encontrados
+5. Validação das correções
+
+FERRAMENTAS E TÉCNICAS UTILIZADAS:
+
+1. TESTES DE API VIA LINHA DE COMANDO:
+   - PowerShell Invoke-WebRequest para testar endpoints
+   - Verificação de autenticação com tokens JWT
+   - Teste de rotas individuais para isolamento de problemas
+
+2. ARQUIVOS DE TESTE TEMPORÁRIOS:
+   - check_user.php: Verificação de credenciais no banco de dados
+   - test-bio.html: Teste de fluxo completo de login e obtenção de perfil
+   - debug-perfil.html: Debugging específico da página de perfil
+
+3. ANÁLISE DE LOGS:
+   - Verificação de logs do servidor PHP built-in
+   - Análise de códigos de resposta HTTP
+   - Monitoramento de requisições em tempo real
+
+4. BUSCA NO CÓDIGO:
+   - search_by_regex para encontrar padrões específicos
+   - search_codebase para localizar implementações
+   - Análise sistemática de arquivos relacionados
+
+PROCESSO DE VALIDAÇÃO:
+1. Teste da API isoladamente (backend)
+2. Teste do frontend isoladamente
+3. Teste de integração completa
+4. Verificação de casos extremos
+5. Limpeza de arquivos temporários
+
+BOAS PRÁTICAS IDENTIFICADAS:
+- Sempre testar APIs independentemente do frontend
+- Usar ferramentas de linha de comando para validação rápida
+- Criar arquivos de teste temporários para debugging
+- Documentar soluções para referência futura
+- Organizar arquivos de teste por tópicos
+
+DATA: 23/08/2025

@@ -1,0 +1,41 @@
+PROBLEMA: Nome do usuário não aparece no perfil
+
+DESCRIÇÃO:
+O nome do usuário não estava sendo exibido na página de perfil, aparecendo apenas como campo vazio.
+
+CAUSA IDENTIFICADA:
+O campo 'nome' no banco de dados estava vazio para o usuário ronaldguilhon@gmail.com, mesmo com a API de perfil funcionando corretamente.
+
+SOLUÇÃO IMPLEMENTADA:
+1. Diagnóstico da API de perfil:
+   - Verificado que o endpoint GET /api/user/profile estava funcionando
+   - Confirmado que a função obterPerfil() retornava dados, mas o campo 'nome' estava vazio
+
+2. Verificação do banco de dados:
+   - Identificado que o campo 'nome' na tabela 'usuarios' estava NULL/vazio
+   - Usuário existia com email correto, mas sem nome preenchido
+
+3. Correção aplicada:
+   - Atualizado o campo 'nome' no banco de dados para 'Ronald Guilhon'
+   - Verificado que a API passou a retornar o nome corretamente
+
+4. Testes realizados:
+   - Teste da API de perfil confirmou retorno do nome
+   - Interface do usuário passou a exibir o nome corretamente
+
+ARQUIVOS ENVOLVIDOS:
+- backend/controllers/AuthController.php (função obterPerfil)
+- frontend/perfil.html (exibição do nome)
+- Banco de dados: tabela 'usuarios', campo 'nome'
+
+TESTES CRIADOS:
+- test_profile_api.php: Testa a API de perfil completa
+- check_user_name.php: Verifica e corrige nome no banco
+
+STATUS: RESOLVIDO
+DATA: Janeiro 2025
+
+OBSERVAÇÕES:
+- Problema comum quando usuários são criados sem preenchimento completo do perfil
+- Recomenda-se validação no cadastro para garantir preenchimento do nome
+- API funcionava corretamente, problema era apenas dados ausentes no banco

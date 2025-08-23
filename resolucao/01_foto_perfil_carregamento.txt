@@ -1,0 +1,26 @@
+PROBLEMA: Foto do perfil não carregava na página de perfil
+
+DESCRIÇÃO:
+A foto do perfil do usuário não estava sendo exibida na página perfil.html, mesmo quando o usuário tinha uma foto cadastrada no banco de dados.
+
+CAUSA RAIZ:
+Mapeamento incorreto de campos entre a API e o JavaScript frontend:
+- A API retornava o campo 'foto_perfil'
+- O JavaScript estava procurando pelo campo 'avatar'
+
+SOLUÇÃO:
+1. Identificado o problema através de testes da API /api/user/profile
+2. Verificado que a API retornava corretamente os dados com o campo 'foto_perfil'
+3. Corrigido o JavaScript no arquivo perfil.html:
+   - Alterado userData.avatar para userData.foto_perfil na função populateUserData
+   - Mantida a lógica de fallback para imagem padrão quando foto_perfil é null
+
+ARQUIVOS MODIFICADOS:
+- frontend/perfil.html (linha ~758 e ~825)
+
+TESTE DE VALIDAÇÃO:
+- Verificado que a API /api/user/profile retorna dados corretos
+- Confirmado que o campo foto_perfil é mapeado corretamente no frontend
+
+STATUS: RESOLVIDO
+DATA: 23/08/2025

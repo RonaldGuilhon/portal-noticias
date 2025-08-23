@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Fluxo Perfil</title>
+</head>
+<body>
+    <h1>Teste do Fluxo de Perfil</h1>
+    
+    <div id="login-section">
+        <h2>1. Fazer Login</h2>
+        <button onclick="fazerLogin()">Fazer Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div id="token-section">
+        <h2>2. Verificar Token</h2>
+        <button onclick="verificarToken()">Verificar Token no localStorage</button>
+        <div id="token-result"></div>
+    </div>
+    
+    <div id="profile-section">
+        <h2>3. Testar API de Perfil</h2>
+        <button onclick="testarPerfil()">Testar API /api/user/profile</button>
+        <div id="profile-result"></div>
+    </div>
+    
+    <div id="redirect-section">
+        <h2>4. Ir para Página de Perfil</h2>
+        <button onclick="irParaPerfil()">Abrir perfil.html</button>
+    </div>
+
+    <script>
+        async function fazerLogin() {
+            try {
+                const response = await fetch('http://localhost:8001/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'ronaldguilhon@gmail.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.token) {
+                    localStorage.setItem('authToken', result.token);
+                    document.getElementById('login-result').innerHTML = 
+                        `<p style="color: green;">✓ Login realizado com sucesso!<br>Token salvo no localStorage</p>`;
+                } else {
+                    document.getElementById('login-result').innerHTML = 
+                        `<p style="color: red;">✗ Erro no login: ${result.mensagem || 'Erro desconhecido'}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('login-result').innerHTML = 
+                    `<p style="color: red;">✗ Erro na requisição: ${error.message}</p>`;
+            }
+        }
+        
+        function verificarToken() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                document.getElementById('token-result').innerHTML = 
+                    `<p style="color: green;">✓ Token encontrado no localStorage:<br><small>${token}</small></p>`;
+            } else {
+                document.getElementById('token-result').innerHTML = 
+                    `<p style="color: red;">✗ Nenhum token encontrado no localStorage</p>`;
+            }
+        }
+        
+        async function testarPerfil() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                document.getElementById('profile-result').innerHTML = 
+                    `<p style="color: red;">✗ Nenhum token disponível. Faça login primeiro.</p>`;
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    document.getElementById('profile-result').innerHTML = 
+                        `<p style="color: green;">✓ API funcionando! Dados do usuário:<br><pre>${JSON.stringify(result.data, null, 2)}</pre></p>`;
+                } else {
+                    document.getElementById('profile-result').innerHTML = 
+                        `<p style="color: red;">✗ Erro na API: ${result.mensagem || 'Erro desconhecido'}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('profile-result').innerHTML = 
+                    `<p style="color: red;">✗ Erro na requisição: ${error.message}</p>`;
+            }
+        }
+        
+        function irParaPerfil() {
+            window.open('/perfil.html', '_blank');
+        }
+        
+        // Verificar token ao carregar a página
+        window.onload = function() {
+            verificarToken();
+        };
+    </script>
+</body>
+</html>

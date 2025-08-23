@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Perfil</title>
+</head>
+<body>
+    <h1>Debug da Página de Perfil</h1>
+    <div id="output"></div>
+    
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<p>' + message + '</p>';
+            console.log(message);
+        }
+        
+        async function debugPerfil() {
+            log('🔍 Iniciando debug do perfil...');
+            
+            // Verificar se há token
+            const token = localStorage.getItem('authToken');
+            log('🔑 Token no localStorage: ' + (token ? 'ENCONTRADO' : 'NÃO ENCONTRADO'));
+            
+            if (!token) {
+                log('❌ Sem token - seria redirecionado para login');
+                return;
+            }
+            
+            log('📋 Token: ' + token.substring(0, 50) + '...');
+            
+            try {
+                log('📡 Fazendo requisição para API...');
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log('📊 Status da resposta: ' + response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    log('📋 Dados recebidos: ' + JSON.stringify(result, null, 2));
+                    
+                    if (result.success && result.data) {
+                        log('✅ Dados válidos recebidos!');
+                        log('👤 Nome: ' + result.data.nome);
+                        log('📧 Email: ' + result.data.email);
+                    } else {
+                        log('❌ Estrutura de dados inválida');
+                    }
+                } else {
+                    log('❌ Erro HTTP: ' + response.status);
+                    const errorText = await response.text();
+                    log('📄 Resposta de erro: ' + errorText);
+                }
+            } catch (error) {
+                log('❌ Erro na requisição: ' + error.message);
+            }
+        }
+        
+        // Executar debug ao carregar
+        window.onload = function() {
+            debugPerfil();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+PROBLEMA: URLs incorretas das APIs causando falhas de autenticação e comunicação
+
+DESCRIÇÃO:
+O sistema frontend não conseguia se comunicar com o backend devido a URLs incorretas nos endpoints das APIs, resultando em erros 404 e falhas de autenticação.
+
+CAUSA RAIZ:
+URLs desatualizadas nos arquivos frontend que ainda apontavam para o padrão antigo:
+- Padrão antigo: /controllers/AuthController.php?action=login
+- Padrão novo: /auth/login (definido no router.php)
+
+SOLUÇÃO:
+1. Identificado através de testes com curl/Invoke-WebRequest
+2. Verificado que as APIs funcionavam corretamente com as URLs corretas
+3. Corrigidas as URLs nos seguintes arquivos:
+
+ARQUIVOS MODIFICADOS:
+- frontend/login.html:
+  * /controllers/AuthController.php?action=login → /auth/login
+
+- frontend/cadastro.html:
+  * /controllers/AuthController.php?action=register → /auth/register
+  * /controllers/AuthController.php?action=check-email → /auth/check-email
+
+- frontend/admin/assets/js/admin.js:
+  * /controllers/AuthController.php?action=check-auth → /auth/check-auth
+
+MELHORIAS ADICIONAIS:
+- Adicionados cabeçalhos CORS no AuthController.php para resolver problemas de comunicação cross-origin
+
+TESTE DE VALIDAÇÃO:
+- Testado login via PowerShell: funcionando corretamente
+- Testado API de perfil com token JWT: funcionando corretamente
+- Verificado que todas as rotas estão acessíveis
+
+STATUS: RESOLVIDO
+DATA: 23/08/2025

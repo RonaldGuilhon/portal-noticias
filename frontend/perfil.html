@@ -3,332 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Gerencie seu perfil no Portal de Notícias - atualize suas informações, preferências e configurações de conta.">
-    <meta name="keywords" content="perfil, conta, configurações, portal notícias">
-    <meta name="author" content="Portal de Notícias">
+    <title>Meu Perfil - Portal Notícias</title>
     
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="">
-    <meta property="og:title" content="Meu Perfil - Portal de Notícias">
-    <meta property="og:description" content="Gerencie seu perfil e configurações no Portal de Notícias.">
-    <meta property="og:image" content="/assets/img/og-image.jpg">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="">
-    <meta property="twitter:title" content="Meu Perfil - Portal de Notícias">
-    <meta property="twitter:description" content="Gerencie seu perfil e configurações no Portal de Notícias.">
-    <meta property="twitter:image" content="/assets/img/og-image.jpg">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <title>Meu Perfil - Portal de Notícias</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
-    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
-    
-    <!-- Modern Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Modern Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Modern CSS Framework -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    
     <style>
-        :root {
-            /* Dark Mode Moderno */
-            --bg-primary: #121212;
-            --bg-secondary: #1E293B;
-            --accent-coral: #F87171;
-            --accent-cyan: #38BDF8;
-            --text-primary: #E5E7EB;
-            --text-secondary: #9CA3AF;
-            
-            /* Cores originais mantidas para compatibilidade */
-            --primary-red: var(--accent-coral);
-            --secondary-red: #ef4444;
-            --light-red: rgba(248, 113, 113, 0.1);
-            --dark-red: #dc2626;
-            --pure-white: var(--text-primary);
-            --off-white: var(--bg-secondary);
-            --light-gray: rgba(30, 41, 59, 0.8);
-            --medium-gray: var(--text-secondary);
-            --dark-gray: var(--text-primary);
-            --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-            --shadow-large: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-            --border-radius: 12px;
-            --border-radius-lg: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        
-        .header {
-            background: var(--bg-secondary);
-            box-shadow: var(--shadow-medium);
+        .profile-sidebar {
             position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .top-bar {
-            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-cyan) 100%);
-            color: var(--text-primary);
-            padding: 8px 0;
-        }
-        
-        .top-bar .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .top-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .weather {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .top-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 0.75rem;
-        }
-        
-        .social-links a {
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: var(--transition);
-            opacity: 0.8;
-        }
-        
-        .social-links a:hover {
-            opacity: 1;
-            transform: translateY(-2px);
-        }
-        
-        .user-welcome {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .btn-outline-light {
-            border: 2px solid rgba(229, 231, 235, 0.3);
-            color: var(--text-primary);
-            font-weight: 500;
-            border-radius: 8px;
-            padding: 0.375rem 1rem;
-            transition: var(--transition);
-        }
-        
-        .btn-outline-light:hover {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            border-color: var(--text-primary);
-        }
-        
-        .main-header {
-            padding: 1rem 0;
-        }
-        
-        .main-header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo a {
-            text-decoration: none;
-            color: var(--primary-red);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .logo i {
-            font-size: 2rem;
-        }
-        
-        .header-search {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 2rem;
-        }
-        
-        .search-input-group {
-            position: relative;
-            display: flex;
-        }
-        
-        .search-input-group input {
-            border: 2px solid rgba(229, 231, 235, 0.2);
-            border-radius: var(--border-radius) 0 0 var(--border-radius);
-            padding: 0.75rem 1rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            flex: 1;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        
-        .search-input-group input:focus {
-            outline: none;
-            border-color: var(--accent-coral);
-            box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2);
-        }
-        
-        .search-input-group input::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-        
-        .search-btn {
-            background: var(--primary-red);
-            color: var(--pure-white);
-            border: none;
-            padding: 0.75rem 1.25rem;
-            border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            transition: var(--transition);
-        }
-        
-        .search-btn:hover {
-            background: var(--dark-red);
-        }
-        
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .theme-toggle {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--text-primary);
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.1);
-        }
-        
-        .main-nav {
-            background: var(--bg-secondary);
-            border-top: 1px solid rgba(229, 231, 235, 0.1);
-            padding: 0.75rem 0;
-        }
-        
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            margin: 0;
-            padding: 0;
-        }
-        
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-primary);
-            font-weight: 500;
-            font-size: 0.875rem;
-            padding: 0.5rem 0;
-            position: relative;
-            transition: var(--transition);
-        }
-        
-        .nav-menu a:hover {
-            color: var(--accent-coral);
-        }
-        
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--accent-coral);
-            transition: var(--transition);
-        }
-        
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
-        
-        .main-content {
-            padding: 2rem 0;
-        }
-        
-        .profile-header {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-medium);
-            overflow: hidden;
-            margin-bottom: 2rem;
-        }
-        
-        .profile-cover {
-            height: 200px;
-            background: linear-gradient(135deg, var(--accent-coral) 0%, var(--accent-cyan) 100%);
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 2rem;
-        }
-        
-        .profile-avatar-container {
-            position: relative;
+            top: 20px;
         }
         
         .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid var(--text-primary);
-            overflow: hidden;
             position: relative;
-            box-shadow: var(--shadow-large);
+            display: inline-block;
         }
         
         .profile-avatar img {
-            width: 100%;
-            height: 100%;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
         }
         
@@ -336,1230 +41,620 @@
             position: absolute;
             bottom: 0;
             right: 0;
-            width: 36px;
-            height: 36px;
-            background: var(--accent-coral);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--bg-primary);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 3px solid var(--text-primary);
         }
         
-        .avatar-upload:hover {
-            background: var(--accent-cyan);
-            transform: scale(1.1);
-        }
-        
-        .profile-info {
-            padding: 2rem;
+        .profile-stats .stat {
             text-align: center;
         }
         
-        .profile-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
+        .profile-stats .stat h5 {
+            margin-bottom: 0;
+            color: var(--primary-red);
         }
         
-        .profile-bio {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+        .profile-content {
+            min-height: 500px;
         }
         
-        .profile-stats {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
+        .section-content {
+            display: none;
         }
         
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
+        .section-content.active {
             display: block;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-coral);
-        }
-        
-        .stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
-        .profile-tabs {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-medium);
-            overflow: hidden;
-        }
-        
-        .nav-tabs {
-            border: none;
-            background: var(--light-gray);
-            padding: 0.5rem;
-            gap: 0.25rem;
-        }
-        
-        .nav-tabs .nav-item {
-            flex: 1;
-        }
-        
-        .nav-tabs .nav-link {
-            border: none;
-            border-radius: var(--border-radius);
-            color: var(--text-secondary);
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            text-align: center;
-            transition: var(--transition);
-            background: transparent;
-        }
-        
-        .nav-tabs .nav-link:hover {
-            color: var(--accent-coral);
-            background: rgba(248, 113, 113, 0.1);
-        }
-        
-        .nav-tabs .nav-link.active {
-            background: var(--accent-coral);
-            color: var(--bg-primary);
-            box-shadow: var(--shadow-light);
-        }
-        
-        .tab-content {
-            padding: 2rem;
-        }
-        
-        .card {
-            border: none;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-light);
-            overflow: hidden;
-            background: var(--bg-secondary);
-        }
-        
-        .card-header {
-            background: var(--light-gray);
-            border: none;
-            padding: 1.5rem;
-        }
-        
-        .card-header h5 {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .card-body {
-            padding: 2rem;
-            background: var(--bg-secondary);
-        }
-        
-        .form-label {
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .form-control {
-            border: 2px solid rgba(229, 231, 235, 0.2);
-            border-radius: var(--border-radius);
-            padding: 0.75rem 1rem;
-            font-size: 0.875rem;
-            transition: var(--transition);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--accent-coral);
-            box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.2);
-        }
-        
-        .form-control::placeholder {
-            color: var(--text-secondary);
-            opacity: 0.7;
-        }
-        
-        .btn-primary {
-            background: var(--accent-coral);
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 0.75rem 2rem;
-            font-weight: 500;
-            transition: var(--transition);
-            color: var(--bg-primary);
-        }
-        
-        .btn-primary:hover {
-            background: var(--accent-cyan);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-medium);
-            color: var(--bg-primary);
-        }
-        
-        .preferences-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        
-        .form-check {
-            background: var(--light-gray);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            transition: var(--transition);
-        }
-        
-        .form-check:hover {
-            background: var(--light-red);
-        }
-        
-        .form-check-input:checked {
-            background-color: var(--accent-coral);
-            border-color: var(--accent-coral);
-        }
-        
-        .form-check-label {
-            font-weight: 500;
-            margin-left: 0.5rem;
-            color: var(--text-primary);
         }
         
         .activity-item {
-            background: var(--light-gray);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: var(--transition);
+            border-left: 3px solid var(--primary-red);
+            padding-left: 15px;
+            margin-bottom: 20px;
         }
         
-        .activity-item:hover {
-            background: var(--light-red);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-light);
-        }
-        
-        .activity-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-coral);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--bg-primary);
-        }
-        
-        .activity-time {
-            color: var(--text-secondary);
+        .activity-date {
             font-size: 0.875rem;
+            color: #6c757d;
         }
         
-        .password-strength {
-            margin-top: 0.5rem;
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
         }
         
-        .strength-bar {
-            height: 4px;
-            background: rgba(229, 231, 235, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
+        .notification-item:hover {
+            background-color: #f8f9fa;
         }
         
-        .strength-fill {
-            height: 100%;
-            transition: var(--transition);
+        .notification-item.unread {
+            background-color: #fff3cd;
+            border-left: 4px solid var(--primary-red);
         }
         
-        .strength-weak { background: #ef4444; }
-        .strength-medium { background: #f59e0b; }
-        .strength-strong { background: #10b981; }
-        
-        .password-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-        
-        .input-group {
-            position: relative;
-        }
-        
-        .alert {
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 1rem 1.5rem;
+        .form-floating {
             margin-bottom: 1rem;
         }
         
-        .alert-success {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-        
-        .alert-danger {
-            background: rgba(248, 113, 113, 0.2);
-            color: var(--accent-coral);
-        }
-        
-        .sidebar {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-medium);
-            padding: 2rem;
-            height: fit-content;
-            position: sticky;
-            top: 2rem;
-        }
-        
-        .sidebar-section {
+        .preferences-section {
             margin-bottom: 2rem;
         }
         
-        .sidebar-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-primary);
+        .preferences-section h6 {
+            color: var(--primary-red);
+            border-bottom: 2px solid var(--primary-red);
+            padding-bottom: 0.5rem;
             margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
         
-        .quick-stats {
-            display: grid;
-            gap: 1rem;
-        }
-        
-        .quick-stat {
-            background: var(--light-gray);
-            padding: 1rem;
-            border-radius: var(--border-radius);
-            text-align: center;
-        }
-        
-        .quick-stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-coral);
-            display: block;
-        }
-        
-        .quick-stat-label {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-        
-        .recent-activity {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .recent-activity li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(229, 231, 235, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        
-        .recent-activity li:last-child {
-            border-bottom: none;
-        }
-        
-        .recent-activity-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--accent-coral);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--bg-primary);
-            font-size: 0.875rem;
-        }
-        
-        .recent-activity-text {
-            flex: 1;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
-        
-        .tab-pane {
-            display: none;
-        }
-        
-        .tab-pane.active {
-            display: block;
-        }
-        
-        @media (max-width: 768px) {
-            .main-header .container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .header-search {
-                margin: 0;
-                width: 100%;
-            }
-            
-            .nav-menu {
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-            
-            .profile-stats {
-                gap: 1.5rem;
-            }
-            
-            .nav-tabs {
-                flex-direction: column;
-            }
-            
-            .preferences-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .top-bar .container {
-                flex-direction: column;
-                gap: 0.5rem;
-                text-align: center;
-            }
-        }
-        
-        /* Footer Styles */
-        .footer {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
-            color: var(--pure-white);
-            padding: 3rem 0 1rem;
-            margin-top: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .footer::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-            opacity: 0.3;
-        }
-        
-        .footer .container {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            margin-top: 2rem;
-            padding: 1.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            opacity: 0.9;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        
-        .footer-section h4 {
-            color: var(--pure-white);
-            margin-bottom: 1rem;
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-        
-        .footer-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .footer-section ul li {
-            margin-bottom: 0.5rem;
-        }
-        
-        .footer-section ul li a {
-            color: var(--pure-white);
-            text-decoration: none;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-        }
-        
-        .footer-section ul li a:hover {
-            opacity: 1;
-            text-decoration: none;
-        }
-        
-        .social-links {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .social-links a {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: var(--pure-white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        
-        .social-links a:hover {
-            background-color: var(--secondary-red);
-            transform: translateY(-2px);
-        }
-        
-        /* Back to Top Button */
-        .back-to-top {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            width: 50px;
-            height: 50px;
-            background-color: var(--secondary-red);
-            color: var(--pure-white);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s ease;
-            z-index: 1000;
-        }
-        
-        .back-to-top:hover {
-            background-color: var(--primary-red);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .back-to-top.show {
-            display: flex;
-        }
-        
-        /* Footer responsive adjustments */
-        @media (max-width: 768px) {
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .social-links {
-                justify-content: center;
-            }
-            
-            .back-to-top {
-                bottom: 1rem;
-                right: 1rem;
-                width: 45px;
-                height: 45px;
+        @media (max-width: 991.98px) {
+            .profile-sidebar {
+                position: static;
+                margin-bottom: 2rem;
             }
         }
     </style>
     
-    <!-- Schema.org structured data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "ProfilePage",
-        "name": "Perfil do Usuário - Portal de Notícias",
-        "description": "Página de perfil e configurações do usuário",
-        "url": ""
-    }
+    <script>
+        // Função para mostrar data atual
+        function updateCurrentDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            document.getElementById('current-date').textContent = 
+                now.toLocaleDateString('pt-BR', options);
+        }
+        
+        // Atualizar data quando a página carregar
+        document.addEventListener('DOMContentLoaded', updateCurrentDate);
     </script>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
-        <!-- Top Bar -->
-        <div class="top-bar">
+        <!-- Header Top -->
+        <div class="header-top">
             <div class="container">
-                <div class="top-info">
-                    <span class="date" id="current-date"></span>
-                    <span class="weather" id="weather-info">
-                        <i class="fas fa-sun"></i>
-                        <span>25°C</span>
-                    </span>
-                </div>
-                <div class="top-actions">
-                    <div class="social-links">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                <span id="current-date"></span>
+                            </span>
+                            <span>
+                                <i class="fas fa-thermometer-half me-1"></i>
+                                <span id="weather-info">25°C</span>
+                            </span>
+                        </div>
                     </div>
-                    <div class="user-actions">
-                        <span class="user-welcome" id="user-welcome">Olá, <span id="user-name">Usuário</span>!</span>
-                        <button class="btn btn-outline-light" onclick="logout()">
-                            <i class="fas fa-sign-out-alt"></i>
-                            Sair
-                        </button>
+                    <div class="col-md-6 text-right">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <div class="social-links me-3">
+                                <a href="#" class="me-2" aria-label="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="#" class="me-2" aria-label="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="#" class="me-2" aria-label="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="#" aria-label="YouTube">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                            <div class="user-actions">
+                                <div class="logged-in-only">
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            <i class="fas fa-user me-1"></i>
+                                            <span data-user-info="nome" id="user-name">Usuário</span>
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="/perfil.html">
+                                                <i class="fas fa-user me-2"></i>Meu Perfil
+                                            </a>
+                                            <a class="dropdown-item" href="/favoritos.html">
+                                                <i class="fas fa-heart me-2"></i>Favoritos
+                                            </a>
+                                            <a class="dropdown-item admin-only" href="/admin/" style="display: none;">
+                                                <i class="fas fa-cogs me-2"></i>Painel Administrativo
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#" onclick="logout()">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Sair
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="theme-toggle ms-3" aria-label="Alternar tema">
+                                🌙
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <!-- Main Header -->
-        <div class="main-header">
+        <!-- Header Main -->
+        <div class="header-main">
             <div class="container">
-                <div class="logo">
-                    <a href="/">
-                        <i class="fas fa-newspaper"></i>
-                        <span>Portal Notícias</span>
-                    </a>
-                </div>
-                
-                <div class="header-search">
-                    <form class="search-form" id="search-form">
-                        <div class="search-input-group">
-                            <input type="text" class="form-control" placeholder="Buscar notícias..." id="search-input">
-                            <button type="submit" class="search-btn">
-                                <i class="fas fa-search"></i>
-                            </button>
+                <div class="row align-items-center">
+                    <div class="col-md-3">
+                        <a href="/" class="logo">
+                            <i class="fas fa-newspaper me-2"></i>
+                            Portal Notícias
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <form class="search-form mx-auto">
+                            <div class="position-relative">
+                                <input type="text" class="form-control search-input" placeholder="Buscar notícias..." autocomplete="off">
+                                <button type="submit" class="search-btn" aria-label="Buscar">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <div class="search-suggestions" style="display: none;"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-3 text-right">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <a href="/newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
+                                <i class="fas fa-envelope me-1"></i>
+                                Newsletter
+                            </a>
+                            <a href="/rss" class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="fas fa-rss me-1"></i>
+                                RSS
+                            </a>
                         </div>
-                    </form>
-                </div>
-                
-                <div class="header-actions">
-                    <button class="theme-toggle" aria-label="Alternar tema">
-                        🌙
-                    </button>
-                    <button class="mobile-menu-toggle d-lg-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Navigation -->
-        <nav class="main-nav">
+        <nav class="navbar">
             <div class="container">
-                <ul class="nav-menu" id="nav-menu">
-                    <li><a href="/">Início</a></li>
-                    <li><a href="/categoria.html?cat=politica">Política</a></li>
-                    <li><a href="/categoria.html?cat=economia">Economia</a></li>
-                    <li><a href="/categoria.html?cat=esportes">Esportes</a></li>
-                    <li><a href="/categoria.html?cat=tecnologia">Tecnologia</a></li>
-                    <li><a href="/categoria.html?cat=saude">Saúde</a></li>
-                    <li><a href="/categoria.html?cat=cultura">Cultura</a></li>
-                    <li><a href="/categoria.html?cat=mundo">Mundo</a></li>
-                </ul>
+                <div class="d-flex align-items-center justify-content-between w-100">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link">
+                                <i class="fas fa-home me-1"></i>
+                                Início
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/politica" class="nav-link">Política</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/economia" class="nav-link">Economia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/esportes" class="nav-link">Esportes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/tecnologia" class="nav-link">Tecnologia</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/saude" class="nav-link">Saúde</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/cultura" class="nav-link">Cultura</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categoria/internacional" class="nav-link">Internacional</a>
+                        </li>
+                    </ul>
+                    
+                    <button class="mobile-menu-toggle d-lg-none" aria-label="Menu" aria-expanded="false">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </nav>
     </header>
-    
+
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
             <div class="row">
-                <!-- Profile Content -->
-                <div class="col-lg-8">
-                    <!-- Profile Header -->
-                    <div class="profile-header">
-                        <div class="profile-cover">
-                            <div class="profile-avatar-container">
-                                <div class="profile-avatar" id="profile-avatar">
-                                    <img src="/assets/img/default-avatar.jpg" alt="Avatar" id="avatar-img">
-                                    <div class="avatar-upload" id="avatar-upload">
-                                        <i class="fas fa-camera"></i>
+                <!-- Profile Sidebar -->
+                <div class="col-lg-4">
+                    <div class="profile-sidebar">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="profile-avatar mb-3">
+                                    <img src="https://via.placeholder.com/150" alt="Avatar" class="rounded-circle" id="profile-avatar">
+                                    <div class="avatar-upload">
                                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="profile-info">
-                            <h1 class="profile-name" id="profile-name">Nome do Usuário</h1>
-                            <p class="profile-bio" id="profile-bio">Biografia do usuário...</p>
-                            <div class="profile-stats">
-                                <div class="stat-item">
-                                    <span class="stat-number" id="comments-count">0</span>
-                                    <span class="stat-label">Comentários</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number" id="likes-count">0</span>
-                                    <span class="stat-label">Curtidas</span>
-                                </div>
-                                <div class="stat-item">
-                                    <span class="stat-number" id="member-since">2024</span>
-                                    <span class="stat-label">Membro desde</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Profile Tabs -->
-                    <div class="profile-tabs">
-                        <ul class="nav nav-tabs" id="profile-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-tab="personal" href="#">
-                                    <i class="fas fa-user-circle"></i>
-                                    Dados Pessoais
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-tab="preferences" href="#">
-                                    <i class="fas fa-heart"></i>
-                                    Preferências
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-tab="security" href="#">
-                                    <i class="fas fa-shield-halved"></i>
-                                    Segurança
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-tab="activity" href="#">
-                                    <i class="fas fa-chart-line"></i>
-                                    Atividade
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-tab="notifications" href="#">
-                                    <i class="fas fa-bell"></i>
-                                    Notificações
-                                </a>
-                            </li>
-                        </ul>
-                        
-                        <!-- Tab Content -->
-                        <div class="tab-content">
-                            <!-- Personal Data Tab -->
-                            <div class="tab-pane active" id="personal-tab">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>
-                                            <i class="fas fa-user-circle"></i>
-                                            Informações Pessoais
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="personal-form">
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="nome" class="form-label">Nome Completo *</label>
-                                                    <input type="text" class="form-control" id="nome" name="nome" required placeholder="Digite seu nome completo">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="email" class="form-label">E-mail *</label>
-                                                    <input type="email" class="form-control" id="email" name="email" required readonly>
-                                                    <div class="form-text">Para alterar o e-mail, entre em contato conosco.</div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="bio" class="form-label">Biografia</label>
-                                                <textarea class="form-control" id="bio" name="bio" rows="3" maxlength="500" placeholder="Conte um pouco sobre você..."></textarea>
-                                                <div class="form-text">Máximo de 500 caracteres. <span id="bio-count">0/500</span></div>
-                                            </div>
-                                            
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="data-nascimento" class="form-label">Data de Nascimento</label>
-                                                    <input type="date" class="form-control" id="data-nascimento" name="data_nascimento">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="genero" class="form-label">Gênero</label>
-                                                    <select class="form-control" id="genero" name="genero">
-                                                        <option value="">Selecione...</option>
-                                                        <option value="masculino">Masculino</option>
-                                                        <option value="feminino">Feminino</option>
-                                                        <option value="outro">Outro</option>
-                                                        <option value="prefiro-nao-informar">Prefiro não informar</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="telefone" class="form-label">Telefone</label>
-                                                    <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(11) 99999-9999">
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <label for="cidade" class="form-label">Cidade</label>
-                                                    <input type="text" class="form-control" id="cidade" name="cidade">
-                                                </div>
-                                            </div>
-                                            
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i>
-                                                Salvar Alterações
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Preferences Tab -->
-                            <div class="tab-pane" id="preferences-tab">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>
-                                            <i class="fas fa-heart"></i>
-                                            Preferências de Conteúdo
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="preferences-form">
-                                            <div class="mb-4">
-                                                <label class="form-label">Categorias de Interesse</label>
-                                                <div class="preferences-grid">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-politica" name="preferencias[]" value="politica">
-                                                        <label class="form-check-label" for="pref-politica">
-                                                            <i class="fas fa-landmark"></i>
-                                                            Política
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-economia" name="preferencias[]" value="economia">
-                                                        <label class="form-check-label" for="pref-economia">
-                                                            <i class="fas fa-chart-line"></i>
-                                                            Economia
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-esportes" name="preferencias[]" value="esportes">
-                                                        <label class="form-check-label" for="pref-esportes">
-                                                            <i class="fas fa-futbol"></i>
-                                                            Esportes
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-tecnologia" name="preferencias[]" value="tecnologia">
-                                                        <label class="form-check-label" for="pref-tecnologia">
-                                                            <i class="fas fa-microchip"></i>
-                                                            Tecnologia
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-saude" name="preferencias[]" value="saude">
-                                                        <label class="form-check-label" for="pref-saude">
-                                                            <i class="fas fa-heartbeat"></i>
-                                                            Saúde
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="pref-cultura" name="preferencias[]" value="cultura">
-                                                        <label class="form-check-label" for="pref-cultura">
-                                                            <i class="fas fa-palette"></i>
-                                                            Cultura
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-4">
-                                                <label class="form-label">Configurações de Exibição</label>
-                                                <div class="preferences-grid">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="show-images" name="show_images">
-                                                        <label class="form-check-label" for="show-images">
-                                                            <i class="fas fa-image"></i>
-                                                            Mostrar imagens automaticamente
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="auto-play-videos" name="auto_play_videos">
-                                                        <label class="form-check-label" for="auto-play-videos">
-                                                            <i class="fas fa-play-circle"></i>
-                                                            Reproduzir vídeos automaticamente
-                                                        </label>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" id="dark-mode" name="dark_mode">
-                                                        <label class="form-check-label" for="dark-mode">
-                                                            <i class="fas fa-moon"></i>
-                                                            Modo escuro
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i>
-                                                Salvar Preferências
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Security Tab -->
-                            <div class="tab-pane" id="security-tab">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>
-                                            <i class="fas fa-shield-halved"></i>
-                                            Segurança da Conta
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="password-form">
-                                            <div class="mb-3">
-                                                <label for="current-password" class="form-label">Senha Atual *</label>
-                                                <div class="input-group">
-                                                    <input type="password" class="form-control" id="current-password" name="current_password" required>
-                                                    <button type="button" class="password-toggle" onclick="togglePassword('current-password')">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="new-password" class="form-label">Nova Senha *</label>
-                                                <div class="input-group">
-                                                    <input type="password" class="form-control" id="new-password" name="new_password" required>
-                                                    <button type="button" class="password-toggle" onclick="togglePassword('new-password')">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </div>
-                                                <div class="password-strength" id="password-strength">
-                                                    <div class="strength-bar">
-                                                        <div class="strength-fill" id="strength-fill"></div>
-                                                    </div>
-                                                    <small class="form-text" id="strength-text">Digite uma senha para ver a força</small>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="confirm-password" class="form-label">Confirmar Nova Senha *</label>
-                                                <div class="input-group">
-                                                    <input type="password" class="form-control" id="confirm-password" name="confirm_password" required>
-                                                    <button type="button" class="password-toggle" onclick="togglePassword('confirm-password')">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-key"></i>
-                                                Alterar Senha
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Activity Tab -->
-                            <div class="tab-pane" id="activity-tab">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>
-                                            <i class="fas fa-chart-line"></i>
-                                            Atividade Recente
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row mb-4">
-                                            <div class="col-md-3">
-                                                <div class="quick-stat">
-                                                    <span class="quick-stat-number" id="total-views">0</span>
-                                                    <span class="quick-stat-label">Visualizações</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="quick-stat">
-                                                    <span class="quick-stat-number" id="total-comments">0</span>
-                                                    <span class="quick-stat-label">Comentários</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="quick-stat">
-                                                    <span class="quick-stat-number" id="total-likes">0</span>
-                                                    <span class="quick-stat-label">Curtidas</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <div class="quick-stat">
-                                                    <span class="quick-stat-number" id="total-shares">0</span>
-                                                    <span class="quick-stat-label">Compartilhamentos</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div id="activity-list">
-                                            <!-- Activity items will be loaded here -->
-                                        </div>
-                                        
-                                        <button class="btn btn-outline-primary" id="load-more-activity">
-                                            <i class="fas fa-plus"></i>
-                                            Carregar Mais
+                                        <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('avatar-input').click()">
+                                            <i class="fas fa-camera"></i>
                                         </button>
                                     </div>
                                 </div>
+                                <h4 class="profile-name" id="profile-name">Nome do Usuário</h4>
+                                <p class="profile-email text-muted" id="profile-email">usuario@email.com</p>
+                                <div class="profile-stats">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="stat">
+                                                <h5 id="articles-count">0</h5>
+                                                <small>Artigos</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat">
+                                                <h5 id="comments-count">0</h5>
+                                                <small>Comentários</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            <div class="stat">
+                                                <h5 id="likes-count">0</h5>
+                                                <small>Curtidas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <!-- Notifications Tab -->
-                            <div class="tab-pane" id="notifications-tab">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h5>
-                                            <i class="fas fa-bell"></i>
-                                            Configurações de Notificação
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <form id="notifications-form">
-                                            <div class="mb-4">
-                                                <h6 class="text-primary">
-                                                    <i class="fas fa-envelope me-2"></i>
-                                                    Notificações por E-mail
-                                                </h6>
-                                                <p class="text-muted small mb-3">Receba atualizações importantes diretamente no seu e-mail</p>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="email_newsletter" name="email_newsletter">
-                                                    <label class="form-check-label" for="email_newsletter">
-                                                        <i class="fas fa-newspaper text-info me-2"></i>
-                                                        <strong>Newsletter Semanal</strong>
-                                                        <small class="d-block text-muted">Resumo das principais notícias da semana</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="email_breaking" name="email_breaking">
-                                                    <label class="form-check-label" for="email_breaking">
-                                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                                        <strong>Notícias Urgentes</strong>
-                                                        <small class="d-block text-muted">Alertas imediatos sobre notícias importantes</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="email_comments" name="email_comments">
-                                                    <label class="form-check-label" for="email_comments">
-                                                        <i class="fas fa-comment text-success me-2"></i>
-                                                        <strong>Respostas aos Comentários</strong>
-                                                        <small class="d-block text-muted">Notificações quando alguém responder seus comentários</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="email_marketing" name="email_marketing">
-                                                    <label class="form-check-label" for="email_marketing">
-                                                        <i class="fas fa-tag text-danger me-2"></i>
-                                                        <strong>Ofertas e Promoções</strong>
-                                                        <small class="d-block text-muted">Receba ofertas especiais e conteúdo promocional</small>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-4">
-                                                <h6 class="text-primary">
-                                                    <i class="fas fa-mobile-alt me-2"></i>
-                                                    Notificações Push
-                                                </h6>
-                                                <p class="text-muted small mb-3">Notificações instantâneas no seu dispositivo</p>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="push_breaking" name="push_breaking">
-                                                    <label class="form-check-label" for="push_breaking">
-                                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                                        <strong>Notícias Urgentes</strong>
-                                                        <small class="d-block text-muted">Alertas push para notícias de última hora</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="push_interests" name="push_interests">
-                                                    <label class="form-check-label" for="push_interests">
-                                                        <i class="fas fa-star text-primary me-2"></i>
-                                                        <strong>Notícias dos Meus Interesses</strong>
-                                                        <small class="d-block text-muted">Conteúdo baseado nas suas categorias favoritas</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-3">
-                                                    <input type="checkbox" class="form-check-input" id="push_comments" name="push_comments">
-                                                    <label class="form-check-label" for="push_comments">
-                                                        <i class="fas fa-reply text-success me-2"></i>
-                                                        <strong>Respostas aos Comentários</strong>
-                                                        <small class="d-block text-muted">Notificações push quando receberem respostas</small>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="mb-4">
-                                                <h6 class="text-primary">
-                                                    <i class="fas fa-clock me-2"></i>
-                                                    Frequência de Notificações
-                                                </h6>
-                                                <p class="text-muted small mb-3">Com que frequência você deseja receber notificações por e-mail</p>
-                                                
-                                                <div class="form-check mb-2">
-                                                    <input type="radio" class="form-check-input" id="freq_imediato" name="notification_frequency" value="imediato">
-                                                    <label class="form-check-label" for="freq_imediato">
-                                                        <strong>Imediato</strong>
-                                                        <small class="d-block text-muted">Receber notificações assim que acontecerem</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-2">
-                                                    <input type="radio" class="form-check-input" id="freq_diario" name="notification_frequency" value="diario">
-                                                    <label class="form-check-label" for="freq_diario">
-                                                        <strong>Diário</strong>
-                                                        <small class="d-block text-muted">Resumo diário das notificações</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-2">
-                                                    <input type="radio" class="form-check-input" id="freq_semanal" name="notification_frequency" value="semanal">
-                                                    <label class="form-check-label" for="freq_semanal">
-                                                        <strong>Semanal</strong>
-                                                        <small class="d-block text-muted">Resumo semanal das notificações</small>
-                                                    </label>
-                                                </div>
-                                                
-                                                <div class="form-check mb-2">
-                                                    <input type="radio" class="form-check-input" id="freq_nunca" name="notification_frequency" value="nunca">
-                                                    <label class="form-check-label" for="freq_nunca">
-                                                        <strong>Nunca</strong>
-                                                        <small class="d-block text-muted">Não receber notificações por e-mail</small>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="d-flex justify-content-between">
-                                                <button type="submit" class="btn btn-primary">
-                                                    <i class="fas fa-save me-2"></i>
-                                                    Salvar Configurações
-                                                </button>
-                                                <button type="button" class="btn btn-outline-secondary" onclick="resetNotificationForm()">
-                                                    <i class="fas fa-undo me-2"></i>
-                                                    Restaurar Padrões
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Ações Rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" onclick="showSection('edit-profile')">
+                                        <i class="fas fa-edit"></i> Editar Perfil
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showSection('change-password')">
+                                        <i class="fas fa-lock"></i> Alterar Senha
+                                    </button>
+                                    <button class="btn btn-outline-primary" onclick="showSection('preferences')">
+                                        <i class="fas fa-cog"></i> Preferências
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Sidebar -->
-                <div class="col-lg-4">
-                    <div class="sidebar">
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">
-                                <i class="fas fa-chart-bar"></i>
-                                Estatísticas Rápidas
-                            </h3>
-                            <div class="quick-stats">
-                                <div class="quick-stat">
-                                    <span class="quick-stat-number" id="sidebar-comments">0</span>
-                                    <span class="quick-stat-label">Comentários</span>
+                <!-- Profile Content -->
+                <div class="col-lg-8">
+                    <div class="profile-content">
+                        <!-- Profile Overview -->
+                        <div class="section-content active" id="overview">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Visão Geral do Perfil</h5>
                                 </div>
-                                <div class="quick-stat">
-                                    <span class="quick-stat-number" id="sidebar-likes">0</span>
-                                    <span class="quick-stat-label">Curtidas Recebidas</span>
-                                </div>
-                                <div class="quick-stat">
-                                    <span class="quick-stat-number" id="sidebar-views">0</span>
-                                    <span class="quick-stat-label">Visualizações</span>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Atividade Recente</h6>
+                                            <div class="activity-timeline" id="activity-timeline">
+                                                <div class="activity-item">
+                                                    <h6>Comentário em "Notícia sobre Tecnologia"</h6>
+                                                    <p class="activity-date">Há 2 horas</p>
+                                                </div>
+                                                <div class="activity-item">
+                                                    <h6>Curtiu "Artigo sobre Economia"</h6>
+                                                    <p class="activity-date">Há 1 dia</p>
+                                                </div>
+                                                <div class="activity-item">
+                                                    <h6>Compartilhou "Notícia sobre Esportes"</h6>
+                                                    <p class="activity-date">Há 3 dias</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Estatísticas</h6>
+                                            <div class="stats-grid">
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-eye"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <h4 id="profile-views">1,234</h4>
+                                                        <p>Visualizações do Perfil</p>
+                                                    </div>
+                                                </div>
+                                                <div class="stat-card">
+                                                    <div class="stat-icon">
+                                                        <i class="fas fa-calendar"></i>
+                                                    </div>
+                                                    <div class="stat-info">
+                                                        <h4 id="member-since">Jan 2024</h4>
+                                                        <p>Membro desde</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">
-                                <i class="fas fa-clock"></i>
-                                Atividade Recente
-                            </h3>
-                            <ul class="recent-activity" id="sidebar-activity">
-                                <li>
-                                    <div class="recent-activity-icon">
-                                        <i class="fas fa-comment"></i>
-                                    </div>
-                                    <div class="recent-activity-text">
-                                        Comentou em "Título da Notícia"
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="recent-activity-icon">
-                                        <i class="fas fa-heart"></i>
-                                    </div>
-                                    <div class="recent-activity-text">
-                                        Curtiu "Outra Notícia"
-                                    </div>
-                                </li>
-                            </ul>
+                        <!-- Edit Profile Section -->
+                        <div class="section-content" id="edit-profile">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Editar Perfil</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="profile-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="edit-name" placeholder="Nome completo">
+                                                    <label for="edit-name">Nome Completo</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <input type="email" class="form-control" id="edit-email" placeholder="Email">
+                                                    <label for="edit-email">Email</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <input type="tel" class="form-control" id="edit-phone" placeholder="Telefone">
+                                                    <label for="edit-phone">Telefone</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <input type="date" class="form-control" id="edit-birthdate">
+                                                    <label for="edit-birthdate">Data de Nascimento</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-floating">
+                                            <textarea class="form-control" id="edit-bio" placeholder="Biografia" style="height: 100px"></textarea>
+                                            <label for="edit-bio">Biografia</label>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <input type="text" class="form-control" id="edit-city" placeholder="Cidade">
+                                                    <label for="edit-city">Cidade</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <select class="form-select" id="edit-state">
+                                                        <option value="">Selecione o Estado</option>
+                                                        <option value="AC">Acre</option>
+                                                        <option value="AL">Alagoas</option>
+                                                        <option value="AP">Amapá</option>
+                                                        <option value="AM">Amazonas</option>
+                                                        <option value="BA">Bahia</option>
+                                                        <option value="CE">Ceará</option>
+                                                        <option value="DF">Distrito Federal</option>
+                                                        <option value="ES">Espírito Santo</option>
+                                                        <option value="GO">Goiás</option>
+                                                        <option value="MA">Maranhão</option>
+                                                        <option value="MT">Mato Grosso</option>
+                                                        <option value="MS">Mato Grosso do Sul</option>
+                                                        <option value="MG">Minas Gerais</option>
+                                                        <option value="PA">Pará</option>
+                                                        <option value="PB">Paraíba</option>
+                                                        <option value="PR">Paraná</option>
+                                                        <option value="PE">Pernambuco</option>
+                                                        <option value="PI">Piauí</option>
+                                                        <option value="RJ">Rio de Janeiro</option>
+                                                        <option value="RN">Rio Grande do Norte</option>
+                                                        <option value="RS">Rio Grande do Sul</option>
+                                                        <option value="RO">Rondônia</option>
+                                                        <option value="RR">Roraima</option>
+                                                        <option value="SC">Santa Catarina</option>
+                                                        <option value="SP">São Paulo</option>
+                                                        <option value="SE">Sergipe</option>
+                                                        <option value="TO">Tocantins</option>
+                                                    </select>
+                                                    <label for="edit-state">Estado</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save"></i> Salvar Alterações
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="showSection('overview')">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         
-                        <div class="sidebar-section">
-                            <h3 class="sidebar-title">
-                                <i class="fas fa-cog"></i>
-                                Ações Rápidas
-                            </h3>
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-outline-primary" id="export-data">
-                                    <i class="fas fa-download"></i>
-                                    Exportar Dados
-                                </button>
-                                <button class="btn btn-outline-warning" id="deactivate-account">
-                                    <i class="fas fa-pause"></i>
-                                    Desativar Conta
-                                </button>
-                                <button class="btn btn-outline-danger" id="delete-account">
-                                    <i class="fas fa-trash"></i>
-                                    Excluir Conta
-                                </button>
-                                <button class="btn btn-outline-secondary" id="logout-all">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    Sair de Todos os Dispositivos
-                                </button>
+                        <!-- Change Password Section -->
+                        <div class="section-content" id="change-password">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Alterar Senha</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="password-form">
+                                        <div class="mb-3">
+                                            <label for="current-password" class="form-label">Senha Atual</label>
+                                            <div class="password-input">
+                                                <input type="password" class="form-control" id="current-password" placeholder="Digite sua senha atual">
+                                                <button type="button" class="password-toggle" data-target="current-password" aria-label="Mostrar/ocultar senha">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                        
+                                        <div class="mb-3">
+                                            <label for="new-password" class="form-label">Nova Senha</label>
+                                            <div class="password-input">
+                                                <input type="password" class="form-control" id="new-password" placeholder="Digite sua nova senha">
+                                                <button type="button" class="password-toggle" data-target="new-password" aria-label="Mostrar/ocultar senha">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                        
+                                        <div class="mb-3">
+                                            <label for="confirm-password" class="form-label">Confirmar Nova Senha</label>
+                                            <div class="password-input">
+                                                <input type="password" class="form-control" id="confirm-password" placeholder="Confirme sua nova senha">
+                                                <button type="button" class="password-toggle" data-target="confirm-password" aria-label="Mostrar/ocultar senha">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="password-requirements mb-3">
+                                            <small class="text-muted">
+                                                <strong>Requisitos da senha:</strong><br>
+                                                • Mínimo de 8 caracteres<br>
+                                                • Pelo menos uma letra maiúscula<br>
+                                                • Pelo menos uma letra minúscula<br>
+                                                • Pelo menos um número<br>
+                                                • Pelo menos um caractere especial
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-lock"></i> Alterar Senha
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="showSection('overview')">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Preferences Section -->
+                        <div class="section-content" id="preferences">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Preferências</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="preferences-form">
+                                        <!-- Notification Preferences -->
+                                        <div class="preferences-section">
+                                            <h6>Notificações</h6>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="email-notifications" checked>
+                                                <label class="form-check-label" for="email-notifications">
+                                                    Receber notificações por email
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="push-notifications" checked>
+                                                <label class="form-check-label" for="push-notifications">
+                                                    Receber notificações push
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                                <label class="form-check-label" for="newsletter">
+                                                    Receber newsletter semanal
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Privacy Preferences -->
+                                        <div class="preferences-section">
+                                            <h6>Privacidade</h6>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="profile-public" checked>
+                                                <label class="form-check-label" for="profile-public">
+                                                    Perfil público
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="show-activity">
+                                                <label class="form-check-label" for="show-activity">
+                                                    Mostrar atividade recente
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" id="allow-messages" checked>
+                                                <label class="form-check-label" for="allow-messages">
+                                                    Permitir mensagens de outros usuários
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Content Preferences -->
+                                        <div class="preferences-section">
+                                            <h6>Conteúdo</h6>
+                                            <div class="mb-3">
+                                                <label for="favorite-categories" class="form-label">Categorias Favoritas</label>
+                                                <select class="form-select" id="favorite-categories" multiple>
+                                                    <option value="politica">Política</option>
+                                                    <option value="economia">Economia</option>
+                                                    <option value="esportes">Esportes</option>
+                                                    <option value="tecnologia">Tecnologia</option>
+                                                    <option value="saude">Saúde</option>
+                                                    <option value="cultura">Cultura</option>
+                                                    <option value="mundo">Mundo</option>
+                                                </select>
+                                                <div class="form-text">Segure Ctrl para selecionar múltiplas categorias</div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="language-preference" class="form-label">Idioma Preferido</label>
+                                                <select class="form-select" id="language-preference">
+                                                    <option value="pt-BR" selected>Português (Brasil)</option>
+                                                    <option value="en-US">English (US)</option>
+                                                    <option value="es-ES">Español</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex gap-2">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fas fa-save"></i> Salvar Preferências
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary" onclick="showSection('overview')">
+                                                <i class="fas fa-times"></i> Cancelar
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1567,845 +662,497 @@
             </div>
         </div>
     </main>
-    
-    <!-- Success/Error Messages -->
-    <div id="message-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
-    
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="footer-section">
+                        <div class="footer-logo">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Portal Notícias</span>
+                        </div>
+                        <p>Seu portal de notícias confiável, trazendo as informações mais relevantes e atualizadas do Brasil e do mundo.</p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-section">
+                        <h5>Categorias</h5>
+                        <ul class="footer-links">
+                            <li><a href="/categoria.html?cat=politica">Política</a></li>
+                            <li><a href="/categoria.html?cat=economia">Economia</a></li>
+                            <li><a href="/categoria.html?cat=esportes">Esportes</a></li>
+                            <li><a href="/categoria.html?cat=tecnologia">Tecnologia</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-section">
+                        <h5>Mais Categorias</h5>
+                        <ul class="footer-links">
+                            <li><a href="/categoria.html?cat=saude">Saúde</a></li>
+                            <li><a href="/categoria.html?cat=cultura">Cultura</a></li>
+                            <li><a href="/categoria.html?cat=mundo">Mundo</a></li>
+                            <li><a href="/categoria.html?cat=local">Local</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-section">
+                        <h5>Institucional</h5>
+                        <ul class="footer-links">
+                            <li><a href="/sobre.html">Sobre Nós</a></li>
+                            <li><a href="/contato.html">Contato</a></li>
+                            <li><a href="/equipe.html">Nossa Equipe</a></li>
+                            <li><a href="/anuncie.html">Anuncie</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <div class="footer-section">
+                        <h5>Legal</h5>
+                        <ul class="footer-links">
+                            <li><a href="/privacidade.html">Privacidade</a></li>
+                            <li><a href="/termos.html">Termos de Uso</a></li>
+                            <li><a href="/cookies.html">Cookies</a></li>
+                            <li><a href="/rss.xml">RSS</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p>&copy; 2024 Portal Notícias. Todos os direitos reservados.</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <p>Desenvolvido com <i class="fas fa-heart text-danger"></i> pela nossa equipe</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        // Authentication token management
-        function getAuthToken() {
-            const userData = localStorage.getItem('portal-user');
-            if (userData) {
-                try {
-                    const user = JSON.parse(userData);
-                    return user.token;
-                } catch (error) {
-                    console.error('Erro ao obter token:', error);
-                    return null;
-                }
-            }
-            return null;
+        // Profile Management
+        let currentSection = 'overview';
+        
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            currentSection = sectionId;
         }
         
+        // Load user data
+        async function loadUserData() {
+            console.log('🔍 Iniciando loadUserData...');
+            try {
+                // Verifica primeiro 'portal-user' (padrão do sistema)
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                        console.log('🔑 Token encontrado em portal-user:', token ? 'SIM' : 'NÃO');
+                    } catch (e) {
+                        console.log('❌ Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                // Fallback para 'authToken' (compatibilidade)
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                    console.log('🔑 Token encontrado em authToken:', token ? 'SIM' : 'NÃO');
+                }
+                
+                if (!token) {
+                    console.log('❌ Nenhum token encontrado, redirecionando para login...');
+                    alert('Nenhum token de autenticação encontrado. Você será redirecionado para a página de login.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                console.log('📡 Fazendo requisição para API...');
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('📊 Status da resposta:', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('📋 Dados recebidos:', result);
+                    
+                    if (result.success && result.data) {
+                        console.log('✅ Populando dados do usuário...');
+                        populateUserData(result.data);
+                    } else {
+                        console.error('❌ Erro ao carregar dados do usuário:', result.mensagem || 'Dados não encontrados');
+                    }
+                } else {
+                    console.error('❌ Erro HTTP ao carregar dados do usuário:', response.status);
+                }
+            } catch (error) {
+                console.error('❌ Erro na requisição:', error);
+            }
+        }
+        
+        function populateUserData(userData) {
+            // Update profile info
+            document.getElementById('profile-name').textContent = userData.nome || 'Nome do Usuário';
+            document.getElementById('profile-email').textContent = userData.email || 'usuario@email.com';
+            document.getElementById('user-name').textContent = userData.nome || 'Usuário';
+            
+            // Update form fields
+            document.getElementById('edit-name').value = userData.nome || '';
+            document.getElementById('edit-email').value = userData.email || '';
+            document.getElementById('edit-phone').value = userData.telefone || '';
+            document.getElementById('edit-birthdate').value = userData.data_nascimento || '';
+            document.getElementById('edit-bio').value = userData.bio || '';
+            document.getElementById('edit-city').value = userData.cidade || '';
+            document.getElementById('edit-state').value = userData.estado || '';
+            
+            // Update avatar if available
+            if (userData.foto_perfil) {
+                const avatarElement = document.getElementById('profile-avatar');
+                if (avatarElement) {
+                    avatarElement.src = userData.foto_perfil;
+                }
+            }
+        }
+        
+        // Handle profile form submission
+        document.getElementById('profile-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                nome: document.getElementById('edit-name').value,
+                email: document.getElementById('edit-email').value,
+                telefone: document.getElementById('edit-phone').value,
+                data_nascimento: document.getElementById('edit-birthdate').value,
+                bio: document.getElementById('edit-bio').value,
+                cidade: document.getElementById('edit-city').value,
+                estado: document.getElementById('edit-state').value
+            };
+            
+            try {
+                // Obter token usando a mesma lógica do loadUserData
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                    } catch (e) {
+                        console.log('❌ Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                }
+                
+                if (!token) {
+                    alert('Token de autenticação não encontrado. Faça login novamente.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('Perfil atualizado com sucesso!');
+                    loadUserData(); // Reload user data
+                    showSection('overview');
+                } else {
+                    alert('Erro ao atualizar perfil');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao atualizar perfil');
+            }
+        });
+        
+        // Handle password change form submission
+        document.getElementById('password-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('As senhas não coincidem');
+                return;
+            }
+            
+            // Password validation
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(newPassword)) {
+                alert('A senha não atende aos requisitos mínimos');
+                return;
+            }
+            
+            try {
+                // Verifica primeiro 'portal-user' (padrão do sistema)
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                    } catch (e) {
+                        console.log('Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                // Fallback para 'authToken' (compatibilidade)
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                }
+                
+                if (!token) {
+                    alert('Token de autenticação não encontrado');
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8001/api/user/profile?action=change-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        confirm_password: confirmPassword
+                    })
+                });
+                
+                if (response.ok) {
+                    alert('Senha alterada com sucesso!');
+                    document.getElementById('password-form').reset();
+                    showSection('overview');
+                } else {
+                    alert('Erro ao alterar senha');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao alterar senha');
+            }
+        });
+        
+        // Handle preferences form submission
+        document.getElementById('preferences-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const preferences = {
+                email_notifications: document.getElementById('email-notifications').checked,
+                push_notifications: document.getElementById('push-notifications').checked,
+                newsletter: document.getElementById('newsletter').checked,
+                profile_public: document.getElementById('profile-public').checked,
+                show_activity: document.getElementById('show-activity').checked,
+                allow_messages: document.getElementById('allow-messages').checked,
+                favorite_categories: Array.from(document.getElementById('favorite-categories').selectedOptions).map(option => option.value),
+                language_preference: document.getElementById('language-preference').value
+            };
+            
+            try {
+                // Verifica primeiro 'portal-user' (padrão do sistema)
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                    } catch (e) {
+                        console.log('Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                // Fallback para 'authToken' (compatibilidade)
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                }
+                
+                if (!token) {
+                    alert('Token de autenticação não encontrado');
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+                
+                if (response.ok) {
+                    alert('Preferências salvas com sucesso!');
+                    showSection('overview');
+                } else {
+                    alert('Erro ao salvar preferências');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao salvar preferências');
+            }
+        });
+        
+        // Handle avatar upload
+        document.getElementById('avatar-input').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione uma imagem válida');
+                return;
+            }
+            
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 5MB');
+                return;
+            }
+            
+            try {
+                // Convert file to base64
+                const base64 = await fileToBase64(file);
+                
+                // Verifica primeiro 'portal-user' (padrão do sistema)
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                    } catch (e) {
+                        console.log('Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                // Fallback para 'authToken' (compatibilidade)
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                }
+                
+                if (!token) {
+                    alert('Token de autenticação não encontrado');
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8001/api/user/avatar', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image: base64
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        document.getElementById('profile-avatar').src = result.avatar_url;
+                        alert('Avatar atualizado com sucesso!');
+                        // Reload user data to get updated profile
+                        loadUserData();
+                    } else {
+                        alert(result.message || 'Erro ao fazer upload do avatar');
+                    }
+                } else {
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Erro ao fazer upload do avatar');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao fazer upload do avatar');
+            }
+        });
+        
+        // Helper function to convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // Password toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                    this.setAttribute('aria-label', 'Ocultar senha');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                    this.setAttribute('aria-label', 'Mostrar senha');
+                }
+            });
+        });
+        
+        // Logout function
         function logout() {
+            localStorage.removeItem('authToken');
             localStorage.removeItem('portal-user');
-            window.location.href = '/login.html?logout=1';
-        }
-        
-        // Check authentication
-        function checkAuth() {
-            const token = getAuthToken();
-            if (!token) {
-                window.location.href = '/login.html';
-                return false;
-            }
-            return true;
-        }
-        
-        // Show messages
-        function showMessage(message, type = 'success') {
-            const container = document.getElementById('message-container');
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show`;
-            alertDiv.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            container.appendChild(alertDiv);
-            
-            setTimeout(() => {
-                if (alertDiv.parentNode) {
-                    alertDiv.remove();
-                }
-            }, 5000);
-        }
-        
-        function showSuccess(message) {
-            showMessage(message, 'success');
-        }
-        
-        function showError(message) {
-            showMessage(message, 'error');
-        }
-        
-        // Tab switching
-        function switchTab(tabName) {
-            // Hide all tab panes
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('active');
-            });
-            
-            // Remove active class from all nav links
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
-            
-            // Show selected tab pane
-            const targetPane = document.getElementById(tabName + '-tab');
-            if (targetPane) {
-                targetPane.classList.add('active');
-            }
-            
-            // Add active class to clicked nav link
-            const targetLink = document.querySelector(`[data-tab="${tabName}"]`);
-            if (targetLink) {
-                targetLink.classList.add('active');
-            }
+            localStorage.removeItem('userData');
+            window.location.href = '/login.html';
         }
         
         // Initialize page
         document.addEventListener('DOMContentLoaded', function() {
-            if (!checkAuth()) return;
-            
-            // Set current date
-            const now = new Date();
-            document.getElementById('current-date').textContent = now.toLocaleDateString('pt-BR', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            
-            // Tab navigation
-            document.querySelectorAll('[data-tab]').forEach(tab => {
-                tab.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    switchTab(this.dataset.tab);
-                });
-            });
-            
-            // Form submissions
-            document.getElementById('personal-form').addEventListener('submit', handlePersonalUpdate);
-            document.getElementById('preferences-form').addEventListener('submit', handlePreferencesUpdate);
-            document.getElementById('password-form').addEventListener('submit', handlePasswordChange);
-            document.getElementById('notifications-form').addEventListener('submit', handleNotificationsUpdate);
-            
-            // Avatar upload
-            document.getElementById('avatar-upload').addEventListener('click', () => {
-                document.getElementById('avatar-input').click();
-            });
-            document.getElementById('avatar-input').addEventListener('change', handleAvatarUpload);
-            
-            // Password toggles
-            document.querySelectorAll('.password-toggle').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    togglePassword(this);
-                });
-            });
-            
-            // Bio character count
-            document.getElementById('bio').addEventListener('input', updateBioCount);
-            
-            // Password strength
-            document.getElementById('new-password').addEventListener('input', checkPasswordStrength);
-            
-            // Account actions
-            document.getElementById('export-data').addEventListener('click', exportUserData);
-            document.getElementById('deactivate-account').addEventListener('click', deactivateAccount);
-            document.getElementById('delete-account').addEventListener('click', deleteAccount);
-            document.getElementById('logout-all').addEventListener('click', logoutAllSessions);
-            
-            // Load more activity
-            document.getElementById('load-more-activity').addEventListener('click', loadMoreActivity);
-            
-            // Load initial data
             loadUserData();
-            loadUserActivity();
         });
-        
-        async function loadUserData() {
-            try {
-                const token = getAuthToken();
-                console.log('Token de autenticação:', token);
-                
-                const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                });
-                
-                console.log('Status da resposta:', response.status);
-                const result = await response.json();
-                console.log('Resultado completo da API:', result);
-                
-                if (result.success) {
-                    populateUserData(result.data);
-                } else {
-                    console.error('Erro na API:', result.message);
-                    showError('Erro ao carregar dados do usuário.');
-                }
-            } catch (error) {
-                console.error('Erro ao carregar dados:', error);
-                showError('Erro de conexão.');
-            }
-        }
-        
-        function populateUserData(data) {
-             console.log('Dados recebidos da API:', data);
-             console.log('Campo foto_perfil:', data.foto_perfil);
-             
-             // Profile header
-             document.getElementById('profile-name').textContent = data.nome || 'Nome do Usuário';
-             document.getElementById('user-name').textContent = data.nome || 'Usuário';
-             document.getElementById('profile-bio').textContent = data.bio || 'Biografia do usuário...';
-             
-             // Avatar
-             if (data.foto_perfil) {
-                 console.log('Definindo src do avatar para:', data.foto_perfil);
-                 document.getElementById('avatar-img').src = data.foto_perfil;
-             } else {
-                 console.log('Campo foto_perfil não encontrado ou vazio');
-             }
-             
-             // Form fields
-             document.getElementById('nome').value = data.nome || '';
-             document.getElementById('email').value = data.email || '';
-             document.getElementById('bio').value = data.bio || '';
-             document.getElementById('data-nascimento').value = data.data_nascimento || '';
-             document.getElementById('genero').value = data.genero || '';
-             document.getElementById('telefone').value = data.telefone || '';
-             document.getElementById('cidade').value = data.cidade || '';
-             
-             // Preferences
-             if (data.preferencias) {
-                 data.preferencias.forEach(pref => {
-                     const checkbox = document.getElementById(`pref-${pref}`);
-                     if (checkbox) checkbox.checked = true;
-                 });
-             }
-             
-             // Display settings
-             document.getElementById('show-images').checked = data.show_images === true;
-             document.getElementById('auto-play-videos').checked = data.auto_play_videos === true;
-             document.getElementById('dark-mode').checked = data.dark_mode === true;
-             
-             // Notification settings - Email
-             document.getElementById('email_newsletter').checked = data.email_newsletter === true;
-             document.getElementById('email_breaking').checked = data.email_breaking === true;
-             document.getElementById('email_comments').checked = data.email_comments === true;
-             document.getElementById('email_marketing').checked = data.email_marketing === true;
-             
-             // Notification settings - Push
-             document.getElementById('push_breaking').checked = data.push_breaking === true;
-             document.getElementById('push_interests').checked = data.push_interests === true;
-             document.getElementById('push_comments').checked = data.push_comments === true;
-             
-             // Notification frequency
-             const frequency = data.notification_frequency || 'diario';
-             const frequencyRadio = document.getElementById(`freq_${frequency}`);
-             if (frequencyRadio) {
-                 frequencyRadio.checked = true;
-             }
-             
-             // Stats
-             document.getElementById('comments-count').textContent = data.total_comentarios || 0;
-             document.getElementById('likes-count').textContent = data.total_curtidas || 0;
-             document.getElementById('member-since').textContent = new Date(data.data_cadastro).getFullYear() || 2024;
-             
-             // Sidebar stats
-             document.getElementById('sidebar-comments').textContent = data.total_comentarios || 0;
-             document.getElementById('sidebar-likes').textContent = data.total_curtidas || 0;
-             document.getElementById('sidebar-views').textContent = data.total_visualizacoes || 0;
-             
-             // Update bio count
-             updateBioCount();
-         }
-         
-         async function handlePersonalUpdate(e) {
-             e.preventDefault();
-             
-             const formData = new FormData(e.target);
-             const data = Object.fromEntries(formData);
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=profile', {
-                     method: 'PUT',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify(data)
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Dados pessoais atualizados com sucesso!');
-                     document.getElementById('user-name').textContent = data.nome;
-                     document.getElementById('profile-name').textContent = data.nome;
-                     document.getElementById('profile-bio').textContent = data.bio || 'Biografia do usuário...';
-                 } else {
-                     showError(result.message || 'Erro ao atualizar dados.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao atualizar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function handlePreferencesUpdate(e) {
-             e.preventDefault();
-             
-             const formData = new FormData(e.target);
-             const data = Object.fromEntries(formData);
-             
-             const preferencias = Array.from(e.target.querySelectorAll('input[name="preferencias[]"]:checked'))
-                 .map(cb => cb.value);
-             data.preferencias = preferencias;
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=preferences', {
-                     method: 'PUT',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify(data)
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Preferências atualizadas com sucesso!');
-                     
-                     // Apply dark mode if changed
-                     if (data.dark_mode) {
-                         document.body.classList.add('dark-mode');
-                     } else {
-                         document.body.classList.remove('dark-mode');
-                     }
-                 } else {
-                     showError(result.message || 'Erro ao atualizar preferências.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao atualizar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function handlePasswordChange(e) {
-             e.preventDefault();
-             
-             const formData = new FormData(e.target);
-             const data = Object.fromEntries(formData);
-             
-             if (data.new_password !== data.confirm_password) {
-                 showError('As senhas não coincidem.');
-                 return;
-             }
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=change-password', {
-                     method: 'PUT',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify({
-                         current_password: data.current_password,
-                         new_password: data.new_password
-                     })
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Senha alterada com sucesso!');
-                     e.target.reset();
-                 } else {
-                     showError(result.message || 'Erro ao alterar senha.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao alterar senha:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function handleNotificationsUpdate(e) {
-             e.preventDefault();
-             
-             const formData = new FormData(e.target);
-             const data = Object.fromEntries(formData);
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=notifications', {
-                     method: 'PUT',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify(data)
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Configurações de notificação atualizadas!');
-                 } else {
-                     showError(result.message || 'Erro ao atualizar configurações.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao atualizar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function handleAvatarUpload(e) {
-             const file = e.target.files[0];
-             if (!file) return;
-             
-             if (!file.type.startsWith('image/')) {
-                 showError('Por favor, selecione uma imagem.');
-                 return;
-             }
-             
-             const avatarUpload = document.getElementById('avatar-upload');
-             const originalContent = avatarUpload.innerHTML;
-             avatarUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-             
-             try {
-                 const base64 = await fileToBase64(file);
-                 
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=upload_avatar', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify({
-                         image: base64
-                     })
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     document.getElementById('avatar-img').src = result.avatar_url;
-                     showSuccess('Avatar atualizado com sucesso!');
-                 } else {
-                     showError(result.message || 'Erro ao fazer upload do avatar.');
-                 }
-             } catch (error) {
-                 console.error('Erro no upload:', error);
-                 showError('Erro de conexão.');
-             } finally {
-                 avatarUpload.innerHTML = originalContent;
-             }
-         }
-         
-         function fileToBase64(file) {
-             return new Promise((resolve, reject) => {
-                 const reader = new FileReader();
-                 reader.onload = () => resolve(reader.result);
-                 reader.onerror = reject;
-                 reader.readAsDataURL(file);
-             });
-         }
-         
-         async function loadUserActivity() {
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=activity', {
-                     headers: {
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     document.getElementById('total-views').textContent = result.data.stats.total_views || 0;
-                     document.getElementById('total-comments').textContent = result.data.stats.total_comments || 0;
-                     document.getElementById('total-likes').textContent = result.data.stats.total_likes || 0;
-                     document.getElementById('total-shares').textContent = result.data.stats.total_shares || 0;
-                     
-                     renderActivityList(result.data.activities || []);
-                 }
-             } catch (error) {
-                 console.error('Erro ao carregar atividade:', error);
-             }
-         }
-         
-         function renderActivityList(activities) {
-             const container = document.getElementById('activity-list');
-             
-             if (activities.length === 0) {
-                 container.innerHTML = '<p class="text-muted">Nenhuma atividade recente.</p>';
-                 return;
-             }
-             
-             container.innerHTML = activities.map(activity => `
-                 <div class="activity-item">
-                     <div class="activity-meta">
-                         <div class="activity-icon">
-                             <i class="fas fa-${getActivityIcon(activity.tipo)}"></i>
-                         </div>
-                         <div class="activity-time">${formatDate(activity.data_atividade)}</div>
-                     </div>
-                     <p class="activity-text">${getActivityText(activity)}</p>
-                 </div>
-             `).join('');
-         }
-         
-         function getActivityIcon(tipo) {
-             const icons = {
-                 'view': 'eye',
-                 'comment': 'comment',
-                 'like': 'heart',
-                 'share': 'share'
-             };
-             return icons[tipo] || 'circle';
-         }
-         
-         function getActivityText(activity) {
-             const texts = {
-                 'view': `Leu a notícia "${activity.titulo_noticia}"`,
-                 'comment': `Comentou na notícia "${activity.titulo_noticia}"`,
-                 'like': `Curtiu a notícia "${activity.titulo_noticia}"`,
-                 'share': `Compartilhou a notícia "${activity.titulo_noticia}"`
-             };
-             return texts[activity.tipo] || 'Atividade desconhecida';
-         }
-         
-         function updateBioCount() {
-             const bio = document.getElementById('bio');
-             const count = document.getElementById('bio-count');
-             count.textContent = `${bio.value.length}/500`;
-         }
-         
-         function togglePassword(inputId) {
-             const input = document.getElementById(inputId);
-             const button = input.parentElement.querySelector('.password-toggle');
-             const icon = button.querySelector('i');
-             
-             if (input.type === 'password') {
-                 input.type = 'text';
-                 icon.classList.remove('fa-eye');
-                 icon.classList.add('fa-eye-slash');
-             } else {
-                 input.type = 'password';
-                 icon.classList.remove('fa-eye-slash');
-                 icon.classList.add('fa-eye');
-             }
-         }
-         
-         function checkPasswordStrength() {
-             const password = document.getElementById('new-password').value;
-             const strengthFill = document.getElementById('strength-fill');
-             const strengthText = document.getElementById('strength-text');
-             
-             if (password.length === 0) {
-                 strengthFill.style.width = '0%';
-                 strengthText.textContent = 'Digite uma senha para ver a força';
-                 return;
-             }
-             
-             let strength = 0;
-             let feedback = [];
-             
-             if (password.length >= 8) strength += 20;
-             else feedback.push('pelo menos 8 caracteres');
-             
-             if (/[A-Z]/.test(password)) strength += 20;
-             else feedback.push('uma letra maiúscula');
-             
-             if (/[a-z]/.test(password)) strength += 20;
-             else feedback.push('uma letra minúscula');
-             
-             if (/\d/.test(password)) strength += 20;
-             else feedback.push('um número');
-             
-             if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 20;
-             else feedback.push('um caractere especial');
-             
-             strengthFill.style.width = strength + '%';
-             
-             if (strength < 40) {
-                 strengthFill.className = 'strength-fill strength-weak';
-                 strengthText.textContent = 'Fraca - Adicione: ' + feedback.join(', ');
-             } else if (strength < 80) {
-                 strengthFill.className = 'strength-fill strength-medium';
-                 strengthText.textContent = 'Média - Adicione: ' + feedback.join(', ');
-             } else {
-                 strengthFill.className = 'strength-fill strength-strong';
-                 strengthText.textContent = 'Forte';
-             }
-         }
-         
-         async function exportUserData() {
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=export-data', {
-                     headers: {
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     }
-                 });
-                 
-                 if (response.ok) {
-                     const blob = await response.blob();
-                     const url = window.URL.createObjectURL(blob);
-                     const a = document.createElement('a');
-                     a.href = url;
-                     a.download = 'meus-dados-portal-noticias.json';
-                     document.body.appendChild(a);
-                     a.click();
-                     document.body.removeChild(a);
-                     window.URL.revokeObjectURL(url);
-                     
-                     showSuccess('Dados exportados com sucesso!');
-                 } else {
-                     showError('Erro ao exportar dados.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao exportar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function deactivateAccount() {
-             const reason = prompt('Por favor, informe o motivo da desativação (opcional):');
-             
-             if (!confirm('Tem certeza que deseja desativar sua conta? Você poderá reativá-la fazendo login novamente.')) {
-                 return;
-             }
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=deactivate', {
-                     method: 'POST',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify({ reason })
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Conta desativada com sucesso!');
-                     setTimeout(() => {
-                         logout();
-                     }, 2000);
-                 } else {
-                     showError(result.message || 'Erro ao desativar conta.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao desativar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function deleteAccount() {
-             const password = prompt('Para excluir sua conta, digite sua senha:');
-             if (!password) return;
-             
-             if (!confirm('ATENÇÃO: Esta ação é irreversível! Todos os seus dados serão permanentemente excluídos. Tem certeza que deseja continuar?')) {
-                 return;
-             }
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=delete-account', {
-                     method: 'DELETE',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     },
-                     body: JSON.stringify({ password })
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Conta excluída com sucesso!');
-                     setTimeout(() => {
-                         localStorage.removeItem('portal-user');
-                         window.location.href = '/';
-                     }, 2000);
-                 } else {
-                     showError(result.message || 'Erro ao excluir conta.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao excluir:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         async function logoutAllSessions() {
-             if (!confirm('Tem certeza que deseja sair de todos os dispositivos? Você precisará fazer login novamente.')) {
-                 return;
-             }
-             
-             try {
-                 const response = await fetch('http://localhost:8001/controllers/AuthController.php?action=logout-all', {
-                     method: 'POST',
-                     headers: {
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success) {
-                     showSuccess('Deslogado de todos os dispositivos!');
-                     setTimeout(() => {
-                         logout();
-                     }, 2000);
-                 } else {
-                     showError(result.message || 'Erro ao deslogar.');
-                 }
-             } catch (error) {
-                 console.error('Erro ao deslogar:', error);
-                 showError('Erro de conexão.');
-             }
-         }
-         
-         let activityPage = 1;
-         async function loadMoreActivity() {
-             activityPage++;
-             
-             try {
-                 const response = await fetch(`http://localhost:8001/controllers/AuthController.php?action=activity&page=${activityPage}`, {
-                     headers: {
-                         'Authorization': 'Bearer ' + getAuthToken()
-                     }
-                 });
-                 
-                 const result = await response.json();
-                 
-                 if (result.success && result.data.activities.length > 0) {
-                     const container = document.getElementById('activity-list');
-                     const newActivities = result.data.activities.map(activity => `
-                         <div class="activity-item">
-                             <div class="activity-meta">
-                                 <div class="activity-icon">
-                                     <i class="fas fa-${getActivityIcon(activity.tipo)}"></i>
-                                 </div>
-                                 <div class="activity-time">${formatDate(activity.data_atividade)}</div>
-                             </div>
-                             <p class="activity-text">${getActivityText(activity)}</p>
-                         </div>
-                     `).join('');
-                     
-                     container.innerHTML += newActivities;
-                     
-                     if (result.data.activities.length < 10) {
-                         document.getElementById('load-more-activity').style.display = 'none';
-                     }
-                 } else {
-                     document.getElementById('load-more-activity').style.display = 'none';
-                 }
-             } catch (error) {
-                 console.error('Erro ao carregar mais atividades:', error);
-             }
-         }
-         
-         function formatDate(dateString) {
-             const date = new Date(dateString);
-             return date.toLocaleDateString('pt-BR', {
-                 year: 'numeric',
-                 month: 'short',
-                 day: 'numeric',
-                 hour: '2-digit',
-                 minute: '2-digit'
-             });
-         }
-         
-         // Reset notification form to defaults
-         function resetNotificationForm() {
-             // Email notifications - set defaults
-             document.getElementById('email_newsletter').checked = true;
-             document.getElementById('email_breaking').checked = false;
-             document.getElementById('email_comments').checked = true;
-             document.getElementById('email_marketing').checked = false;
-             
-             // Push notifications - set defaults
-             document.getElementById('push_breaking').checked = true;
-             document.getElementById('push_interests').checked = false;
-             document.getElementById('push_comments').checked = true;
-             
-             // Frequency - set default to daily
-             document.getElementById('freq_diario').checked = true;
-             
-             showMessage('Configurações restauradas para os valores padrão', 'info');
-         }
-     </script>
-
-     <!-- Rodapé -->
-     <footer class="footer">
-         <div class="container">
-             <div class="footer-content">
-                 <div class="footer-section">
-                     <h4>Navegação</h4>
-                     <ul>
-                         <li><a href="index.html">Início</a></li>
-                         <li><a href="categoria.html?categoria=politica">Política</a></li>
-                         <li><a href="categoria.html?categoria=economia">Economia</a></li>
-                         <li><a href="categoria.html?categoria=esportes">Esportes</a></li>
-                         <li><a href="categoria.html?categoria=tecnologia">Tecnologia</a></li>
-                     </ul>
-                 </div>
-                 <div class="footer-section">
-                     <h4>Sobre Nós</h4>
-                     <ul>
-                         <li><a href="#">Nossa História</a></li>
-                         <li><a href="#">Equipe</a></li>
-                         <li><a href="#">Missão</a></li>
-                         <li><a href="#">Contato</a></li>
-                     </ul>
-                 </div>
-                 <div class="footer-section">
-                     <h4>Suporte</h4>
-                     <ul>
-                         <li><a href="#">Central de Ajuda</a></li>
-                         <li><a href="#">Termos de Uso</a></li>
-                         <li><a href="#">Política de Privacidade</a></li>
-                         <li><a href="#">Cookies</a></li>
-                     </ul>
-                 </div>
-                 <div class="footer-section">
-                     <h4>Conecte-se</h4>
-                     <div class="social-links">
-                         <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                         <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                         <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                         <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                         <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                     </div>
-                 </div>
-             </div>
-             <div class="footer-bottom">
-                 <p>&copy; <span id="current-year">2024</span> Portal de Notícias. Todos os direitos reservados.</p>
-             </div>
-         </div>
-     </footer>
-
-     <!-- Botão Voltar ao Topo -->
-     <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo">
-         <i class="fas fa-chevron-up"></i>
-     </button>
-
-     <script>
-         // Atualizar ano atual
-         document.getElementById('current-year').textContent = new Date().getFullYear();
-
-         // Botão voltar ao topo
-         const backToTopButton = document.getElementById('back-to-top');
-         
-         window.addEventListener('scroll', () => {
-             if (window.pageYOffset > 300) {
-                 backToTopButton.classList.add('show');
-             } else {
-                 backToTopButton.classList.remove('show');
-             }
-         });
-         
-         backToTopButton.addEventListener('click', () => {
-             window.scrollTo({
-                 top: 0,
-                 behavior: 'smooth'
-             });
-         });
-     </script>
- </body>
- </html>
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main JS -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

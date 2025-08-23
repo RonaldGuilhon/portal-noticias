@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Fluxo Login e Perfil</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        button { margin: 5px; padding: 10px; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Teste - Fluxo Login e Perfil</h1>
+    
+    <div class="test-section">
+        <h3>1. Teste de Login</h3>
+        <button onclick="testLogin()">Fazer Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. Verificar Tokens no localStorage</h3>
+        <button onclick="checkTokens()">Verificar Tokens</button>
+        <div id="tokens-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. Teste de Acesso ao Perfil</h3>
+        <button onclick="testProfile()">Acessar Perfil</button>
+        <div id="profile-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. Simular Lógica do perfil.html</h3>
+        <button onclick="simulateProfileLogic()">Simular Lógica</button>
+        <div id="simulation-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. Limpar Dados</h3>
+        <button onclick="clearData()">Limpar localStorage</button>
+    </div>
+    
+    <div id="results"></div>
+    
+    <script>
+        function log(message, type = 'info') {
+            const results = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(div);
+            console.log(message);
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = 'Fazendo login...';
+            
+            try {
+                const response = await fetch('http://localhost:8001/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'ronaldguilhon@gmail.com',
+                        password: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    // Simula o comportamento do login.html
+                    localStorage.setItem('portal-user', JSON.stringify(data.dados));
+                    
+                    resultDiv.innerHTML = `<span class="success">✅ Login realizado com sucesso!</span><br>
+                                         Token: ${data.dados.token ? 'Presente' : 'Ausente'}`;
+                    log('Login realizado com sucesso', 'success');
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Erro no login: ${data.mensagem}</span>`;
+                    log(`Erro no login: ${data.mensagem}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Erro de conexão: ${error.message}</span>`;
+                log(`Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+        
+        function checkTokens() {
+            const resultDiv = document.getElementById('tokens-result');
+            
+            const portalUser = localStorage.getItem('portal-user');
+            const authToken = localStorage.getItem('authToken');
+            
+            let html = '<h4>Estado do localStorage:</h4>';
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    html += `<div class="success">✅ portal-user: Presente</div>`;
+                    html += `<div class="info">Token: ${userData.token ? 'Presente' : 'Ausente'}</div>`;
+                    html += `<div class="info">Usuário: ${userData.nome || 'N/A'}</div>`;
+                } catch (e) {
+                    html += `<div class="error">❌ portal-user: Erro ao parsear</div>`;
+                }
+            } else {
+                html += `<div class="error">❌ portal-user: Ausente</div>`;
+            }
+            
+            if (authToken) {
+                html += `<div class="success">✅ authToken: Presente</div>`;
+            } else {
+                html += `<div class="error">❌ authToken: Ausente</div>`;
+            }
+            
+            resultDiv.innerHTML = html;
+            log('Verificação de tokens concluída');
+        }
+        
+        async function testProfile() {
+            const resultDiv = document.getElementById('profile-result');
+            resultDiv.innerHTML = 'Testando acesso ao perfil...';
+            
+            // Simula a lógica do perfil.html
+            let token = null;
+            const portalUser = localStorage.getItem('portal-user');
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                } catch (e) {
+                    log('Erro ao parsear portal-user', 'error');
+                }
+            }
+            
+            if (!token) {
+                token = localStorage.getItem('authToken');
+            }
+            
+            if (!token) {
+                resultDiv.innerHTML = `<span class="error">❌ Nenhum token encontrado</span>`;
+                log('Nenhum token encontrado', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">✅ Perfil carregado com sucesso!</span><br>
+                                         Nome: ${data.nome || 'N/A'}<br>
+                                         Email: ${data.email || 'N/A'}`;
+                    log('Perfil carregado com sucesso', 'success');
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ Erro ao carregar perfil: ${data.mensagem || response.status}</span>`;
+                    log(`Erro ao carregar perfil: ${data.mensagem || response.status}`, 'error');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ Erro de conexão: ${error.message}</span>`;
+                log(`Erro de conexão: ${error.message}`, 'error');
+            }
+        }
+        
+        function simulateProfileLogic() {
+            const resultDiv = document.getElementById('simulation-result');
+            
+            // Simula exatamente a lógica do perfil.html corrigido
+            let token = null;
+            const portalUser = localStorage.getItem('portal-user');
+            
+            let html = '<h4>Simulação da Lógica do perfil.html:</h4>';
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                    html += `<div class="success">✅ Token encontrado em portal-user</div>`;
+                } catch (e) {
+                    html += `<div class="error">❌ Erro ao parsear portal-user</div>`;
+                }
+            } else {
+                html += `<div class="info">ℹ️ portal-user não encontrado</div>`;
+            }
+            
+            if (!token) {
+                token = localStorage.getItem('authToken');
+                if (token) {
+                    html += `<div class="success">✅ Token encontrado em authToken (fallback)</div>`;
+                } else {
+                    html += `<div class="error">❌ Nenhum token encontrado</div>`;
+                }
+            }
+            
+            if (!token) {
+                html += `<div class="error">🔄 Redirecionaria para login.html</div>`;
+            } else {
+                html += `<div class="success">✅ Prosseguiria com carregamento do perfil</div>`;
+            }
+            
+            resultDiv.innerHTML = html;
+            log('Simulação da lógica concluída');
+        }
+        
+        function clearData() {
+            localStorage.removeItem('portal-user');
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userData');
+            log('localStorage limpo', 'info');
+            
+            // Limpa os resultados
+            document.getElementById('login-result').innerHTML = '';
+            document.getElementById('tokens-result').innerHTML = '';
+            document.getElementById('profile-result').innerHTML = '';
+            document.getElementById('simulation-result').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Verifica estado inicial
+        window.onload = function() {
+            log('Página carregada. Verificando estado inicial...');
+            checkTokens();
+        };
+    </script>
+</body>
+</html>

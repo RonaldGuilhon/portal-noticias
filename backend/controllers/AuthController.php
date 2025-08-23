@@ -33,6 +33,18 @@ class AuthController {
      * Processar requisições
      */
     public function processarRequisicao() {
+        // Headers CORS
+        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Content-Type: application/json');
+        
+        // Handle preflight requests
+        if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            http_response_code(200);
+            exit();
+        }
+        
         $method = $_SERVER['REQUEST_METHOD'];
         $action = $_GET['action'] ?? '';
 
@@ -520,6 +532,7 @@ class AuthController {
                     'genero' => $this->usuario->genero,
                     'telefone' => $this->usuario->telefone,
                     'cidade' => $this->usuario->cidade,
+                    'estado' => $this->usuario->estado,
                     
                     // Configurações de exibição
                     'show_images' => (bool)$this->usuario->show_images,
@@ -559,11 +572,13 @@ class AuthController {
             
             // Informações pessoais
             $this->usuario->nome = $dados['nome'] ?? '';
+            $this->usuario->email = $dados['email'] ?? '';
             $this->usuario->bio = $dados['bio'] ?? '';
             $this->usuario->data_nascimento = $dados['data_nascimento'] ?? null;
             $this->usuario->genero = $dados['genero'] ?? null;
             $this->usuario->telefone = $dados['telefone'] ?? null;
             $this->usuario->cidade = $dados['cidade'] ?? null;
+            $this->usuario->estado = $dados['estado'] ?? null;
             $this->usuario->preferencias = json_encode($dados['preferencias'] ?? []);
             
             // Configurações de exibição
@@ -620,7 +635,7 @@ class AuthController {
             
             $senha_atual = $dados['current_password'] ?? '';
             $nova_senha = $dados['new_password'] ?? '';
-            $confirmar_senha = $dados['new_password'] ?? '';
+            $confirmar_senha = $dados['confirm_password'] ?? '';
 
             if(empty($senha_atual) || empty($nova_senha) || empty($confirmar_senha)) {
                 jsonResponse(['erro' => 'Todos os campos são obrigatórios'], 400);
@@ -754,12 +769,32 @@ class AuthController {
      * Verificar token de autenticação
      */
     private function verificarToken() {
-        $headers = getallheaders();
+        // Implementação alternativa para getallheaders() que funciona no Windows
+        $headers = [];
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } else {
+            // Fallback para ambientes onde getallheaders() não existe
+            foreach ($_SERVER as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                }
+            }
+        }
+        
         $token = null;
 
         // Verificar token no header Authorization
         if (isset($headers['Authorization'])) {
             $authHeader = $headers['Authorization'];
+            if (preg_match('/Bearer\s+(\S+)/', $authHeader, $matches)) {
+                $token = $matches[1];
+            }
+        }
+        
+        // Verificar diretamente no $_SERVER como fallback adicional
+        if (!$token && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
             if (preg_match('/Bearer\s+(\S+)/', $authHeader, $matches)) {
                 $token = $matches[1];
             }

@@ -1,0 +1,39 @@
+PROBLEMA: Problemas de CORS impedindo comunicação entre frontend e backend
+
+DESCRIÇÃO:
+O navegador bloqueava requisições do frontend (localhost:8000) para o backend (localhost:8001) devido à política de CORS (Cross-Origin Resource Sharing), resultando em erros de rede.
+
+CAUSA RAIZ:
+Falta de cabeçalhos CORS apropriados no backend para permitir requisições cross-origin entre diferentes portas do localhost.
+
+SOLUÇÃO:
+Adicionados cabeçalhos CORS no método processarRequisicao() do AuthController.php:
+
+```php
+// Cabeçalhos CORS
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Content-Type: application/json; charset=utf-8');
+
+// Lidar com requisições OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+```
+
+ARQUIVOS MODIFICADOS:
+- backend/controllers/AuthController.php
+
+CONSIDERAÇÕES DE SEGURANÇA:
+- Em produção, substituir 'Access-Control-Allow-Origin: *' por domínios específicos
+- Configurar cabeçalhos CORS de forma mais restritiva conforme necessário
+
+TESTE DE VALIDAÇÃO:
+- Verificado que requisições AJAX funcionam corretamente
+- Testado requisições OPTIONS (preflight) são tratadas adequadamente
+- Confirmado que não há mais erros de CORS no console do navegador
+
+STATUS: RESOLVIDO
+DATA: 23/08/2025

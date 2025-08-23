@@ -52,6 +52,9 @@ RewriteRule ^auth/register/?$ controllers/AuthController.php?action=register [L,
 RewriteRule ^auth/logout/?$ controllers/AuthController.php?action=logout [L,QSA]
 RewriteRule ^auth/forgot-password/?$ controllers/AuthController.php?action=forgotPassword [L,QSA]
 
+# Roteamento para API de usuário
+RewriteRule ^api/user/profile/?$ controllers/AuthController.php?action=profile [L,QSA]
+
 # Roteamento para busca
 RewriteRule ^search/?$ controllers/SearchController.php?action=buscar [L,QSA]
 

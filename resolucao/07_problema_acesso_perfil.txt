@@ -1,0 +1,51 @@
+PROBLEMA: Erro ao acessar página de perfil do usuário
+=======================================================
+
+DATA: 16/08/2025
+STATUS: RESOLVIDO ✅
+
+DESCRIÇÃO DO PROBLEMA:
+- Usuário conseguia fazer login normalmente
+- Ao clicar em "Meu Perfil", a página não carregava os dados do usuário
+- API /api/user/profile retornava erro de autenticação
+- Token JWT não estava sendo reconhecido pelo backend
+
+CAUSA RAIZ IDENTIFICADA:
+- A função getallheaders() não existe no ambiente Windows/PHP CLI
+- O método verificarToken() no AuthController.php dependia desta função
+- Sem a função, os headers HTTP não eram lidos corretamente
+- Token de autenticação no header Authorization não era extraído
+
+SOLUÇÃO IMPLEMENTADA:
+1. Atualizado o método verificarToken() no AuthController.php
+2. Implementada função alternativa para getallheaders() compatível com Windows
+3. Adicionado fallback para verificar $_SERVER['HTTP_AUTHORIZATION'] diretamente
+4. Mantida compatibilidade com ambientes que possuem getallheaders() nativa
+
+CÓDIGO MODIFICADO:
+- Arquivo: backend/controllers/AuthController.php
+- Método: verificarToken() (linhas ~771-800)
+- Alteração: Implementação alternativa para leitura de headers HTTP
+
+TESTES REALIZADOS:
+- ✅ Login funcionando
+- ✅ Verificação de token JWT
+- ✅ Carregamento de dados do perfil
+- ✅ API /api/user/profile respondendo corretamente
+- ✅ Compatibilidade Windows/Linux
+
+ARQUIVOS DE TESTE CRIADOS:
+- arquivos_teste/perfil_usuario/test_profile_access.php
+- arquivos_teste/perfil_usuario/test_headers.php
+- arquivos_teste/perfil_usuario/debug_perfil.html
+
+IMPACTO:
+- Problema resolvido sem afetar outras funcionalidades
+- Sistema de autenticação mantém a mesma segurança
+- Melhor compatibilidade entre diferentes ambientes
+- Usuários podem acessar normalmente a página de perfil
+
+OBSERVAÇÕES:
+- A função getallheaders() é específica do Apache e pode não estar disponível em outros servidores
+- A solução implementada é mais robusta e compatível
+- Recomenda-se manter esta implementação para evitar problemas futuros
