@@ -57,6 +57,14 @@ if (preg_match('/^auth\/check-auth\/?$/', $uri)) {
     return;
 }
 
+if (preg_match('/^auth\/check-email\/?$/', $uri)) {
+    $_GET['action'] = 'check-email';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
 if (preg_match('/^auth\/forgot-password\/?$/', $uri)) {
     $_GET['action'] = 'forgotPassword';
     require_once 'controllers/AuthController.php';

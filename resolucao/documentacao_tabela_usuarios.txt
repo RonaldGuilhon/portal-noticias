@@ -212,11 +212,6 @@ A tabela usuarios contém os seguintes campos:
   - Origem: Formulário de preferências (perfil.html)
   - Controla idioma da interface
 
-• notification_frequency (ENUM('immediate', 'daily', 'weekly', 'never'), DEFAULT 'daily')
-  - Frequência de notificações
-  - Origem: Formulário de preferências (perfil.html)
-  - Controla periodicidade das notificações
-
 3. ÍNDICES DA TABELA
 ====================
 
@@ -241,7 +236,7 @@ A tabela usuarios contém os seguintes campos:
 - Configurações de exibição: show_images, auto_play_videos, dark_mode
 - Preferências de notificação: email_*, push_*
 - Configurações de privacidade: profile_public, show_activity, allow_messages
-- Preferências de conteúdo: favorite_categories, language_preference, notification_frequency
+- Preferências de conteúdo: favorite_categories, language_preference
 
 4.3 PAINEL ADMINISTRATIVO (usuarios.html)
 - tipo_usuario (admin, editor, leitor)

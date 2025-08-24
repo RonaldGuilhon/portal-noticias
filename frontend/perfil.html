@@ -413,13 +413,13 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <input type="text" class="form-control" id="edit-name" placeholder="Nome completo">
+                                                    <input type="text" class="form-control" id="edit-name" name="nome" placeholder="Nome completo">
                                                     <label for="edit-name">Nome Completo</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <input type="email" class="form-control" id="edit-email" placeholder="Email">
+                                                    <input type="email" class="form-control" id="edit-email" name="email" placeholder="Email">
                                                     <label for="edit-email">Email</label>
                                                 </div>
                                             </div>
@@ -428,33 +428,48 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <input type="tel" class="form-control" id="edit-phone" placeholder="Telefone">
+                                                    <input type="tel" class="form-control" id="edit-phone" name="telefone" placeholder="Telefone">
                                                     <label for="edit-phone">Telefone</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <input type="date" class="form-control" id="edit-birthdate">
+                                                    <input type="date" class="form-control" id="edit-birthdate" name="data_nascimento">
                                                     <label for="edit-birthdate">Data de Nascimento</label>
                                                 </div>
                                             </div>
                                         </div>
                                         
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-floating">
+                                                    <select class="form-select" id="edit-gender" name="genero">
+                                                        <option value="">Selecione o gênero</option>
+                                                        <option value="masculino">Masculino</option>
+                                                        <option value="feminino">Feminino</option>
+                                                        <option value="outro">Outro</option>
+                                                        <option value="prefiro-nao-informar">Prefiro não informar</option>
+                                                    </select>
+                                                    <label for="edit-gender">Gênero</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <div class="form-floating">
-                                            <textarea class="form-control" id="edit-bio" placeholder="Biografia" style="height: 100px"></textarea>
+                                            <textarea class="form-control" id="edit-bio" name="bio" placeholder="Biografia" style="height: 100px"></textarea>
                                             <label for="edit-bio">Biografia</label>
                                         </div>
                                         
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <input type="text" class="form-control" id="edit-city" placeholder="Cidade">
+                                                    <input type="text" class="form-control" id="edit-city" name="cidade" placeholder="Cidade">
                                                     <label for="edit-city">Cidade</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-floating">
-                                                    <select class="form-select" id="edit-state">
+                                                    <select class="form-select" id="edit-state" name="estado">
                                                         <option value="">Selecione o Estado</option>
                                                         <option value="AC">Acre</option>
                                                         <option value="AL">Alagoas</option>
@@ -576,19 +591,19 @@
                                         <div class="preferences-section">
                                             <h6>Notificações</h6>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="email-notifications" checked>
+                                                <input class="form-check-input" type="checkbox" id="email-notifications" name="email_notifications" checked>
                                                 <label class="form-check-label" for="email-notifications">
                                                     Receber notificações por email
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="push-notifications" checked>
+                                                <input class="form-check-input" type="checkbox" id="push-notifications" name="push_notifications" checked>
                                                 <label class="form-check-label" for="push-notifications">
                                                     Receber notificações push
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                                <input class="form-check-input" type="checkbox" id="newsletter" name="email_newsletter">
                                                 <label class="form-check-label" for="newsletter">
                                                     Receber newsletter semanal
                                                 </label>
@@ -599,19 +614,19 @@
                                         <div class="preferences-section">
                                             <h6>Privacidade</h6>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="profile-public" checked>
+                                                <input class="form-check-input" type="checkbox" id="profile-public" name="profile_public" checked>
                                                 <label class="form-check-label" for="profile-public">
                                                     Perfil público
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="show-activity">
+                                                <input class="form-check-input" type="checkbox" id="show-activity" name="show_activity">
                                                 <label class="form-check-label" for="show-activity">
                                                     Mostrar atividade recente
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="allow-messages" checked>
+                                                <input class="form-check-input" type="checkbox" id="allow-messages" name="allow_messages" checked>
                                                 <label class="form-check-label" for="allow-messages">
                                                     Permitir mensagens de outros usuários
                                                 </label>
@@ -623,21 +638,20 @@
                                             <h6>Conteúdo</h6>
                                             <div class="mb-3">
                                                 <label for="favorite-categories" class="form-label">Categorias Favoritas</label>
-                                                <select class="form-select" id="favorite-categories" multiple>
+                                                <select class="form-select" id="favorite-categories" name="favorite_categories[]" multiple>
                                                     <option value="politica">Política</option>
                                                     <option value="economia">Economia</option>
                                                     <option value="esportes">Esportes</option>
                                                     <option value="tecnologia">Tecnologia</option>
                                                     <option value="saude">Saúde</option>
                                                     <option value="cultura">Cultura</option>
-                                                    <option value="mundo">Mundo</option>
                                                 </select>
                                                 <div class="form-text">Segure Ctrl para selecionar múltiplas categorias</div>
                                             </div>
                                             
                                             <div class="mb-3">
                                                 <label for="language-preference" class="form-label">Idioma Preferido</label>
-                                                <select class="form-select" id="language-preference">
+                                                <select class="form-select" id="language-preference" name="language_preference">
                                                     <option value="pt-BR" selected>Português (Brasil)</option>
                                                     <option value="en-US">English (US)</option>
                                                     <option value="es-ES">Español</option>

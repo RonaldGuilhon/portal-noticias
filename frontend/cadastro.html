@@ -388,21 +388,26 @@
         }
         
         async function handleRegister(e) {
+            console.log('handleRegister chamada - evento:', e);
             e.preventDefault();
             
             const form = e.target;
+            console.log('Formulário:', form);
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
+            console.log('Dados do formulário:', data);
             
-            // Mapear campos para o formato esperado pelo backend
+            // Mapear campos para o formato esperado pelo backend (mantendo originais para validação)
+            console.log('Dados antes do mapeamento:', data);
             if (data.password) {
                 data.senha = data.password;
-                delete data.password;
+                // NÃO deletar password - necessário para validação
             }
             if (data.password_confirm) {
                 data.confirmar_senha = data.password_confirm;
-                delete data.password_confirm;
+                // NÃO deletar password_confirm - necessário para validação
             }
+            console.log('Dados após mapeamento:', data);
             
             // Coleta preferências
             const preferencias = Array.from(form.querySelectorAll('input[name="preferencias[]"]:checked'))
@@ -410,10 +415,15 @@
             data.preferencias = preferencias;
             
             // Validação completa
-            if (!validateForm(data)) {
+            console.log('Iniciando validação do formulário...');
+            const isValid = validateForm(data);
+            console.log('Resultado da validação:', isValid);
+            if (!isValid) {
+                console.log('Validação falhou - interrompendo envio');
                 return;
             }
             
+            console.log('Validação passou - iniciando envio...');
             setLoading(true);
             
             try {
@@ -460,54 +470,96 @@
         }
         
         function validateForm(data) {
+            console.log('validateForm chamada com dados:', data);
             let isValid = true;
             
             // Limpa erros anteriores
             clearErrors();
             
             // Valida nome completo
+            console.log('Validando nome:', data.nome);
             if (!data.nome || data.nome.trim().length < 2) {
+                console.log('❌ Nome falhou: muito curto');
                 showFieldError('nome', 'Nome completo deve ter pelo menos 2 caracteres.');
                 isValid = false;
+            } else {
+                console.log('✅ Nome passou: comprimento OK');
             }
             
             // Verifica se tem pelo menos nome e sobrenome
             const nomePartes = data.nome.trim().split(' ').filter(parte => parte.length > 0);
+            console.log('Partes do nome:', nomePartes, 'Quantidade:', nomePartes.length);
             if (nomePartes.length < 2) {
+                console.log('❌ Nome falhou: menos de 2 partes');
                 showFieldError('nome', 'Por favor, digite seu nome e sobrenome.');
                 isValid = false;
+            } else {
+                console.log('✅ Nome passou: tem nome e sobrenome');
             }
             
             // Valida email
-            if (!data.email || !isValidEmail(data.email)) {
+            console.log('Validando email:', data.email);
+            const emailValid = isValidEmail(data.email);
+            console.log('Email válido?', emailValid);
+            if (!data.email || !emailValid) {
+                console.log('❌ Email falhou');
                 showFieldError('email', 'Por favor, insira um e-mail válido.');
                 isValid = false;
+            } else {
+                console.log('✅ Email passou');
             }
             
             // Valida senha
-            if (!data.password || !isStrongPassword(data.password)) {
+            console.log('Validando senha:', data.password ? '***' : 'vazia');
+            const passwordValid = isStrongPassword(data.password);
+            console.log('Senha válida?', passwordValid);
+            if (!data.password || !passwordValid) {
+                console.log('❌ Senha falhou');
                 showFieldError('password', 'Senha deve ter pelo menos 8 caracteres, incluindo letras e números.');
                 isValid = false;
+            } else {
+                console.log('✅ Senha passou');
             }
             
             // Valida confirmação de senha
+            console.log('Validando confirmação de senha');
+            console.log('Senha:', data.password ? '***' : 'vazia');
+            console.log('Confirmação:', data.password_confirm ? '***' : 'vazia');
             if (data.password !== data.password_confirm) {
+                console.log('❌ Confirmação de senha falhou');
                 showFieldError('password-confirm', 'As senhas não coincidem.');
                 isValid = false;
+            } else {
+                console.log('✅ Confirmação de senha passou');
             }
             
             // Valida data de nascimento
-            if (data.data_nascimento && !isValidBirthDate(data.data_nascimento)) {
-                showFieldError('data-nascimento', 'Data de nascimento inválida.');
-                isValid = false;
+            console.log('Validando data de nascimento:', data.data_nascimento);
+            if (data.data_nascimento) {
+                const birthDateValid = isValidBirthDate(data.data_nascimento);
+                console.log('Data de nascimento válida?', birthDateValid);
+                if (!birthDateValid) {
+                    console.log('❌ Data de nascimento falhou');
+                    showFieldError('data-nascimento', 'Data de nascimento inválida.');
+                    isValid = false;
+                } else {
+                    console.log('✅ Data de nascimento passou');
+                }
+            } else {
+                console.log('✅ Data de nascimento não informada (opcional)');
             }
             
             // Valida termos
+            console.log('Validando termos:', data.terms);
             if (!data.terms) {
+                console.log('❌ Termos falharam: não aceitos');
                 showFieldError('terms', 'Você deve aceitar os termos de uso.');
                 isValid = false;
+            } else {
+                console.log('✅ Termos passaram');
             }
             
+            console.log('validateForm retornando:', isValid);
             return isValid;
         }
         
@@ -754,6 +806,7 @@
         }
         
         function isStrongPassword(password) {
+            if (!password) return false;
             return password.length >= 8 && 
                    /[a-zA-Z]/.test(password) && 
                    /[0-9]/.test(password);

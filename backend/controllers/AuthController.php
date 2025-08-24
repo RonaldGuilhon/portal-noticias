@@ -242,8 +242,8 @@ class AuthController {
                 // $this->enviarEmailVerificacao($this->usuario->email, $this->usuario->token_verificacao);
                 
                 jsonResponse([
-                    'success' => true,
-                    'mensagem' => 'Usuário criado com success.',
+                    'sucesso' => true,
+                    'mensagem' => 'Usuário criado com sucesso.',
                     'usuario_id' => $this->usuario->id
                 ], 201);
             } else {
@@ -546,8 +546,7 @@ class AuthController {
                     'email_marketing' => (bool)$this->usuario->email_marketing,
                     'push_breaking' => (bool)$this->usuario->push_breaking,
                     'push_interests' => (bool)$this->usuario->push_interests,
-                    'push_comments' => (bool)$this->usuario->push_comments,
-                    'notification_frequency' => $this->usuario->notification_frequency
+                    'push_comments' => (bool)$this->usuario->push_comments
                 ]
             ]);
         } catch(Exception $e) {
@@ -598,8 +597,6 @@ class AuthController {
             $this->usuario->push_interests = isset($dados['push_interests']) ? 1 : 0;
             $this->usuario->push_comments = isset($dados['push_comments']) ? 1 : 0;
             
-            // Frequência de notificações
-            $this->usuario->notification_frequency = $dados['notification_frequency'] ?? 'diario';
             
             // Configurações de privacidade (novos campos)
             if (isset($dados['profile_public'])) {
@@ -1017,8 +1014,7 @@ class AuthController {
                     email_marketing = ?,
                     push_breaking = ?,
                     push_interests = ?,
-                    push_comments = ?,
-                    notification_frequency = ?
+                    push_comments = ?
                 WHERE id = ?
             ");
             
@@ -1030,7 +1026,6 @@ class AuthController {
                 isset($input['push_breaking']) ? 1 : 0,
                 isset($input['push_interests']) ? 1 : 0,
                 isset($input['push_comments']) ? 1 : 0,
-                $input['notification_frequency'] ?? 'diario',
                 $usuario['id']
             ]);
 
@@ -1061,7 +1056,7 @@ class AuthController {
             $existe = $stmt->fetch() !== false;
             
             jsonResponse([
-                'exists' => $existe,
+                'available' => !$existe,
                 'message' => $existe ? 'Email já cadastrado' : 'Email disponível'
             ]);
         } catch (Exception $e) {

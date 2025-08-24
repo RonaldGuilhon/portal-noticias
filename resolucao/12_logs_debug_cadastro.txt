@@ -1,0 +1,126 @@
+=== IMPLEMENTAÇÃO DE LOGS DE DEBUG - CADASTRO ===
+Data: Janeiro 2025
+Objetivo: Identificar problemas no fluxo de cadastro de usuário
+
+== CONTEXTO ==
+Após correção da verificação de email, usuário reportou que botão "criar conta" não respondia.
+Implementados logs extensivos para identificar ponto exato da falha.
+
+== LOGS IMPLEMENTADOS ==
+
+1. FUNÇÃO handleRegister (linha ~390)
+   ```javascript
+   console.log('handleRegister chamada - evento:', e);
+   console.log('Formulário:', form);
+   console.log('Dados do formulário:', data);
+   ```
+
+2. MAPEAMENTO DE CAMPOS (linha ~400)
+   ```javascript
+   console.log('Dados antes do mapeamento:', data);
+   console.log('Dados após mapeamento:', data);
+   ```
+
+3. VALIDAÇÃO DO FORMULÁRIO (linha ~415)
+   ```javascript
+   console.log('Iniciando validação do formulário...');
+   const isValid = validateForm(data);
+   console.log('Resultado da validação:', isValid);
+   if (!isValid) {
+       console.log('Validação falhou - interrompendo envio');
+       return;
+   }
+   console.log('Validação passou - iniciando envio...');
+   ```
+
+4. FUNÇÃO validateForm (linha ~470)
+   ```javascript
+   console.log('validateForm chamada com dados:', data);
+   console.log('validateForm retornando:', isValid);
+   ```
+
+== FLUXO DE DEBUG ==
+
+1. CAPTURA DO EVENTO
+   - Verifica se handleRegister é chamada
+   - Confirma preventDefault() executado
+   - Valida captura do formulário
+
+2. COLETA DE DADOS
+   - Mostra dados brutos do FormData
+   - Verifica mapeamento password -> senha
+   - Confirma coleta de preferências
+
+3. VALIDAÇÃO
+   - Entrada da função validateForm
+   - Resultado de cada validação individual
+   - Resultado final da validação
+
+4. ENVIO DA REQUISIÇÃO
+   - Confirmação de início do envio
+   - Dados enviados para API
+   - Resposta recebida
+
+== PONTOS DE VERIFICAÇÃO ==
+
+✓ Event listener configurado?
+✓ Função handleRegister chamada?
+✓ Dados do formulário coletados?
+✓ Mapeamento de campos executado?
+✓ Validação executada?
+✓ Validação passou?
+✓ Requisição enviada?
+✓ Resposta recebida?
+✓ Feedback visual exibido?
+
+== COMO USAR ==
+
+1. Abrir DevTools (F12)
+2. Ir para aba Console
+3. Acessar página de cadastro
+4. Preencher formulário
+5. Clicar em "Criar Conta"
+6. Observar sequência de logs
+7. Identificar onde o fluxo para
+
+== LOGS ESPERADOS (FLUXO NORMAL) ==
+```
+handleRegister chamada - evento: SubmitEvent
+Formulário: HTMLFormElement
+Dados do formulário: {nome: "...", email: "...", ...}
+Dados antes do mapeamento: {...}
+Dados após mapeamento: {nome: "...", email: "...", senha: "...", ...}
+Iniciando validação do formulário...
+validateForm chamada com dados: {...}
+validateForm retornando: true
+Resultado da validação: true
+Validação passou - iniciando envio...
+```
+
+== POSSÍVEIS PROBLEMAS IDENTIFICÁVEIS ==
+
+1. Se não aparecer "handleRegister chamada":
+   - Event listener não configurado
+   - Erro JavaScript anterior
+
+2. Se parar na validação:
+   - Campos obrigatórios não preenchidos
+   - Formato de dados inválido
+   - Erro na função validateForm
+
+3. Se parar após "iniciando envio":
+   - Problema de conectividade
+   - Erro na API backend
+   - Problema CORS
+
+== ARQUIVO MODIFICADO ==
+- frontend/cadastro.html (múltiplas linhas)
+
+== STATUS ==
+IMPLEMENTADO - PRONTO PARA TESTE
+
+== PRÓXIMOS PASSOS ==
+1. Executar teste com logs
+2. Identificar ponto de falha
+3. Implementar correção específica
+4. Remover logs após correção

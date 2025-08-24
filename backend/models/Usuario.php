@@ -57,7 +57,6 @@ class Usuario {
     // Preferências de conteúdo
     public $favorite_categories;
     public $language_preference;
-    public $notification_frequency;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -225,7 +224,6 @@ class Usuario {
             $this->push_breaking = $row['push_breaking'];
             $this->push_interests = $row['push_interests'];
             $this->push_comments = $row['push_comments'];
-            $this->notification_frequency = $row['notification_frequency'];
             return true;
         }
         
@@ -294,7 +292,7 @@ class Usuario {
                       email_newsletter=:email_newsletter, email_breaking=:email_breaking, 
                       email_comments=:email_comments, email_marketing=:email_marketing,
                       push_breaking=:push_breaking, push_interests=:push_interests, 
-                      push_comments=:push_comments, notification_frequency=:notification_frequency";
+                      push_comments=:push_comments";
         
         // Adicionar campos opcionais se estiverem definidos
         $optional_fields = [];
@@ -364,9 +362,6 @@ class Usuario {
         $stmt->bindParam(":push_breaking", $this->push_breaking);
         $stmt->bindParam(":push_interests", $this->push_interests);
         $stmt->bindParam(":push_comments", $this->push_comments);
-        
-        // Frequência de notificações
-        $stmt->bindParam(":notification_frequency", $this->notification_frequency);
         
         // Bind dos campos opcionais
         if (isset($this->profile_public)) {

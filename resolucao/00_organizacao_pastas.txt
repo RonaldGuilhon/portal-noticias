@@ -1,0 +1,130 @@
+=== ORGANIZAÇÃO DAS PASTAS TESTE E RESOLUÇÃO ===
+Data: Janeiro 2025
+Objetivo: Documentar estrutura organizacional das pastas de desenvolvimento
+
+== PASTA RESOLUCAO ==
+Contém documentação de problemas resolvidos e soluções implementadas.
+
+=== ARQUIVOS DE RESOLUÇÃO (01-12) ===
+01_foto_perfil_carregamento.txt - Correção do carregamento de fotos de perfil
+02_urls_apis_incorretas.txt - Correção de URLs de APIs
+03_problemas_cors.txt - Resolução de problemas CORS
+04_metodologia_debugging.txt - Metodologia de depuração utilizada
+05_biografia_nao_retornada.txt - Correção da biografia não retornada
+06_nome_usuario_vazio.txt - Correção do nome de usuário vazio
+07_problema_acesso_perfil.txt - Resolução de problemas de acesso ao perfil
+08_correcao_token_perfil.txt - Correção do token de perfil
+09_correcao_upload_avatar.txt - Correção do upload de avatar
+10_correcao_botao_criar_conta.txt - Correção do botão criar conta
+11_correcao_verificacao_email.txt - Correção da verificação de email
+12_logs_debug_cadastro.txt - Implementação de logs de debug
+
+=== ARQUIVOS DE ANÁLISE E MIGRAÇÃO ===
+- analyze_*.php - Scripts de análise de estrutura de banco
+- migration_*.php - Scripts de migração e normalização
+- remove_*.php - Scripts de remoção de funcionalidades
+- relatorio_*.md - Relatórios de normalização
+- documentacao_*.txt - Documentação de estruturas
+- test_*.php - Testes básicos de conexão
+
+== PASTA TESTE ==
+Contém arquivos de teste organizados por funcionalidade.
+
+=== SUBPASTA: autenticacao ===
+- login-auto.html - Teste de login automático
+- test_hash.php - Teste de hash de senhas
+- test_login_debug.php - Debug de login
+- update_admin_password.php - Atualização de senha do admin
+
+=== SUBPASTA: backup_sistema ===
+- test_backup*.php - Testes do sistema de backup
+- test_list_backups.php - Teste de listagem de backups
+
+=== SUBPASTA: cache_sistema ===
+- test-push.html - Teste de push notifications
+- test_cache*.php - Testes do sistema de cache
+- test_rate_limit.php - Teste de rate limiting
+
+=== SUBPASTA: database ===
+- add_*.php - Scripts de adição de colunas
+- analyze_*.php - Scripts de análise de normalização
+- check_*.php - Scripts de verificação de estrutura
+- fix_*.php - Scripts de correção de problemas
+- get_*.php - Scripts de obtenção de estruturas
+- migrate_*.php - Scripts de migração de dados
+- migration_*.php - Scripts de migração de banco
+- remove_*.php - Scripts de remoção de funcionalidades
+- test_basic_connection.php - Teste básico de conexão
+
+=== SUBPASTA: perfil_usuario ===
+- debug-perfil.html / debug_perfil.html - Debug de perfil
+- test-perfil-flow.html - Teste de fluxo de perfil
+- test_api_*.php - Testes de APIs de perfil
+- test_avatar_*.html - Testes de upload de avatar
+- test_password_*.php - Testes de alteração de senha
+- test_profile_*.php - Testes gerais de perfil
+- test_estado_*.php - Testes de campo estado
+- test_token_*.php - Testes de compatibilidade de token
+- check_user_bio.php - Verificação de biografia
+
+=== SUBPASTA: upload_arquivos ===
+- test_avatar_upload.html - Teste de upload de avatar
+- test_upload.html - Teste geral de upload
+
+== CONVENÇÕES DE NOMENCLATURA ==
+
+=== PASTA RESOLUCAO ===
+- Arquivos numerados sequencialmente (01-99)
+- Formato: NN_descricao_problema.txt
+- Arquivo 00_organizacao_pastas.txt para documentação
+
+=== PASTA TESTE ===
+- Organizados por subpastas funcionais
+- Prefixos: test_, debug_, check_
+- Extensões: .php (backend), .html (frontend)
+
+== FLUXO DE TRABALHO ==
+
+1. IDENTIFICAÇÃO DO PROBLEMA
+   - Criar arquivo de teste na pasta apropriada
+   - Nomear com prefixo test_ ou debug_
+
+2. INVESTIGAÇÃO
+   - Usar arquivos de teste para reproduzir problema
+   - Documentar achados em comentários
+
+3. RESOLUÇÃO
+   - Implementar correção no código principal
+   - Criar arquivo de documentação em resolucao/
+   - Numerar sequencialmente
+
+4. VALIDAÇÃO
+   - Manter arquivos de teste para regressão
+   - Arquivar documentação de resolução
+
+== MANUTENÇÃO ==
+
+=== LIMPEZA PERIÓDICA ===
+- Remover arquivos de teste obsoletos
+- Consolidar testes similares
+- Atualizar documentação
+
+=== BACKUP ===
+- Manter backup das resoluções
+- Versionar arquivos importantes
+- Documentar mudanças significativas
+
+== STATUS ATUAL ==
+✓ Pasta resolucao organizada com 12 resoluções documentadas
+✓ Pasta teste organizada em 5 subpastas funcionais
+✓ Todos os arquivos de teste movidos da raiz e pasta resolucao para pasta teste
+✓ Nova subpasta database criada para scripts de banco de dados
+✓ Convenções de nomenclatura estabelecidas
+✓ Fluxo de trabalho documentado
+✓ Organização completa: 18 arquivos movidos da raiz + 6 arquivos da pasta resolucao
+
+== PRÓXIMOS PASSOS ==
+1. Revisar arquivos de teste antigos
+2. Consolidar testes duplicados
+3. Atualizar documentação conforme necessário
+4. Implementar processo de backup automático
