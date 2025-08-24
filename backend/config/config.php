@@ -127,10 +127,10 @@ function generateSecureToken($length = 32) {
 
 /**
  * Função para hash de senha
- * Usando SHA1 conforme solicitado
+ * Usando bcrypt (mais seguro que SHA1)
  */
 function hashPassword($password) {
-    return sha1($password);
+    return password_hash($password, PASSWORD_DEFAULT);
 }
 
 /**

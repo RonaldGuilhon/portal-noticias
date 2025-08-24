@@ -1,0 +1,14 @@
+RewriteEngine On
+
+# Redirecionar URLs de categoria para categoria.html
+RewriteRule ^categoria/([^/]+)/?$ categoria.html [L]
+
+# Garantir que assets sejam servidos corretamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^assets/(.*)$ assets/$1 [L]
+
+# Fallback para index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L]

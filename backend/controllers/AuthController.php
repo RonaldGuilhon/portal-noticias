@@ -546,7 +546,12 @@ class AuthController {
                     'email_marketing' => (bool)$this->usuario->email_marketing,
                     'push_breaking' => (bool)$this->usuario->push_breaking,
                     'push_interests' => (bool)$this->usuario->push_interests,
-                    'push_comments' => (bool)$this->usuario->push_comments
+                    'push_comments' => (bool)$this->usuario->push_comments,
+                    
+                    // Configurações de privacidade
+                    'profile_public' => (bool)$this->usuario->profile_public,
+                    'show_activity' => (bool)$this->usuario->show_activity,
+                    'allow_messages' => (bool)$this->usuario->allow_messages
                 ]
             ]);
         } catch(Exception $e) {

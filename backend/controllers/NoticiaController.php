@@ -74,6 +74,12 @@ class NoticiaController {
                     case 'by-category':
                         $this->obterPorCategoria();
                         break;
+                    case 'categoria':
+                        $this->obterPorCategoria();
+                        break;
+                    case 'listarPorCategoria':
+                        $this->listarPorCategoria();
+                        break;
                     case 'by-tag':
                         $this->obterPorTag();
                         break;
@@ -356,10 +362,16 @@ class NoticiaController {
             ];
 
             $noticias = $this->noticia->listar($filtros);
-            jsonResponse(['noticias' => $noticias]);
+            jsonResponse([
+                'success' => true,
+                'data' => $noticias
+            ]);
         } catch(Exception $e) {
             logError('Erro ao obter populares: ' . $e->getMessage());
-            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+            jsonResponse([
+                'success' => false,
+                'erro' => 'Erro interno do servidor'
+            ], 500);
         }
     }
 
@@ -377,10 +389,16 @@ class NoticiaController {
             ];
 
             $noticias = $this->noticia->listar($filtros);
-            jsonResponse(['noticias' => $noticias]);
+            jsonResponse([
+                'success' => true,
+                'data' => $noticias
+            ]);
         } catch(Exception $e) {
             logError('Erro ao obter recentes: ' . $e->getMessage());
-            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+            jsonResponse([
+                'success' => false,
+                'erro' => 'Erro interno do servidor'
+            ], 500);
         }
     }
 
@@ -414,6 +432,7 @@ class NoticiaController {
             
             if(!$categoria_id) {
                 jsonResponse(['erro' => 'ID da categoria é obrigatório'], 400);
+                return;
             }
 
             $filtros = [
@@ -427,17 +446,72 @@ class NoticiaController {
             $total_paginas = ceil($total / $filtros['limit']);
 
             jsonResponse([
-                'noticias' => $noticias,
-                'paginacao' => [
-                    'pagina_atual' => $filtros['page'],
-                    'total_paginas' => $total_paginas,
-                    'total_itens' => $total,
-                    'itens_por_pagina' => $filtros['limit']
+                'success' => true,
+                'data' => [
+                    'noticias' => $noticias,
+                    'paginacao' => [
+                        'pagina_atual' => $filtros['page'],
+                        'total_paginas' => $total_paginas,
+                        'total_itens' => $total,
+                        'itens_por_pagina' => $filtros['limit']
+                    ]
                 ]
             ]);
         } catch(Exception $e) {
             logError('Erro ao obter por categoria: ' . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Listar notícias por categoria usando slug
+     */
+    private function listarPorCategoria() {
+        try {
+            $categoria_slug = $_GET['slug'] ?? null;
+            
+            if(!$categoria_slug) {
+                jsonResponse(['success' => false, 'message' => 'Slug da categoria é obrigatório'], 400);
+                return;
+            }
+
+            // Buscar categoria pelo slug
+            require_once __DIR__ . '/../models/Categoria.php';
+            $categoria = new Categoria($this->db);
+            $categoria_data = $categoria->buscarPorSlug($categoria_slug);
+            
+            if(!$categoria_data) {
+                jsonResponse(['success' => false, 'message' => 'Categoria não encontrada'], 404);
+                return;
+            }
+
+            $filtros = [
+                'categoria_id' => $categoria_data['id'],
+                'page' => (int)($_GET['page'] ?? 1),
+                'limit' => min((int)($_GET['limit'] ?? 12), 50),
+                'sort' => $_GET['sort'] ?? 'recent'
+            ];
+
+            $noticias = $this->noticia->listar($filtros);
+            $total = $this->noticia->contar($filtros);
+            $total_paginas = ceil($total / $filtros['limit']);
+
+            jsonResponse([
+                'success' => true,
+                'data' => [
+                    'noticias' => $noticias,
+                    'categoria' => $categoria_data,
+                    'paginacao' => [
+                        'pagina_atual' => $filtros['page'],
+                        'total_paginas' => $total_paginas,
+                        'total_itens' => $total,
+                        'itens_por_pagina' => $filtros['limit']
+                    ]
+                ]
+            ]);
+        } catch(Exception $e) {
+            logError('Erro ao listar por categoria: ' . $e->getMessage());
+            jsonResponse(['success' => false, 'message' => 'Erro interno do servidor'], 500);
         }
     }
 

@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/Tag.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
@@ -432,11 +433,22 @@ class TagController {
      * Obter tags mais usadas
      */
     public function maisUsadas() {
-        $limit = (int)($_GET['limit'] ?? 20);
-        
-        $tags = $this->tag->obterMaisUtilizadas($limit);
-        
-        jsonResponse(['tags' => $tags]);
+        try {
+            $limit = (int)($_GET['limit'] ?? 20);
+            
+            $tags = $this->tag->obterMaisUtilizadas($limit);
+            
+            jsonResponse([
+                'success' => true,
+                'data' => $tags
+            ]);
+        } catch(Exception $e) {
+            logError('Erro ao obter tags populares: ' . $e->getMessage());
+            jsonResponse([
+                'success' => false,
+                'erro' => 'Erro interno do servidor'
+            ], 500);
+        }
     }
     
     /**

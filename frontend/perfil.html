@@ -844,6 +844,7 @@
             document.getElementById('edit-bio').value = userData.bio || '';
             document.getElementById('edit-city').value = userData.cidade || '';
             document.getElementById('edit-state').value = userData.estado || '';
+            document.getElementById('edit-gender').value = userData.genero || '';
             
             // Update avatar if available
             const avatarElement = document.getElementById('profile-avatar');
@@ -853,6 +854,28 @@
                 } else {
                     avatarElement.src = 'assets/img/default-avatar.svg';
                 }
+            }
+            
+            // Update notification preferences
+            if (document.getElementById('email-notifications')) {
+                document.getElementById('email-notifications').checked = userData.email_newsletter || false;
+            }
+            if (document.getElementById('push-notifications')) {
+                document.getElementById('push-notifications').checked = userData.push_breaking || false;
+            }
+            if (document.getElementById('newsletter')) {
+                document.getElementById('newsletter').checked = userData.email_newsletter || false;
+            }
+            
+            // Update privacy preferences
+            if (document.getElementById('profile-public')) {
+                document.getElementById('profile-public').checked = userData.profile_public !== undefined ? userData.profile_public : true;
+            }
+            if (document.getElementById('show-activity')) {
+                document.getElementById('show-activity').checked = userData.show_activity !== undefined ? userData.show_activity : true;
+            }
+            if (document.getElementById('allow-messages')) {
+                document.getElementById('allow-messages').checked = userData.allow_messages !== undefined ? userData.allow_messages : true;
             }
         }
         
@@ -867,7 +890,8 @@
                 data_nascimento: document.getElementById('edit-birthdate').value,
                 bio: document.getElementById('edit-bio').value,
                 cidade: document.getElementById('edit-city').value,
-                estado: document.getElementById('edit-state').value
+                estado: document.getElementById('edit-state').value,
+                genero: document.getElementById('edit-gender').value
             };
             
             try {

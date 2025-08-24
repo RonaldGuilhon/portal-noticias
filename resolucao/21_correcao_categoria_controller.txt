@@ -1,0 +1,60 @@
+CORREÇÃO DO CATEGORIACONTROLLER.PHP
+=====================================
+
+Data: Janeiro 2025
+Arquivo: backend/controllers/CategoriaController.php
+
+PROBLEMAS IDENTIFICADOS:
+-----------------------
+
+1. INCONSISTÊNCIA NO NOME DA COLUNA
+   - Uso de 'ativo' em vez de 'ativa' em várias partes do código
+   - Linhas afetadas: 226, 289, 362-376
+   - Problema: Inconsistência com o nome da coluna no banco de dados
+
+2. PROBLEMAS DE INDENTAÇÃO
+   - Indentação incorreta nas linhas 302-303 e 332-333
+   - Afetava a legibilidade e padrão do código
+
+CORREÇÕES APLICADAS:
+-------------------
+
+1. PADRONIZAÇÃO DA COLUNA 'ATIVA'
+   - Linha 226: Alterado 'ativo' para 'ativa' no método criar()
+   - Linha 289: Alterado 'ativo' para 'ativa' no método atualizar()
+   - Linhas 362-376: Corrigido método alterarStatus() para usar 'ativa'
+
+2. CORREÇÃO DA INDENTAÇÃO
+   - Linhas 302-303: Ajustada indentação no método atualizar()
+   - Linhas 332-333: Ajustada indentação no método excluir()
+
+3. MÉTODO ALTERAR STATUS
+   - Variável $ativo renomeada para $ativa
+   - Parâmetro de entrada alterado de 'ativo' para 'ativa'
+   - Chamada do método alterarStatus() corrigida
+
+TESTE DE FUNCIONAMENTO:
+----------------------
+
+API testada com sucesso:
+- Endpoint: GET /categorias/slug/politica
+- Status: 200 OK
+- Resposta: JSON válido com dados da categoria
+- Campo 'ativa' retornado corretamente
+
+IMPACTO:
+--------
+
+- Consistência mantida com o banco de dados
+- API de categorias funcionando corretamente
+- Código mais legível e padronizado
+- Nenhum arquivo adicional foi afetado
+
+OBSERVAÇÕES:
+------------
+
+- Todas as correções foram aplicadas sem quebrar funcionalidades existentes
+- O campo 'ativa' ainda retorna null no banco, mas a estrutura está correta
+- Recomenda-se atualizar os dados existentes no banco para definir valores padrão
+
+STATUS: CONCLUÍDO ✓

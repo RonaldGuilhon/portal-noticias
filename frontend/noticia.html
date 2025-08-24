@@ -407,7 +407,7 @@
                             </div>
                             
                             <div class="logged-in-only" style="display: none;">
-                                <form class="ajax-form" action="/backend/comentarios" method="POST" id="comment-form">
+                                <form class="ajax-form" action="http://localhost:8001/comentarios" method="POST" id="comment-form">
                                     <input type="hidden" name="noticia_id" id="comment-news-id">
                                     <div class="form-group mb-3">
                                         <textarea name="conteudo" class="form-control" rows="4" placeholder="Escreva seu comentário..." required></textarea>
@@ -503,7 +503,7 @@
                             Newsletter
                         </h3>
                         <p class="mb-3">Receba as principais notícias diretamente no seu e-mail!</p>
-                        <form class="newsletter-form ajax-form" action="/backend/newsletter/subscribe" method="POST">
+                        <form class="newsletter-form ajax-form" action="http://localhost:8001/newsletter/subscribe" method="POST">
                             <div class="form-group mb-3">
                                 <input type="email" name="email" class="form-control" placeholder="Seu e-mail" required>
                             </div>
@@ -625,7 +625,7 @@
             const slug = window.location.pathname.split('/').pop().replace('.html', '');
             
             try {
-                const response = await fetch(`/backend/noticias/slug/${slug}`);
+                const response = await fetch(`http://localhost:8001/noticias/slug/${slug}`);
                 const article = await response.json();
                 
                 if (article.success) {
@@ -773,7 +773,7 @@
         // Carrega comentários
         async function loadComments(newsId) {
             try {
-                const response = await fetch(`/backend/comentarios/noticia/${newsId}`);
+                const response = await fetch(`http://localhost:8001/comentarios/noticia/${newsId}`);
                 const comments = await response.json();
                 
                 if (comments.success) {
@@ -826,7 +826,7 @@
         // Carrega notícias relacionadas
         async function loadRelatedNews(newsId, categoryId) {
             try {
-                const response = await fetch(`/backend/noticias/${newsId}/relacionadas`);
+                const response = await fetch(`http://localhost:8001/noticias/${newsId}/relacionadas`);
                 const news = await response.json();
                 
                 if (news.success && news.data.length > 0) {
@@ -862,7 +862,7 @@
         // Incrementa visualizações
         async function incrementViews(newsId) {
             try {
-                await fetch(`/backend/noticias/${newsId}/view`, { method: 'POST' });
+                await fetch(`http://localhost:8001/noticias/${newsId}/view`, { method: 'POST' });
             } catch (error) {
                 console.error('Erro ao incrementar visualizações:', error);
             }

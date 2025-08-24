@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Usuario.php';
 
@@ -139,12 +140,15 @@ class CategoriaController {
         $total = $this->categoria->contar($filtros);
         
         jsonResponse([
-            'categorias' => $categorias,
-            'paginacao' => [
-                'pagina_atual' => $page,
-                'total_itens' => $total,
-                'itens_por_pagina' => $limit,
-                'total_paginas' => ceil($total / $limit)
+            'success' => true,
+            'data' => [
+                'categorias' => $categorias,
+                'paginacao' => [
+                    'pagina_atual' => $page,
+                    'total_itens' => $total,
+                    'itens_por_pagina' => $limit,
+                    'total_paginas' => ceil($total / $limit)
+                ]
             ]
         ]);
     }
@@ -161,18 +165,35 @@ class CategoriaController {
             return;
         }
         
+        $encontrou = false;
         if($id) {
-            $categoria = $this->categoria->buscarPorId($id);
+            $encontrou = $this->categoria->buscarPorId($id);
         } else {
-            $categoria = $this->categoria->buscarPorSlug($slug);
+            $encontrou = $this->categoria->buscarPorSlug($slug);
         }
         
-        if(!$categoria) {
+        if(!$encontrou) {
             jsonResponse(['erro' => 'Categoria não encontrada'], 404);
             return;
         }
         
-        jsonResponse(['categoria' => $categoria]);
+        // Montar array com os dados da categoria
+        $categoria_data = [
+            'id' => $this->categoria->id,
+            'nome' => $this->categoria->nome,
+            'slug' => $this->categoria->slug,
+            'descricao' => $this->categoria->descricao,
+            'cor' => $this->categoria->cor,
+            'icone' => $this->categoria->icone,
+            'ativa' => $this->categoria->ativo,
+            'ordem' => $this->categoria->ordem,
+            'meta_title' => $this->categoria->meta_title,
+            'meta_description' => $this->categoria->meta_description,
+            'data_criacao' => $this->categoria->data_criacao,
+            'data_atualizacao' => $this->categoria->data_atualizacao
+        ];
+        
+        jsonResponse(['success' => true, 'data' => $categoria_data]);
     }
     
     /**
@@ -209,7 +230,7 @@ class CategoriaController {
             'meta_title' => sanitizeInput($dados['meta_title'] ?? ''),
             'meta_description' => sanitizeInput($dados['meta_description'] ?? ''),
             'ordem' => (int)($dados['ordem'] ?? 0),
-            'ativo' => isset($dados['ativo']) ? (bool)$dados['ativo'] : true
+            'ativa' => isset($dados['ativa']) ? (bool)$dados['ativa'] : true
         ];
         
         // Validar dados
@@ -271,7 +292,7 @@ class CategoriaController {
         if(isset($dados['meta_title'])) $dados_limpos['meta_title'] = sanitizeInput($dados['meta_title']);
         if(isset($dados['meta_description'])) $dados_limpos['meta_description'] = sanitizeInput($dados['meta_description']);
         if(isset($dados['ordem'])) $dados_limpos['ordem'] = (int)$dados['ordem'];
-        if(isset($dados['ativo'])) $dados_limpos['ativo'] = (bool)$dados['ativo'];
+        if(isset($dados['ativa'])) $dados_limpos['ativa'] = (bool)$dados['ativa'];
         
         // Validar dados
         $validacao = $this->categoria->validarDados($dados_limpos, $id);
@@ -281,8 +302,8 @@ class CategoriaController {
         }
         
         $success = $this->categoria->atualizar($id, $dados_limpos);
-            
-            if($success) {
+        
+        if($success) {
             $categoria = $this->categoria->buscarPorId($id);
             jsonResponse([
                 'success' => true,
@@ -317,8 +338,8 @@ class CategoriaController {
         }
         
         $success = $this->categoria->excluir($id);
-            
-            if($success) {
+        
+        if($success) {
             jsonResponse([
                 'success' => true,
                 'mensagem' => 'Categoria excluída com success'
@@ -344,17 +365,17 @@ class CategoriaController {
         }
         
         $dados = json_decode(file_get_contents('php://input'), true);
-        $ativo = isset($dados['ativo']) ? (bool)$dados['ativo'] : null;
+        $ativa = isset($dados['ativa']) ? (bool)$dados['ativa'] : null;
         
-        if($ativo === null) {
+        if($ativa === null) {
             jsonResponse(['erro' => 'Status é obrigatório'], 400);
             return;
         }
         
-        $success = $this->categoria->alterarStatus($id, $ativo);
+        $success = $this->categoria->alterarStatus($id, $ativa);
         
         if($success) {
-            $status_texto = $ativo ? 'ativada' : 'desativada';
+            $status_texto = $ativa ? 'ativada' : 'desativada';
             jsonResponse([
                 'success' => true,
                 'mensagem' => "Categoria $status_texto com success"
@@ -396,11 +417,22 @@ class CategoriaController {
      * Obter categorias mais usadas
      */
     public function maisUsadas() {
-        $limit = (int)($_GET['limit'] ?? 10);
-        
-        $categorias = $this->categoria->obterMaisUtilizadas($limit);
-        
-        jsonResponse(['categorias' => $categorias]);
+        try {
+            $limit = (int)($_GET['limit'] ?? 10);
+            
+            $categorias = $this->categoria->obterMaisUtilizadas($limit);
+            
+            jsonResponse([
+                'success' => true,
+                'data' => $categorias
+            ]);
+        } catch(Exception $e) {
+            logError('Erro ao obter categorias populares: ' . $e->getMessage());
+            jsonResponse([
+                'success' => false,
+                'erro' => 'Erro interno do servidor'
+            ], 500);
+        }
     }
     
     /**

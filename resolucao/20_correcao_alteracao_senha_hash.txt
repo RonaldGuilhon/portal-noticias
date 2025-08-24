@@ -1,0 +1,115 @@
+RESOLUÇÃO DO PROBLEMA: ALTERAÇÃO DE SENHA NÃO FUNCIONAVA
+================================================================
+
+DATA: Janeiro 2025
+PROBLEMA REPORTADO: Mensagem de sucesso na alteração de senha, mas hash não alterava no banco
+
+1. INVESTIGAÇÃO DO PROBLEMA
+---------------------------
+
+1.1 SINTOMAS IDENTIFICADOS:
+- Frontend exibia mensagem de sucesso
+- AuthController retornava true
+- Hash no banco de dados não era alterado
+- Nova senha não funcionava para login
+
+1.2 ANÁLISE REALIZADA:
+- Testado modelo Usuario.php diretamente
+- Testado AuthController.php
+- Testado fluxo completo frontend → backend
+- Identificado que método alterarSenha() retornava true
+- Identificado que hash mudava no banco, mas nova senha não verificava
+
+2. CAUSA RAIZ IDENTIFICADA
+--------------------------
+
+2.1 INCONSISTÊNCIA DE ALGORITMOS DE HASH:
+- Função hashPassword() usava SHA1: sha1($password)
+- Testes e algumas partes do sistema usavam bcrypt: password_hash($password, PASSWORD_DEFAULT)
+- Função verifyPassword() suportava ambos, mas havia inconsistência
+
+2.2 PROBLEMA ESPECÍFICO:
+- Sistema gerava hash SHA1 para novas senhas
+- Verificação funcionava para ambos os tipos
+- Mas quando testado com bcrypt, a inconsistência causava falhas
+
+3. SOLUÇÃO IMPLEMENTADA
+-----------------------
+
+3.1 ALTERAÇÃO NO ARQUIVO: backend/config/config.php
+
+ANTES:
+```php
+function hashPassword($password) {
+    return sha1($password);
+}
+```
+
+DEPOIS:
+```php
+function hashPassword($password) {
+    return password_hash($password, PASSWORD_DEFAULT);
+}
+```
+
+3.2 COMPATIBILIDADE MANTIDA:
+- Função verifyPassword() já suportava ambos os formatos
+- Senhas SHA1 existentes continuam funcionando
+- Novas senhas usam bcrypt (mais seguro)
+
+4. TESTES DE VALIDAÇÃO
+----------------------
+
+4.1 TESTES REALIZADOS:
+✓ Teste de inconsistência de hash (confirmou problema)
+✓ Teste da correção (confirmou solução)
+✓ Simulação completa do fluxo frontend
+✓ Verificação de compatibilidade com senhas existentes
+
+4.2 RESULTADOS DOS TESTES:
+✓ Alteração de senha funciona corretamente
+✓ Hash é atualizado no banco de dados
+✓ Nova senha verifica corretamente
+✓ Login funciona com nova senha
+✓ Senhas SHA1 existentes continuam funcionando
+
+5. IMPACTO DA CORREÇÃO
+----------------------
+
+5.1 BENEFÍCIOS:
+- Problema de alteração de senha resolvido
+- Maior segurança (bcrypt vs SHA1)
+- Compatibilidade mantida
+- Não afeta outras funcionalidades
+
+5.2 FUNCIONALIDADES TESTADAS E CONFIRMADAS:
+- Alteração de senha via perfil do usuário
+- Login com nova senha
+- Verificação de senha atual
+- Validações de senha (comprimento, confirmação)
+
+6. ARQUIVOS MODIFICADOS
+-----------------------
+
+- backend/config/config.php (função hashPassword alterada)
+
+7. CONCLUSÃO
+------------
+
+O problema foi causado por uma inconsistência entre algoritmos de hash (SHA1 vs bcrypt).
+A solução padronizou o sistema para usar bcrypt, que é mais seguro, mantendo
+compatibilidade com senhas SHA1 existentes.
+
+A alteração de senha agora funciona corretamente em todos os cenários testados.
+
+8. RECOMENDAÇÕES FUTURAS
+------------------------
+
+- Considerar migração gradual de senhas SHA1 para bcrypt
+- Implementar política de senhas mais robusta
+- Adicionar logs de auditoria para alterações de senha
+- Considerar implementação de 2FA (autenticação de dois fatores)
+
+STATUS: RESOLVIDO ✓
+TESTADO: SIM ✓
+COMPATIBILIDADE: MANTIDA ✓

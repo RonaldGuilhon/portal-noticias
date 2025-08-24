@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '/../config-local.php';
-require_once __DIR__ . '/../backend/config/config.php';
-require_once __DIR__ . '/../backend/models/Usuario.php';
+require_once __DIR__ . '/../../backend/config/config.php';
+require_once __DIR__ . '/../../backend/config/database.php';
+require_once __DIR__ . '/../../backend/models/Usuario.php';
 
 echo "=== TESTE SIMPLES DO PERFIL ===\n\n";
 

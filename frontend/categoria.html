@@ -12,20 +12,20 @@
     <meta property="og:url" content="">
     <meta property="og:title" content="">
     <meta property="og:description" content="">
-    <meta property="og:image" content="/assets/img/og-image.jpg">
+    <meta property="og:image" content="assets/img/og-image.jpg">
     
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="">
     <meta property="twitter:title" content="">
     <meta property="twitter:description" content="">
-    <meta property="twitter:image" content="/assets/img/og-image.jpg">
+    <meta property="twitter:image" content="assets/img/og-image.jpg">
     
     <title>Portal de Notícias</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
-    <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -420,7 +420,7 @@
                             Newsletter
                         </h3>
                         <p class="mb-3">Receba as principais notícias diretamente no seu e-mail!</p>
-                        <form class="newsletter-form ajax-form" action="/backend/newsletter/subscribe" method="POST">
+                        <form class="newsletter-form ajax-form" action="http://localhost:8001/newsletter/subscribe" method="POST">
                             <div class="form-group mb-3">
                                 <input type="email" name="email" class="form-control" placeholder="Seu e-mail" required>
                             </div>
@@ -541,7 +541,20 @@
         
         // Carrega dados da categoria
         document.addEventListener('DOMContentLoaded', function() {
-            categorySlug = window.location.pathname.split('/').pop();
+            // Extrai o slug da URL ou dos parâmetros
+            const urlParams = new URLSearchParams(window.location.search);
+            categorySlug = urlParams.get('categoria') || window.location.pathname.split('/').pop();
+            
+            // Remove extensão .html se presente
+            if (categorySlug.endsWith('.html')) {
+                categorySlug = categorySlug.replace('.html', '');
+            }
+            
+            // Se ainda não temos um slug válido, usa um padrão para teste
+            if (!categorySlug || categorySlug === 'categoria') {
+                categorySlug = 'politica'; // categoria padrão para teste
+            }
+            
             loadCategoryData();
             setupEventListeners();
         });
@@ -580,7 +593,7 @@
         // Carrega dados da categoria
         async function loadCategoryData() {
             try {
-                const response = await fetch(`/backend/categorias/slug/${categorySlug}`);
+                const response = await fetch(`http://localhost:8001/categorias/slug/${categorySlug}`);
                 const result = await response.json();
                 
                 if (result.success) {
@@ -684,18 +697,23 @@
                     sort: currentSort
                 });
                 
-                const response = await fetch(`/backend/noticias/categoria/${categorySlug}?${params}`);
+                const response = await fetch(`http://localhost:8001/noticias/categoria/${categorySlug}?${params}`);
                 const result = await response.json();
                 
                 if (result.success) {
-                    displayNews(result.data, reset);
-                    updatePagination(result.pagination);
+                    displayNews(result.data.noticias, reset);
+                    updatePagination(result.data.paginacao);
                     
                     // Atualiza contadores
-                    document.getElementById('showing-count').textContent = result.pagination.showing;
-                    document.getElementById('total-count').textContent = result.pagination.total;
+                    const totalItens = result.data.paginacao.total_itens;
+                    const itensPorPagina = result.data.paginacao.itens_por_pagina;
+                    const paginaAtual = result.data.paginacao.pagina_atual;
+                    const showing = Math.min(paginaAtual * itensPorPagina, totalItens);
                     
-                    hasMoreNews = result.pagination.hasNext;
+                    document.getElementById('showing-count').textContent = showing;
+                    document.getElementById('total-count').textContent = totalItens;
+                    
+                    hasMoreNews = paginaAtual < result.data.paginacao.total_paginas;
                     document.getElementById('load-more-news').style.display = hasMoreNews ? 'block' : 'none';
                     
                     // Carrega notícias em destaque se for a primeira página
@@ -800,7 +818,7 @@
         // Carrega notícias em destaque
         async function loadFeaturedNews() {
             try {
-                const response = await fetch(`/backend/noticias/categoria/${categorySlug}/destaques`);
+                const response = await fetch(`http://localhost:8001/noticias/categoria/${categorySlug}/destaques`);
                 const result = await response.json();
                 
                 if (result.success && result.data.length > 0) {
@@ -847,7 +865,7 @@
         // Carrega categorias relacionadas
         async function loadRelatedCategories() {
             try {
-                const response = await fetch('/backend/categorias');
+                const response = await fetch('http://localhost:8001/categorias');
                 const result = await response.json();
                 
                 if (result.success) {
@@ -878,7 +896,7 @@
         // Carrega notícias populares
         async function loadPopularNews() {
             try {
-                const response = await fetch('/backend/noticias/populares?limit=5');
+                const response = await fetch('http://localhost:8001/noticias?action=popular&limit=5');
                 const result = await response.json();
                 
                 if (result.success) {
@@ -915,7 +933,7 @@
         // Carrega tags populares
         async function loadPopularTags() {
             try {
-                const response = await fetch('/backend/tags/populares?limit=20');
+                const response = await fetch('http://localhost:8001/tags?action=popular&limit=20');
                 const result = await response.json();
                 
                 if (result.success) {

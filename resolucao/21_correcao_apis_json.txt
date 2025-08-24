@@ -1,0 +1,86 @@
+CORREÇÃO DAS APIs QUE RETORNAVAM HTML EM VEZ DE JSON
+=======================================================
+
+Data: 24/08/2025
+Problema: Várias APIs do backend estavam retornando erro 404 ou HTML em vez de JSON
+
+APIs AFETADAS:
+- /tags (listagem de tags)
+- /tags?action=popular (tags populares)
+- /categorias (listagem de categorias)
+- /noticias?action=categoria&categoria_id=X (notícias por categoria)
+- /noticias?action=popular (notícias populares)
+
+CAUSAS IDENTIFICADAS:
+
+1. TagController.php:
+   - Não incluía o config.php onde a função jsonResponse() está definida
+   - Resultado: Erro fatal ao tentar chamar jsonResponse()
+
+2. CategoriaController.php:
+   - Mesmo problema - faltava inclusão do config.php
+   - Resultado: Erro fatal ao tentar chamar jsonResponse()
+
+3. Router.php (rota de tags):
+   - Linha $_GET['action'] = 'listar' sobrescrevia parâmetros da URL
+   - Resultado: Sempre executava 'listar' mesmo quando action=popular era solicitada
+
+4. NoticiaController.php:
+   - Faltava case 'categoria' no switch de actions
+   - Resultado: Retornava erro 404 para action=categoria
+
+CORREÇÕES IMPLEMENTADAS:
+
+1. TagController.php:
+   - Adicionada linha: require_once __DIR__ . '/../config/config.php';
+   - Localização: Após require_once database.php
+
+2. CategoriaController.php:
+   - Adicionada linha: require_once __DIR__ . '/../config/config.php';
+   - Localização: Após require_once database.php
+
+3. Router.php:
+   - Removida linha: $_GET['action'] = 'listar';
+   - Localização: Dentro do bloco if (preg_match('/^tags\/?$/', $uri))
+
+4. NoticiaController.php:
+   - Adicionado case 'categoria': $this->obterPorCategoria(); break;
+   - Localização: No switch de actions do método handleGet()
+
+TESTES REALIZADOS:
+
+✅ GET /tags
+   - Status: 200 OK
+   - Resposta: JSON com lista de tags
+
+✅ GET /tags?action=popular
+   - Status: 200 OK
+   - Resposta: {"success":true,"data":[]}
+
+✅ GET /categorias
+   - Status: 200 OK
+   - Resposta: JSON com lista de categorias
+
+✅ GET /noticias?action=popular&limit=3
+   - Status: 200 OK
+   - Resposta: JSON com notícias populares
+
+✅ GET /noticias?action=categoria&categoria_id=1
+   - Status: 200 OK
+   - Resposta: JSON com notícias da categoria
+
+RESULTADO:
+Todas as APIs agora retornam JSON corretamente com status HTTP 200 e headers CORS configurados.
+
+ARQUIVOS MODIFICADOS:
+- backend/controllers/TagController.php
+- backend/controllers/CategoriaController.php
+- backend/router.php
+- backend/controllers/NoticiaController.php
+
+ARQUIVOS DE TESTE REMOVIDOS:
+- test_tag_controller.php
+- test_tags.php
+
+IMPACTO:
+As APIs do frontend agora podem consumir dados JSON corretamente, resolvendo problemas de integração entre frontend e backend.

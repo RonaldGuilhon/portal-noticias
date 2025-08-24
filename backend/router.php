@@ -37,6 +37,15 @@ if (preg_match('/^api\/user\/avatar\/?$/', $uri)) {
     return;
 }
 
+// Roteamento para alteração de senha
+if (preg_match('/^api\/user\/change-password\/?$/', $uri)) {
+    $_GET['action'] = 'change-password';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
 // Roteamento para autenticação
 if (preg_match('/^auth\/login\/?$/', $uri)) {
     $_GET['action'] = 'login';
@@ -89,6 +98,8 @@ if (preg_match('/^auth\/forgot-password\/?$/', $uri)) {
 // Roteamento para notícias
 if (preg_match('/^noticias\/?$/', $uri)) {
     require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
     return;
 }
 
@@ -96,6 +107,15 @@ if (preg_match('/^noticias\/([0-9]+)\/?$/', $uri, $matches)) {
     $_GET['action'] = 'obter';
     $_GET['id'] = $matches[1];
     require_once 'controllers/NoticiaController.php';
+    return;
+}
+
+if (preg_match('/^noticias\/categoria\/([^\/\?]+)\/?$/', $uri, $matches)) {
+    $_GET['action'] = 'listarPorCategoria';
+    $_GET['slug'] = $matches[1];
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
     return;
 }
 
@@ -109,27 +129,34 @@ if (preg_match('/^noticias\/([^\/]+)\/?$/', $uri, $matches)) {
 // Roteamento para categorias
 if (preg_match('/^categorias\/?$/', $uri)) {
     require_once 'controllers/CategoriaController.php';
+    $controller = new CategoriaController();
+    $controller->processarRequisicao();
     return;
 }
 
 if (preg_match('/^categorias\/([0-9]+)\/?$/', $uri, $matches)) {
-    $_GET['action'] = 'obter';
+    $_GET['action'] = 'get';
     $_GET['id'] = $matches[1];
     require_once 'controllers/CategoriaController.php';
+    $controller = new CategoriaController();
+    $controller->processarRequisicao();
     return;
 }
 
-if (preg_match('/^categorias\/([^\/]+)\/?$/', $uri, $matches)) {
-    $_GET['action'] = 'obter';
+if (preg_match('/^categorias\/slug\/([^\/]+)\/?$/', $uri, $matches)) {
+    $_GET['action'] = 'get';
     $_GET['slug'] = $matches[1];
     require_once 'controllers/CategoriaController.php';
+    $controller = new CategoriaController();
+    $controller->processarRequisicao();
     return;
 }
 
 // Roteamento para tags
 if (preg_match('/^tags\/?$/', $uri)) {
-    $_GET['action'] = 'listar';
     require_once 'controllers/TagController.php';
+    $controller = new TagController();
+    $controller->processarRequisicao();
     return;
 }
 
@@ -137,6 +164,8 @@ if (preg_match('/^tags\/([0-9]+)\/?$/', $uri, $matches)) {
     $_GET['action'] = 'obter';
     $_GET['id'] = $matches[1];
     require_once 'controllers/TagController.php';
+    $controller = new TagController();
+    $controller->processarRequisicao();
     return;
 }
 
@@ -144,6 +173,8 @@ if (preg_match('/^tags\/([^\/]+)\/?$/', $uri, $matches)) {
     $_GET['action'] = 'obter';
     $_GET['slug'] = $matches[1];
     require_once 'controllers/TagController.php';
+    $controller = new TagController();
+    $controller->processarRequisicao();
     return;
 }
 

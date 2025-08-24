@@ -1,0 +1,104 @@
+=== CORREÇÃO DOS CAMPOS DE NOTIFICAÇÕES E PRIVACIDADE NO PERFIL ===
+Data: 2025-01-13
+Problema: Os campos de notificações e privacidade no perfil não estavam retornando nem atualizando no banco de dados
+
+=== PROBLEMAS IDENTIFICADOS ===
+
+1. **AuthController.php - Método obterPerfil()**
+   - Os campos de privacidade não estavam sendo retornados na resposta da API
+   - Campos ausentes: profile_public, show_activity, allow_messages
+   - Localização: linhas 547-549
+
+2. **perfil.html - Função populateUserData()**
+   - A função não estava carregando os valores dos campos de notificações e privacidade
+   - Os checkboxes permaneciam com valores padrão
+   - Localização: linhas 833-860
+
+=== CORREÇÕES APLICADAS ===
+
+1. **AuthController.php**
+   - Adicionados os campos de privacidade na resposta do método obterPerfil():
+     ```php
+     // Configurações de privacidade
+     'profile_public' => (bool)$this->usuario->profile_public,
+     'show_activity' => (bool)$this->usuario->show_activity,
+     'allow_messages' => (bool)$this->usuario->allow_messages
+     ```
+
+2. **perfil.html**
+   - Adicionado carregamento dos campos de notificações na função populateUserData():
+     ```javascript
+     // Update notification preferences
+     if (document.getElementById('email-notifications')) {
+         document.getElementById('email-notifications').checked = userData.email_newsletter || false;
+     }
+     if (document.getElementById('push-notifications')) {
+         document.getElementById('push-notifications').checked = userData.push_breaking || false;
+     }
+     if (document.getElementById('newsletter')) {
+         document.getElementById('newsletter').checked = userData.email_newsletter || false;
+     }
+     ```
+   
+   - Adicionado carregamento dos campos de privacidade:
+     ```javascript
+     // Update privacy preferences
+     if (document.getElementById('profile-public')) {
+         document.getElementById('profile-public').checked = userData.profile_public !== undefined ? userData.profile_public : true;
+     }
+     if (document.getElementById('show-activity')) {
+         document.getElementById('show-activity').checked = userData.show_activity !== undefined ? userData.show_activity : true;
+     }
+     if (document.getElementById('allow-messages')) {
+         document.getElementById('allow-messages').checked = userData.allow_messages !== undefined ? userData.allow_messages : true;
+     }
+     ```
+
+=== ESTRUTURA VERIFICADA ===
+
+1. **Banco de dados**
+   - Tabela usuarios possui todos os campos necessários
+   - Campos de notificação: email_newsletter, email_breaking, email_comments, email_marketing, push_breaking, push_interests, push_comments
+   - Campos de privacidade: profile_public, show_activity, allow_messages
+
+2. **Modelo Usuario.php**
+   - Propriedades declaradas corretamente
+   - Método atualizarPerfil() inclui todos os campos
+   - Tratamento adequado dos valores booleanos
+
+3. **AuthController.php**
+   - Método atualizarPerfil() já estava correto
+   - Método obterPerfil() foi corrigido
+   - Endpoints funcionais: PUT /api/user/profile e GET /api/user/profile
+
+4. **Frontend perfil.html**
+   - Formulário com campos corretos
+   - JavaScript de envio funcionando
+   - JavaScript de carregamento foi corrigido
+
+=== RESULTADO ===
+
+✅ Os campos de notificações agora são carregados corretamente do banco de dados
+✅ Os campos de privacidade agora são retornados pela API
+✅ Os checkboxes são preenchidos com os valores salvos no banco
+✅ A atualização dos campos continua funcionando normalmente
+✅ Outras funcionalidades não foram afetadas
+
+=== CAMPOS CORRIGIDOS ===
+
+**Notificações:**
+- Receber notificações por email (email_newsletter)
+- Receber notificações push (push_breaking)
+- Receber newsletter semanal (email_newsletter)
+
+**Privacidade:**
+- Perfil público (profile_public)
+- Mostrar atividade recente (show_activity)
+- Permitir mensagens de outros usuários (allow_messages)
+
+=== OBSERVAÇÕES ===
+
+- O problema estava na camada de apresentação (API response e frontend loading)
+- A camada de persistência (banco de dados e modelo) já estava funcionando corretamente
+- As correções são compatíveis com a estrutura existente
+- Não há impacto em outras funcionalidades do sistema

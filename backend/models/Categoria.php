@@ -170,7 +170,7 @@ class Categoria {
      */
     public function buscarPorSlug($slug) {
         try {
-            $query = "SELECT * FROM " . $this->table_name . " WHERE slug = :slug AND ativo = 1 LIMIT 1";
+            $query = "SELECT * FROM " . $this->table_name . " WHERE slug = :slug AND ativa = 1 LIMIT 1";
             $stmt = $this->conn->prepare($query);
             $stmt->bindParam(':slug', $slug);
             $stmt->execute();
