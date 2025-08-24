@@ -416,7 +416,7 @@
             loadDashboardData();
             loadRecentNews();
             loadActivityFeed();
-            loadNotifications();
+            adminPanel.loadNotifications();
             
             // Initialize charts
             initializeCharts();
@@ -472,7 +472,7 @@
         
         async function loadRecentNews() {
             try {
-                const response = await fetch('/backend/admin/noticias?limit=5&sort=created_at&order=desc', {
+                const response = await fetch('http://localhost:8001/admin/noticias?limit=5&sort=created_at&order=desc', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -542,7 +542,7 @@
         
         async function loadActivityFeed() {
             try {
-                const response = await fetch('/backend/admin/activity?limit=10', {
+                const response = await fetch('http://localhost:8001/admin/activity?limit=10', {
                     headers: {
                         'Authorization': 'Bearer ' + getAuthToken()
                     }
@@ -658,7 +658,7 @@
             setInterval(loadActivityFeed, 2 * 60 * 1000);
             
             // Update notifications every minute
-            setInterval(loadNotifications, 60 * 1000);
+            setInterval(() => adminPanel.loadNotifications(), 60 * 1000);
         }
         
         // Utility functions

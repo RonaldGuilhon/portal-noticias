@@ -1,5 +1,18 @@
 <?php
 // Router para o servidor PHP built-in
+
+// Configurar CORS
+header('Access-Control-Allow-Origin: http://localhost:8000');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Credentials: true');
+
+// Responder a requisições OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
+
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -152,6 +165,51 @@ if (preg_match('/^comentarios\/noticia\/([0-9]+)\/?$/', $uri, $matches)) {
 if (preg_match('/^search\/?$/', $uri)) {
     $_GET['action'] = 'buscar';
     require_once 'controllers/SearchController.php';
+    return;
+}
+
+// Roteamento para notificações
+if (preg_match('/^notificacoes\/?$/', $uri)) {
+    $_GET['action'] = 'listar';
+    require_once 'controllers/NotificacaoController.php';
+    $controller = new NotificacaoController();
+    $controller->processarRequisicao();
+    return;
+}
+
+if (preg_match('/^notificacoes\/([0-9]+)\/read\/?$/', $uri, $matches)) {
+    $_GET['action'] = 'marcarComoLida';
+    $_GET['id'] = $matches[1];
+    require_once 'controllers/NotificacaoController.php';
+    $controller = new NotificacaoController();
+    $controller->processarRequisicao();
+    return;
+}
+
+// Roteamento para admin dashboard
+if (preg_match('/^admin\/dashboard\/?$/', $uri)) {
+    $_GET['action'] = 'dashboard';
+    require_once 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->processarRequisicao();
+    return;
+}
+
+// Roteamento para admin notícias
+if (preg_match('/^admin\/noticias\/?$/', $uri)) {
+    $_GET['action'] = 'listar';
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
+    return;
+}
+
+// Roteamento para admin activity
+if (preg_match('/^admin\/activity\/?$/', $uri)) {
+    $_GET['action'] = 'activity';
+    require_once 'controllers/AdminController.php';
+    $controller = new AdminController();
+    $controller->processarRequisicao();
     return;
 }
 

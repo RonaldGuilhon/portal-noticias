@@ -7,6 +7,7 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Notificacao.php';
+require_once __DIR__ . '/../utils/JWTHelper.php';
 
 
 class NotificacaoController {

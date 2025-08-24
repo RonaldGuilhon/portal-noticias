@@ -10,6 +10,7 @@ require_once __DIR__ . '/../models/Usuario.php';
 require_once __DIR__ . '/../models/Noticia.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Comentario.php';
+require_once __DIR__ . '/../utils/JWTHelper.php';
 
 
 class AdminController {
@@ -72,6 +73,9 @@ class AdminController {
                         break;
                     case 'logs':
                         $this->logs();
+                        break;
+                    case 'activity':
+                        $this->activity();
                         break;
                     default:
                         $this->dashboard();
@@ -348,6 +352,55 @@ class AdminController {
             'dados' => [],
             'mensagem' => 'Sistema de logs não implementado'
         ]);
+    }
+
+    /**
+     * Feed de atividades do sistema
+     */
+    private function activity() {
+        try {
+            // Simulando dados de atividades para o dashboard
+            $activities = [
+                [
+                    'id' => 1,
+                    'tipo' => 'noticia',
+                    'acao' => 'criada',
+                    'titulo' => 'Nova notícia publicada',
+                    'usuario' => 'Admin',
+                    'data' => date('Y-m-d H:i:s', strtotime('-5 minutes'))
+                ],
+                [
+                    'id' => 2,
+                    'tipo' => 'usuario',
+                    'acao' => 'cadastro',
+                    'titulo' => 'Novo usuário registrado',
+                    'usuario' => 'Sistema',
+                    'data' => date('Y-m-d H:i:s', strtotime('-15 minutes'))
+                ],
+                [
+                    'id' => 3,
+                    'tipo' => 'comentario',
+                    'acao' => 'aprovado',
+                    'titulo' => 'Comentário aprovado',
+                    'usuario' => 'Moderador',
+                    'data' => date('Y-m-d H:i:s', strtotime('-30 minutes'))
+                ]
+            ];
+
+            jsonResponse([
+                'success' => true,
+                'data' => [
+                    'activities' => $activities
+                ],
+                'mensagem' => 'Atividades carregadas com sucesso'
+            ]);
+        } catch (Exception $e) {
+            jsonResponse([
+                'success' => false,
+                'erro' => 'Erro ao carregar atividades',
+                'mensagem' => $e->getMessage()
+            ], 500);
+        }
     }
 }
 ?>

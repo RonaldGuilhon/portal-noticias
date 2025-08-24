@@ -6,23 +6,34 @@ ORGANIZAÇÃO DE ARQUIVOS DE TESTE E DOCUMENTAÇÃO
 ├── 📂 autenticacao/
 │   ├── test_hash.php
 │   ├── test_login_debug.php
-│   └── login-auto.html
-├── 📂 perfil_usuario/
-│   ├── test-perfil-flow.html
-│   └── debug-perfil.html
-├── 📂 upload_arquivos/
-│   ├── test_avatar_upload.html
-│   └── test_upload.html
+│   ├── login-auto.html
+│   └── update_admin_password.php
 ├── 📂 backup_sistema/
 │   ├── test_backup.php
-│   ├── test_backup_controller.php
 │   ├── test_backup_simple.php
 │   └── test_list_backups.php
-└── 📂 cache_sistema/
-    ├── test_cache.php
-    ├── test_cache_noticias.php
-    ├── test_cache_simple.php
-    └── test_rate_limit.php
+├── 📂 cache_sistema/
+│   ├── test-push.html
+│   ├── test_cache.php
+│   ├── test_cache_noticias.php
+│   ├── test_cache_simple.php
+│   └── test_rate_limit.php
+├── 📂 database/
+│   ├── analyze_preferencias_normalization.php
+│   ├── analyze_social_media_normalization.php
+│   ├── check_pdo_drivers.php
+│   └── [outros arquivos de teste de banco]
+├── 📂 documentacao/
+│   ├── documentacao_tabela_usuarios.txt
+│   ├── relatorio_normalizacao_completo.md
+│   └── relatorio_remocao_notification_frequency.md
+├── 📂 perfil_usuario/
+│   ├── test-perfil-flow.html
+│   ├── debug-perfil.html
+│   └── [outros arquivos de teste de perfil]
+└── 📂 upload_arquivos/
+    ├── test_avatar_upload.html
+    └── test_upload.html
 
 📂 resolução_problemas/
 ├── 01_foto_perfil_carregamento.txt
