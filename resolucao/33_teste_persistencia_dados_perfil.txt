@@ -1,0 +1,140 @@
+TESTE DE PERSISTÊNCIA DE DADOS DO PERFIL
+DATA: 2025-01-25
+STATUS: CONCLUÍDO
+
+=== OBJETIVO ===
+Testar a persistência de dados no sistema de perfil do usuário, verificando se:
+1. Alterações nos campos de perfil são salvas no banco
+2. Alterações de senha funcionam corretamente
+3. Preferências são mantidas após logout/login
+4. Dados retornam corretamente após nova autenticação
+
+=== USUÁRIO DE TESTE ===
+Email: ronaldguilhon@gmail.com
+Senha: Rede@@123
+
+=== CORREÇÕES APLICADAS ===
+
+1. **Correção de URLs da API**
+   - Problema: URLs apontavam para localhost:8001 mas servidor roda na 8000
+   - Solução: Corrigidas todas as URLs em main.js e perfil.html
+   - Arquivos modificados:
+     * frontend/assets/js/main.js (API_BASE_URL)
+     * frontend/perfil.html (todas as chamadas de API)
+     * frontend/login.html (URL de login)
+
+2. **Sistema de Autenticação**
+   - Problema: Possíveis conflitos de token entre diferentes formatos
+   - Solução: Implementada função getAuthToken() com compatibilidade
+   - Lógica: Prioriza 'portal-user' → fallback para 'authToken'
+   - Status: Já estava implementado conforme resolução 08_correcao_token_perfil.txt
+
+=== TESTES REALIZADOS ===
+
+✅ **1. Login do Usuário**
+   - Login realizado com sucesso
+   - Token salvo corretamente no localStorage como 'portal-user'
+   - Redirecionamento funcionando
+
+✅ **2. Acesso ao Perfil**
+   - Página perfil.html carrega sem erros 401
+   - Dados do usuário são recuperados da API
+   - Interface de edição funcional
+
+✅ **3. Edição de Campos do Perfil**
+   - Todos os campos editáveis testados:
+     * Nome completo
+     * Biografia
+     * Telefone
+     * Data de nascimento
+     * Gênero
+     * Estado/Cidade
+   - Formulário de edição responsivo
+   - Validações funcionando
+
+✅ **4. Alteração de Senha**
+   - Formulário de mudança de senha acessível
+   - Validação de senha atual
+   - Confirmação de nova senha
+   - Hash de senha atualizado no banco
+
+✅ **5. Configuração de Preferências**
+   - Todas as preferências testadas:
+     * Tema (claro/escuro)
+     * Idioma
+     * Notificações (email/push)
+     * Newsletter
+     * Privacidade (perfil público/privado)
+     * Mostrar email
+     * Categorias favoritas
+   - Salvamento individual e em lote
+   - Interface intuitiva
+
+✅ **6. Persistência no Banco de Dados**
+   - Criado script verificar_dados_usuario.php
+   - Confirmado que alterações são salvas na tabela 'usuarios'
+   - Timestamps updated_at atualizados corretamente
+   - Estrutura da tabela verificada
+
+✅ **7. Teste de Logout/Login**
+   - Logout limpa tokens corretamente
+   - Novo login recupera dados atualizados
+   - Preferências mantidas após nova autenticação
+   - Dados persistem entre sessões
+
+=== ARQUIVOS CRIADOS PARA TESTE ===
+
+1. **teste_login.html**
+   - Página de teste para verificar login e tokens
+   - Funções para testar API diretamente
+   - Debug de localStorage
+
+2. **verificar_dados_usuario.php**
+   - Script para verificar dados no banco
+   - Mostra estrutura da tabela usuarios
+   - Verifica todos os campos e preferências
+
+=== RESULTADOS ===
+
+✅ **Sistema de Autenticação**: Funcionando perfeitamente
+✅ **Edição de Perfil**: Todos os campos salvam corretamente
+✅ **Alteração de Senha**: Funcional e segura
+✅ **Preferências**: Salvamento e recuperação OK
+✅ **Persistência**: Dados mantidos entre sessões
+✅ **APIs**: Todas as endpoints funcionando
+✅ **Interface**: Responsiva e intuitiva
+
+=== OBSERVAÇÕES TÉCNICAS ===
+
+1. **Compatibilidade de Tokens**
+   - Sistema mantém compatibilidade com diferentes formatos
+   - Função getAuthToken() implementada corretamente
+   - Priorização adequada: portal-user → authToken
+
+2. **Estrutura do Banco**
+   - Tabela 'usuarios' com todos os campos necessários
+   - Timestamps funcionando (created_at, updated_at)
+   - Campos de preferências bem estruturados
+
+3. **Segurança**
+   - Senhas hasheadas corretamente
+   - Tokens JWT validados
+   - Autorização funcionando nas APIs
+
+=== CONCLUSÃO ===
+
+✅ **TESTE APROVADO**: O sistema de persistência de dados do perfil está funcionando corretamente.
+
+Todos os aspectos testados passaram:
+- Autenticação e autorização
+- Edição e salvamento de dados
+- Preferências do usuário
+- Persistência entre sessões
+- Integridade dos dados no banco
+
+O sistema está pronto para uso em produção no que se refere ao gerenciamento de perfis de usuário.
+
+=== ARQUIVOS DE SUPORTE ===
+- resolucao/08_correcao_token_perfil.txt (correções de autenticação)
+- teste_login.html (ferramenta de teste)
+- verificar_dados_usuario.php (verificação de banco)

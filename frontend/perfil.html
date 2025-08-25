@@ -848,7 +848,7 @@
                 }
                 
                 console.log('📡 Fazendo requisição para API...');
-                const response = await fetch('http://localhost:8001/api/user/profile', {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -976,7 +976,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/profile', {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1042,7 +1042,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/change-password', {
+                const response = await fetch('http://localhost:8000/api/user/change-password', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1099,12 +1099,21 @@
                     return;
                 }
                 
-                // Collect all preferences
+                // Collect favorite categories
+                const categoryCheckboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                const selectedCategories = [];
+                categoryCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedCategories.push(checkbox.value);
+                    }
+                });
+                
+                // Collect all preferences in the format expected by backend
                 const preferences = {
                     notifications: {
-                        email_notifications: document.getElementById('email-notifications')?.checked || false,
-                        push_notifications: document.getElementById('push-notifications')?.checked || false,
-                        email_newsletter: document.getElementById('newsletter')?.checked || false
+                        email: document.getElementById('email-notifications')?.checked || false,
+                        push: document.getElementById('push-notifications')?.checked || false,
+                        newsletter: document.getElementById('newsletter')?.checked || false
                     },
                     privacy: {
                         profile_public: document.getElementById('profile-public')?.checked || false,
@@ -1115,21 +1124,12 @@
                         show_images: document.getElementById('show-images')?.checked || false,
                         auto_play_videos: document.getElementById('auto-play-videos')?.checked || false,
                         dark_mode: document.getElementById('dark-mode')?.checked || false,
-                        language_preference: document.getElementById('language-preference')?.value || 'pt-BR'
-                    }
+                        language: document.getElementById('language-preference')?.value || 'pt-BR'
+                    },
+                    favorite_categories: selectedCategories
                 };
                 
-                // Collect favorite categories
-                const categoryCheckboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
-                const selectedCategories = [];
-                categoryCheckboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        selectedCategories.push(checkbox.value);
-                    }
-                });
-                preferences.content.favorite_categories = selectedCategories;
-                
-                const response = await fetch('http://localhost:8001/api/user/preferences', {
+                const response = await fetch('http://localhost:8000/api/user/preferences', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1194,7 +1194,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/avatar', {
+                const response = await fetch('http://localhost:8000/api/user/avatar', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

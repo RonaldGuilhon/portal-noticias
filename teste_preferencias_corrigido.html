@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Preferências Corrigido</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Teste de Preferências - Formato Corrigido</h1>
+    
+    <div id="status" class="result info">
+        ⏳ Aguardando teste...
+    </div>
+    
+    <button onclick="testarPreferencias()">🧪 Testar Salvamento de Preferências</button>
+    <button onclick="limparResultados()">🗑️ Limpar Resultados</button>
+    
+    <div id="resultado"></div>
+    
+    <script>
+        function getAuthToken() {
+            let token = null;
+            
+            // Tentar obter de portal-user primeiro
+            const portalUser = localStorage.getItem('portal-user');
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                } catch (e) {
+                    console.log('Erro ao parsear portal-user:', e);
+                }
+            }
+            
+            // Fallback para authToken
+            if (!token) {
+                token = localStorage.getItem('authToken');
+            }
+            
+            return token;
+        }
+        
+        async function testarPreferencias() {
+            const statusDiv = document.getElementById('status');
+            const resultadoDiv = document.getElementById('resultado');
+            
+            statusDiv.innerHTML = '🔄 Executando teste...';
+            statusDiv.className = 'result info';
+            
+            try {
+                const token = getAuthToken();
+                if (!token) {
+                    statusDiv.innerHTML = '❌ Token não encontrado. Faça login primeiro.';
+                    statusDiv.className = 'result error';
+                    return;
+                }
+                
+                console.log('🔑 Token encontrado:', token.substring(0, 20) + '...');
+                
+                // Dados no formato CORRIGIDO que o backend espera
+                const preferences = {
+                    notifications: {
+                        email: true,
+                        push: false,
+                        newsletter: true
+                    },
+                    privacy: {
+                        profile_public: true,
+                        show_activity: false,
+                        allow_messages: true
+                    },
+                    content: {
+                        show_images: true,
+                        auto_play_videos: false,
+                        dark_mode: false,
+                        language: 'pt-BR'
+                    },
+                    favorite_categories: [1, 2, 3]
+                };
+                
+                console.log('📤 Enviando dados:', preferences);
+                
+                const response = await fetch('http://localhost:8000/api/user/preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(preferences)
+                });
+                
+                console.log('📡 Status da resposta:', response.status);
+                
+                const responseText = await response.text();
+                console.log('📋 Resposta completa:', responseText);
+                
+                let responseData;
+                try {
+                    responseData = JSON.parse(responseText);
+                } catch (e) {
+                    responseData = { raw: responseText };
+                }
+                
+                if (response.ok) {
+                    statusDiv.innerHTML = '✅ Teste concluído com SUCESSO!';
+                    statusDiv.className = 'result success';
+                    
+                    resultadoDiv.innerHTML = `
+                        <h3>✅ Resultado do Teste</h3>
+                        <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                        <p><strong>Dados enviados:</strong></p>
+                        <pre>${JSON.stringify(preferences, null, 2)}</pre>
+                        <p><strong>Resposta do servidor:</strong></p>
+                        <pre>${JSON.stringify(responseData, null, 2)}</pre>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `❌ Erro ${response.status}: ${response.statusText}`;
+                    statusDiv.className = 'result error';
+                    
+                    resultadoDiv.innerHTML = `
+                        <h3>❌ Erro no Teste</h3>
+                        <p><strong>Status:</strong> ${response.status} ${response.statusText}</p>
+                        <p><strong>Dados enviados:</strong></p>
+                        <pre>${JSON.stringify(preferences, null, 2)}</pre>
+                        <p><strong>Resposta do servidor:</strong></p>
+                        <pre>${responseText}</pre>
+                        <p><strong>Possíveis causas:</strong></p>
+                        <ul>
+                            <li>Token inválido ou expirado</li>
+                            <li>Formato de dados incorreto</li>
+                            <li>Erro no backend</li>
+                            <li>Problema de CORS</li>
+                        </ul>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro na requisição:', error);
+                statusDiv.innerHTML = `❌ Erro na requisição: ${error.message}`;
+                statusDiv.className = 'result error';
+                
+                resultadoDiv.innerHTML = `
+                    <h3>❌ Erro de Conexão</h3>
+                    <p><strong>Erro:</strong> ${error.message}</p>
+                    <p><strong>Verifique:</strong></p>
+                    <ul>
+                        <li>Se o servidor está rodando na porta 8000</li>
+                        <li>Se não há problemas de CORS</li>
+                        <li>Se a URL da API está correta</li>
+                    </ul>
+                `;
+            }
+        }
+        
+        function limparResultados() {
+            document.getElementById('status').innerHTML = '⏳ Aguardando teste...';
+            document.getElementById('status').className = 'result info';
+            document.getElementById('resultado').innerHTML = '';
+        }
+        
+        // Verificar token ao carregar a página
+        window.onload = function() {
+            const token = getAuthToken();
+            if (token) {
+                console.log('✅ Token encontrado no localStorage');
+            } else {
+                console.log('❌ Token não encontrado no localStorage');
+            }
+        };
+    </script>
+</body>
+</html>

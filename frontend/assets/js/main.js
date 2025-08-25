@@ -5,7 +5,7 @@
 
 // Configurações globais
 const CONFIG = {
-    API_BASE_URL: 'http://localhost:8001',
+    API_BASE_URL: 'http://localhost:8000',
     ITEMS_PER_PAGE: 12,
     DEBOUNCE_DELAY: 300,
     ANIMATION_DURATION: 300,

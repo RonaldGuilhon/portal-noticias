@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Login</title>
+</head>
+<body>
+    <h1>Teste de Login e Token</h1>
+    
+    <div>
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" value="ronaldguilhon@gmail.com">
+        <input type="password" id="password" placeholder="Senha" value="Rede@@123">
+        <button onclick="fazerLogin()">Login</button>
+    </div>
+    
+    <div>
+        <h2>Verificar Token</h2>
+        <button onclick="verificarToken()">Verificar Token no localStorage</button>
+        <div id="tokenInfo"></div>
+    </div>
+    
+    <div>
+        <h2>Testar API Perfil</h2>
+        <button onclick="testarAPIPerfil()">Testar API /api/user/profile</button>
+        <div id="apiResult"></div>
+    </div>
+
+    <script>
+        async function fazerLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                console.log('Resultado do login:', result);
+                
+                if (result.success) {
+                    const userData = { ...result.usuario, token: result.token };
+                    localStorage.setItem('portal-user', JSON.stringify(userData));
+                    alert('Login realizado com sucesso!');
+                    verificarToken();
+                } else {
+                    alert('Erro no login: ' + result.mensagem);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro de conexão');
+            }
+        }
+        
+        function verificarToken() {
+            const portalUser = localStorage.getItem('portal-user');
+            const authToken = localStorage.getItem('authToken');
+            
+            let info = '<h3>Tokens no localStorage:</h3>';
+            info += '<p><strong>portal-user:</strong> ' + (portalUser ? 'EXISTE' : 'NÃO EXISTE') + '</p>';
+            info += '<p><strong>authToken:</strong> ' + (authToken ? 'EXISTE' : 'NÃO EXISTE') + '</p>';
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    info += '<p><strong>Token em portal-user:</strong> ' + (userData.token ? 'SIM' : 'NÃO') + '</p>';
+                    info += '<p><strong>Dados do usuário:</strong> ' + JSON.stringify(userData, null, 2) + '</p>';
+                } catch (e) {
+                    info += '<p><strong>Erro ao parsear portal-user:</strong> ' + e.message + '</p>';
+                }
+            }
+            
+            document.getElementById('tokenInfo').innerHTML = info;
+        }
+        
+        async function testarAPIPerfil() {
+            let token = null;
+            const portalUser = localStorage.getItem('portal-user');
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                } catch (e) {
+                    console.log('Erro ao parsear portal-user:', e);
+                }
+            }
+            
+            if (!token) {
+                token = localStorage.getItem('authToken');
+            }
+            
+            if (!token) {
+                document.getElementById('apiResult').innerHTML = '<p style="color: red;">Nenhum token encontrado!</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                console.log('Resultado da API:', result);
+                
+                let resultHtml = '<h3>Resultado da API:</h3>';
+                resultHtml += '<p><strong>Status:</strong> ' + response.status + '</p>';
+                resultHtml += '<p><strong>Resposta:</strong> ' + JSON.stringify(result, null, 2) + '</p>';
+                
+                document.getElementById('apiResult').innerHTML = resultHtml;
+            } catch (error) {
+                console.error('Erro na API:', error);
+                document.getElementById('apiResult').innerHTML = '<p style="color: red;">Erro na API: ' + error.message + '</p>';
+            }
+        }
+        
+        // Verificar token ao carregar a página
+        window.onload = function() {
+            verificarToken();
+        };
+    </script>
+</body>
+</html>
