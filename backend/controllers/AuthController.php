@@ -34,9 +34,10 @@ class AuthController {
      */
     public function processarRequisicao() {
         // Headers CORS
-        header('Access-Control-Allow-Origin: *');
+        header('Access-Control-Allow-Origin: http://localhost:8000');
         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
         header('Content-Type: application/json');
         
         // Handle preflight requests
@@ -120,6 +121,12 @@ class AuthController {
                         break;
                     case 'notifications':
                         $this->atualizarNotificacoes();
+                        break;
+                    case 'individual-preference':
+                        $this->atualizarPreferenciaIndividual();
+                        break;
+                    case 'favorite-categories':
+                        $this->atualizarCategoriasFavoritas();
                         break;
                     default:
                         jsonResponse(['erro' => 'Ação não encontrada'], 404);
@@ -211,6 +218,10 @@ class AuthController {
             $this->usuario->senha = $dados['senha'] ?? '';
             $this->usuario->data_nascimento = !empty($dados['data_nascimento']) ? $dados['data_nascimento'] : null;
             $this->usuario->genero = !empty($dados['genero']) ? $dados['genero'] : null;
+            $this->usuario->telefone = !empty($dados['telefone']) ? $dados['telefone'] : null;
+            $this->usuario->bio = !empty($dados['biografia']) ? $dados['biografia'] : null;
+            $this->usuario->cidade = !empty($dados['cidade']) ? $dados['cidade'] : null;
+            $this->usuario->estado = !empty($dados['estado']) ? $dados['estado'] : null;
             $this->usuario->email_newsletter = isset($dados['newsletter']) ? (bool)$dados['newsletter'] : false;
             
             // Processar preferências (categorias de interesse)
@@ -515,6 +526,9 @@ class AuthController {
             $usuario = $this->verificarToken();
             if (!$usuario) return;
             
+            // Recarregar dados atualizados do banco
+            $this->usuario->buscarPorId($usuario['id']);
+            
             jsonResponse([
                 'success' => true,
                 'data' => [
@@ -540,6 +554,9 @@ class AuthController {
                     'dark_mode' => (bool)$this->usuario->dark_mode,
                     
                     // Configurações de notificação
+                    'email_notifications' => (bool)$this->usuario->email_newsletter,
+                    'push_notifications' => (bool)$this->usuario->push_breaking,
+                    'newsletter' => (bool)$this->usuario->email_marketing,
                     'email_newsletter' => (bool)$this->usuario->email_newsletter,
                     'email_breaking' => (bool)$this->usuario->email_breaking,
                     'email_comments' => (bool)$this->usuario->email_comments,
@@ -551,7 +568,11 @@ class AuthController {
                     // Configurações de privacidade
                     'profile_public' => (bool)$this->usuario->profile_public,
                     'show_activity' => (bool)$this->usuario->show_activity,
-                    'allow_messages' => (bool)$this->usuario->allow_messages
+                    'allow_messages' => (bool)$this->usuario->allow_messages,
+                    
+                    // Preferências de conteúdo
+                    'favorite_categories' => json_decode($this->usuario->favorite_categories ?? '[]', true),
+                    'language_preference' => $this->usuario->language_preference ?? 'pt-BR'
                 ]
             ]);
         } catch(Exception $e) {
@@ -671,7 +692,7 @@ class AuthController {
                 jsonResponse(['erro' => 'Senha deve ter pelo menos ' . PASSWORD_MIN_LENGTH . ' caracteres'], 400);
             }
 
-            $this->usuario->id = $_SESSION['usuario_id'];
+            $this->usuario->id = $_SESSION["usuario_id"];
             
             if($this->usuario->alterarSenha($senha_atual, $nova_senha)) {
                 jsonResponse([
@@ -970,25 +991,59 @@ class AuthController {
         $input = json_decode(file_get_contents('php://input'), true);
         
         try {
-            // Coletar preferências de categorias
-            $preferencias = $input['preferencias'] ?? [];
+            // Preparar dados para atualização
+            $updateData = [];
+            $updateFields = [];
             
-            $stmt = $this->db->prepare("
-                UPDATE usuarios 
-                SET preferencias = ?,
-                    show_images = ?,
-                    auto_play_videos = ?,
-                    dark_mode = ?
-                WHERE id = ?
-            ");
+            // Notificações
+            if (isset($input['notifications'])) {
+                $notifications = $input['notifications'];
+                $updateFields[] = "email_notifications = ?";
+                $updateData[] = isset($notifications['email']) ? 1 : 0;
+                $updateFields[] = "push_notifications = ?";
+                $updateData[] = isset($notifications['push']) ? 1 : 0;
+                $updateFields[] = "newsletter = ?";
+                $updateData[] = isset($notifications['newsletter']) ? 1 : 0;
+            }
             
-            $stmt->execute([
-                json_encode($preferencias),
-                isset($input['show_images']) ? 1 : 0,
-                isset($input['auto_play_videos']) ? 1 : 0,
-                isset($input['dark_mode']) ? 1 : 0,
-                $usuario['id']
-            ]);
+            // Privacidade
+            if (isset($input['privacy'])) {
+                $privacy = $input['privacy'];
+                $updateFields[] = "profile_public = ?";
+                $updateData[] = isset($privacy['profile_public']) ? 1 : 0;
+                $updateFields[] = "show_activity = ?";
+                $updateData[] = isset($privacy['show_activity']) ? 1 : 0;
+                $updateFields[] = "allow_messages = ?";
+                $updateData[] = isset($privacy['allow_messages']) ? 1 : 0;
+            }
+            
+            // Preferências de conteúdo
+            if (isset($input['content'])) {
+                $content = $input['content'];
+                $updateFields[] = "show_images = ?";
+                $updateData[] = isset($content['show_images']) ? 1 : 0;
+                $updateFields[] = "auto_play_videos = ?";
+                $updateData[] = isset($content['auto_play_videos']) ? 1 : 0;
+                $updateFields[] = "dark_mode = ?";
+                $updateData[] = isset($content['dark_mode']) ? 1 : 0;
+                $updateFields[] = "language_preference = ?";
+                $updateData[] = $content['language'] ?? 'pt-BR';
+            }
+            
+            // Categorias favoritas
+            if (isset($input['favorite_categories'])) {
+                $updateFields[] = "favorite_categories = ?";
+                $updateData[] = json_encode($input['favorite_categories']);
+            }
+            
+            // Adicionar ID do usuário
+            $updateData[] = $usuario['id'];
+            
+            if (!empty($updateFields)) {
+                $sql = "UPDATE usuarios SET " . implode(", ", $updateFields) . " WHERE id = ?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute($updateData);
+            }
 
             jsonResponse([
                 'success' => true,
@@ -1040,6 +1095,103 @@ class AuthController {
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar notificações: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Atualizar preferência individual
+     */
+    private function atualizarPreferenciaIndividual() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        // Aceitar tanto o formato antigo (preference) quanto o novo (key)
+        $preference = $input['preference'] ?? $input['key'] ?? '';
+        $value = $input['value'] ?? false;
+        
+        if (empty($preference)) {
+            jsonResponse(['erro' => 'Preferência não especificada'], 400);
+            return;
+        }
+        
+        try {
+            // Mapear preferências para colunas do banco
+            $columnMap = [
+                // Notificações por email
+                'email_newsletter' => 'email_newsletter',
+                'email_breaking' => 'email_breaking',
+                'email_comments' => 'email_comments',
+                'email_marketing' => 'email_marketing',
+                'email_notifications' => 'email_newsletter',
+                'newsletter' => 'email_marketing',
+                
+                // Notificações push
+                'push_breaking' => 'push_breaking',
+                'push_interests' => 'push_interests',
+                'push_comments' => 'push_comments',
+                'push_notifications' => 'push_breaking',
+                
+                // Privacidade
+                'profile_public' => 'profile_public',
+                'public_profile' => 'profile_public',
+                'show_activity' => 'show_activity',
+                'allow_messages' => 'allow_messages',
+                
+                // Idioma
+                'language' => 'language_preference',
+                'language_preference' => 'language_preference'
+            ];
+            
+            if (!isset($columnMap[$preference])) {
+                jsonResponse(['erro' => 'Preferência inválida'], 400);
+                return;
+            }
+            
+            $column = $columnMap[$preference];
+            
+            // Para idioma, o valor é uma string; para outros, é boolean
+            if ($preference === 'language') {
+                $stmt = $this->db->prepare("UPDATE usuarios SET {$column} = ? WHERE id = ?");
+                $stmt->execute([$value, $usuario['id']]);
+            } else {
+                $stmt = $this->db->prepare("UPDATE usuarios SET {$column} = ? WHERE id = ?");
+                $stmt->execute([$value ? 1 : 0, $usuario['id']]);
+            }
+
+            jsonResponse([
+                'success' => true,
+                'message' => 'Preferência atualizada com sucesso'
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao atualizar preferência individual: " . $e->getMessage());
+            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+        }
+    }
+
+    /**
+     * Atualizar categorias favoritas
+     */
+    private function atualizarCategoriasFavoritas() {
+        $usuario = $this->verificarToken();
+        if (!$usuario) return;
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        $categories = $input['categories'] ?? [];
+        
+        try {
+            $stmt = $this->db->prepare("UPDATE usuarios SET preferencias = ? WHERE id = ?");
+            $stmt->execute([json_encode($categories), $usuario['id']]);
+
+            jsonResponse([
+                'success' => true,
+                'message' => 'Categorias favoritas atualizadas com sucesso'
+            ]);
+        } catch (Exception $e) {
+            logError("Erro ao atualizar categorias favoritas: " . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
         }
     }

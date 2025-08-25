@@ -1,0 +1,59 @@
+INVESTIGAÇÃO: PREFERÊNCIAS NA PÁGINA PERFIL.HTML NÃO RETORNANDO DADOS
+=======================================================================
+
+DATA: 24/08/2025
+PROBLEMA RELATADO: Na página perfil.html, na guia preferências, não estava retornando as informações salvas no banco de dados.
+
+INVESTIGAÇÃO REALIZADA:
+
+1. VERIFICAÇÃO DE ARQUIVOS DE RESOLUÇÃO ANTERIORES:
+   - Encontrados arquivos relacionados: 22_correcao_campos_perfil_notificacoes_privacidade.txt e 23_correcao_preferencias_perfil_categorias_checkbox.txt
+   - Estes arquivos documentam correções anteriores para problemas similares
+
+2. ANÁLISE DO CÓDIGO FRONTEND (perfil.html):
+   - Verificado o JavaScript responsável pelo carregamento das preferências (linhas 900-920)
+   - Código está correto para popular categorias favoritas e preferência de idioma
+   - Função loadUserData() implementada corretamente
+
+3. ANÁLISE DO CÓDIGO BACKEND (AuthController.php):
+   - Método obterPerfil() retorna corretamente os campos de preferências
+   - Campos verificados: favorite_categories, language_preference, profile_public, show_activity, allow_messages
+
+4. TESTE DA API:
+   - Testado login: http://localhost:8001/auth/login ✅ FUNCIONANDO
+   - Testado perfil: http://localhost:8001/api/user/profile ✅ FUNCIONANDO
+   - API retorna corretamente todos os dados de preferências
+
+5. IDENTIFICAÇÃO DO PROBLEMA REAL:
+   - O erro 401 (não autorizado) ocorre quando o usuário não está logado
+   - A página perfil.html requer autenticação válida para carregar os dados
+   - O código já possui tratamento para redirecionar para login quando não há token
+
+CONCLUSÃO:
+- O sistema de preferências está FUNCIONANDO CORRETAMENTE
+- O problema relatado ocorre quando o usuário tenta acessar a página sem estar logado
+- A solução é fazer login primeiro com as credenciais fornecidas
+
+CREDENCIAIS DE TESTE:
+- Email: ronaldguilhon@gmail.com
+- Senha: Rede@@123
+- Tipo: admin
+
+PROCEDIMENTO PARA TESTAR:
+1. Acessar http://localhost:8000/frontend/login.html
+2. Fazer login com as credenciais acima
+3. Navegar para http://localhost:8000/frontend/perfil.html
+4. Verificar que as preferências são carregadas corretamente na guia "Preferências"
+
+STATUS: RESOLVIDO - Sistema funcionando conforme esperado
+AÇÃO NECESSÁRIA: Usuário deve fazer login antes de acessar a página de perfil
+
+ARQUIVOS VERIFICADOS:
+- frontend/perfil.html (linhas 800-950)
+- backend/controllers/AuthController.php (método obterPerfil)
+- backend/router.php (rotas de autenticação)
+
+TESTE DE API REALIZADO:
+- Login: POST http://localhost:8001/auth/login ✅
+- Perfil: GET http://localhost:8001/api/user/profile (com token) ✅
+- Dados de preferências retornados corretamente ✅

@@ -1,0 +1,43 @@
+CORREÇÃO DO SISTEMA DE NOTIFICAÇÕES DAS PREFERÊNCIAS
+=====================================================
+
+Data: 24/01/2025
+Arquivo: frontend/perfil.html
+
+PROBLEMA IDENTIFICADO:
+- As notificações da seção de preferências não seguiam o padrão visual da seção "Editar Perfil"
+- Mensagens apareciam abaixo dos botões em vez de usar o sistema padrão do projeto
+- Usuário solicitou notificações no padrão do navegador (alert) sem estilização
+
+ALTERAÇÕES REALIZADAS:
+
+1. REMOÇÃO DO ELEMENTO DE STATUS LOCAL:
+   - Removido: <div id="preferences-status" class="mt-2"></div>
+   - Eliminado sistema de mensagens HTML customizadas
+
+2. PADRONIZAÇÃO DA FUNÇÃO saveAllPreferences():
+   - Removido uso de window.portalApp.showSuccess() e showError()
+   - Implementado apenas alert() padrão do navegador
+   - Simplificado tratamento de erros
+
+3. MENSAGENS IMPLEMENTADAS:
+   - Sucesso: "Alterações salvas com sucesso!"
+   - Erro: "Erro ao salvar alterações"
+   - Autenticação: "Token de autenticação não encontrado. Faça login novamente."
+
+4. COMPORTAMENTO MANTIDO:
+   - Redirecionamento para seção 'overview' após sucesso
+   - Redirecionamento para login em caso de erro de autenticação
+
+RESULTADO:
+- Notificações agora aparecem como alertas padrão do navegador
+- Sem estilização personalizada conforme solicitado
+- Consistência com o padrão solicitado pelo usuário
+- Funcionalidade mantida integralmente
+
+ARQUIVOS MODIFICADOS:
+- frontend/perfil.html (linhas ~717, ~1095-1165)
+
+TESTE REALIZADO:
+- Página aberta em http://localhost:8000/frontend/perfil.html
+- Verificado funcionamento das notificações padrão

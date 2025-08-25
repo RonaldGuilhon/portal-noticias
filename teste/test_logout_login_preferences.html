@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Logout/Login e Preferências</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; border-radius: 3px; }
+        .checkbox-group { margin: 10px 0; }
+        .checkbox-group input { margin-right: 10px; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .step { background: #e9ecef; padding: 10px; margin: 10px 0; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Teste Completo: Logout → Login → Carregamento de Preferências</h1>
+    
+    <div class="section">
+        <h2>📋 Status Atual</h2>
+        <div id="current-status"></div>
+        <button onclick="checkCurrentStatus()">Verificar Status Atual</button>
+    </div>
+    
+    <div class="section">
+        <h2>🚪 Passo 1: Logout (Limpar Dados)</h2>
+        <div class="step">Este passo remove todos os tokens e dados do localStorage</div>
+        <button onclick="doLogout()">Fazer Logout</button>
+        <div id="logout-result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>🔑 Passo 2: Login Novamente</h2>
+        <div class="step">Login com as credenciais e obtenção de novo token</div>
+        <button onclick="doLogin()">Fazer Login</button>
+        <div id="login-result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>👤 Passo 3: Carregar Perfil</h2>
+        <div class="step">Carregar dados do perfil usando o novo token</div>
+        <button onclick="loadProfile()">Carregar Perfil</button>
+        <div id="profile-result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>⚙️ Passo 4: Testar Preferências</h2>
+        <div class="step">Verificar se as preferências são carregadas nos elementos HTML</div>
+        
+        <h3>Categorias Favoritas:</h3>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="favorite_categories[]" value="1"> Política</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="2"> Economia</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="3"> Esportes</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="4"> Tecnologia</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="5"> Saúde</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="6"> Entretenimento</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="7"> Mundo</label><br>
+        </div>
+        
+        <h3>Preferência de Idioma:</h3>
+        <select id="language-preference">
+            <option value="">Selecione...</option>
+            <option value="pt-BR">Português (Brasil)</option>
+            <option value="en-US">English (US)</option>
+            <option value="es-ES">Español</option>
+        </select>
+        
+        <br><br>
+        <button onclick="testPreferencesPopulation()">Popular Preferências</button>
+        <div id="preferences-result"></div>
+    </div>
+    
+    <div class="section">
+        <h2>🔄 Teste Automático Completo</h2>
+        <div class="step">Executa todos os passos automaticamente</div>
+        <button onclick="runFullTest()">Executar Teste Completo</button>
+        <div id="full-test-result"></div>
+    </div>
+
+    <script>
+        let currentToken = null;
+        let profileData = null;
+        
+        function checkCurrentStatus() {
+            const resultDiv = document.getElementById('current-status');
+            
+            const authToken = localStorage.getItem('authToken');
+            const portalUser = localStorage.getItem('portal-user');
+            
+            let status = [];
+            status.push('=== STATUS ATUAL DO LOCALSTORAGE ===');
+            status.push(`authToken: ${authToken ? 'PRESENTE (' + authToken.substring(0, 30) + '...)' : 'AUSENTE'}`);
+            status.push(`portal-user: ${portalUser ? 'PRESENTE' : 'AUSENTE'}`);
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    status.push(`Dados do usuário: ${JSON.stringify(userData, null, 2)}`);
+                } catch (e) {
+                    status.push(`Erro ao parsear portal-user: ${e.message}`);
+                }
+            }
+            
+            resultDiv.innerHTML = `<pre>${status.join('\n')}</pre>`;
+        }
+        
+        function doLogout() {
+            const resultDiv = document.getElementById('logout-result');
+            
+            // Limpar todos os dados do localStorage
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('portal-user');
+            localStorage.clear(); // Limpa tudo para garantir
+            
+            // Resetar variáveis
+            currentToken = null;
+            profileData = null;
+            
+            // Limpar checkboxes e select
+            document.querySelectorAll('input[name="favorite_categories[]"]').forEach(cb => cb.checked = false);
+            document.getElementById('language-preference').value = '';
+            
+            resultDiv.innerHTML = `
+                <p class="success">✅ Logout realizado com sucesso!</p>
+                <p class="info">• localStorage limpo</p>
+                <p class="info">• Tokens removidos</p>
+                <p class="info">• Formulários resetados</p>
+            `;
+        }
+        
+        async function doLogin() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '<p class="info">🔄 Fazendo login...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8001/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'ronaldguilhon@gmail.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        currentToken = result.token;
+                        
+                        // Salvar no localStorage como o sistema real faz
+                        localStorage.setItem('authToken', currentToken);
+                        localStorage.setItem('portal-user', JSON.stringify({
+                            token: currentToken,
+                            user: result.usuario
+                        }));
+                        
+                        resultDiv.innerHTML = `
+                            <p class="success">✅ Login realizado com sucesso!</p>
+                            <p class="info">• Token: ${currentToken.substring(0, 50)}...</p>
+                            <p class="info">• Usuário: ${result.usuario.nome}</p>
+                            <p class="info">• Dados salvos no localStorage</p>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<p class="error">❌ Erro no login: ${result.mensagem}</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erro HTTP: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro na requisição: ${error.message}</p>`;
+            }
+        }
+        
+        async function loadProfile() {
+            const resultDiv = document.getElementById('profile-result');
+            
+            if (!currentToken) {
+                resultDiv.innerHTML = '<p class="error">❌ Faça login primeiro!</p>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p class="info">🔄 Carregando perfil...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        profileData = result.data;
+                        
+                        resultDiv.innerHTML = `
+                            <p class="success">✅ Perfil carregado com sucesso!</p>
+                            <p class="info">• Nome: ${result.data.nome}</p>
+                            <p class="info">• Email: ${result.data.email}</p>
+                            <p class="info">• Categorias favoritas: ${JSON.stringify(result.data.favorite_categories)}</p>
+                            <p class="info">• Idioma: ${result.data.language_preference}</p>
+                            <details>
+                                <summary>Ver dados completos</summary>
+                                <pre>${JSON.stringify(result.data, null, 2)}</pre>
+                            </details>
+                        `;
+                    } else {
+                        resultDiv.innerHTML = `<p class="error">❌ Erro: ${result.mensagem}</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erro HTTP: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro na requisição: ${error.message}</p>`;
+            }
+        }
+        
+        function testPreferencesPopulation() {
+            const resultDiv = document.getElementById('preferences-result');
+            
+            if (!profileData) {
+                resultDiv.innerHTML = '<p class="error">❌ Carregue o perfil primeiro!</p>';
+                return;
+            }
+            
+            let log = [];
+            
+            // Testar categorias favoritas
+            log.push('=== TESTANDO CATEGORIAS FAVORITAS ===');
+            log.push(`Dados recebidos: ${JSON.stringify(profileData.favorite_categories)}`);
+            
+            if (profileData.favorite_categories) {
+                const favoriteCategories = Array.isArray(profileData.favorite_categories) ? 
+                    profileData.favorite_categories : 
+                    JSON.parse(profileData.favorite_categories || '[]');
+                    
+                log.push(`Categorias processadas: ${JSON.stringify(favoriteCategories)}`);
+                
+                const checkboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                log.push(`Checkboxes encontrados: ${checkboxes.length}`);
+                
+                let markedCount = 0;
+                checkboxes.forEach(checkbox => {
+                    const isChecked = favoriteCategories.includes(parseInt(checkbox.value));
+                    checkbox.checked = isChecked;
+                    if (isChecked) markedCount++;
+                    log.push(`Checkbox ${checkbox.value}: ${isChecked ? 'MARCADO ✅' : 'DESMARCADO ❌'}`);
+                });
+                
+                log.push(`Total de checkboxes marcados: ${markedCount}`);
+            }
+            
+            // Testar preferência de idioma
+            log.push('\n=== TESTANDO PREFERÊNCIA DE IDIOMA ===');
+            log.push(`Idioma recebido: ${profileData.language_preference}`);
+            
+            const languageSelect = document.getElementById('language-preference');
+            if (languageSelect && profileData.language_preference) {
+                languageSelect.value = profileData.language_preference;
+                log.push(`Idioma definido para: ${profileData.language_preference}`);
+                log.push(`Valor atual do select: ${languageSelect.value}`);
+                log.push(`Status: ${languageSelect.value === profileData.language_preference ? 'CORRETO ✅' : 'INCORRETO ❌'}`);
+            }
+            
+            const success = log.filter(line => line.includes('✅')).length > 0;
+            
+            resultDiv.innerHTML = `
+                <p class="${success ? 'success' : 'error'}">${success ? '✅' : '❌'} Teste de população ${success ? 'bem-sucedido' : 'falhou'}!</p>
+                <details>
+                    <summary>Ver log detalhado</summary>
+                    <pre>${log.join('\n')}</pre>
+                </details>
+            `;
+        }
+        
+        async function runFullTest() {
+            const resultDiv = document.getElementById('full-test-result');
+            resultDiv.innerHTML = '<p class="info">🔄 Executando teste completo...</p>';
+            
+            try {
+                // Passo 1: Logout
+                doLogout();
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Passo 2: Login
+                await doLogin();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Passo 3: Carregar perfil
+                await loadProfile();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Passo 4: Testar preferências
+                testPreferencesPopulation();
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Teste completo finalizado!</p>
+                    <p class="info">Verifique os resultados em cada seção acima.</p>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro durante o teste: ${error.message}</p>`;
+            }
+        }
+        
+        // Verificar status inicial ao carregar a página
+        window.onload = function() {
+            checkCurrentStatus();
+        };
+    </script>
+</body>
+</html>

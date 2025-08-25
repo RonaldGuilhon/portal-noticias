@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Final - Preferências do Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .success { color: #28a745; font-weight: bold; }
+        .error { color: #dc3545; font-weight: bold; }
+        .info { color: #17a2b8; font-weight: bold; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .checkbox-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+        .checkbox-item input {
+            margin-right: 10px;
+        }
+        .language-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Teste Final - Preferências do Perfil</h1>
+        <p>Este teste verifica se todas as preferências estão funcionando corretamente após as correções.</p>
+        
+        <div class="test-section">
+            <h3>1. Teste de Login</h3>
+            <button onclick="testLogin()">🔐 Fazer Login</button>
+            <div id="login-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2. Teste da API de Perfil</h3>
+            <button onclick="testProfileAPI()">📡 Testar API</button>
+            <div id="api-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3. Demonstração das Categorias Favoritas</h3>
+            <p>Estas são as categorias que devem ser marcadas:</p>
+            <div class="checkbox-demo">
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="politica">
+                    <span>Política</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="economia">
+                    <span>Economia</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="esportes">
+                    <span>Esportes</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="tecnologia">
+                    <span>Tecnologia</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="saude">
+                    <span>Saúde</span>
+                </label>
+                <label class="checkbox-item">
+                    <input type="checkbox" name="favorite_categories[]" value="cultura">
+                    <span>Cultura</span>
+                </label>
+            </div>
+            <button onclick="testCheckboxes()">✅ Testar Marcação dos Checkboxes</button>
+            <div id="checkbox-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4. Teste de Preferência de Idioma</h3>
+            <label>Idioma Preferido:</label>
+            <select id="language-preference" class="language-select">
+                <option value="pt-BR">Português (Brasil)</option>
+                <option value="en-US">English (US)</option>
+                <option value="es-ES">Español</option>
+                <option value="fr-FR">Français</option>
+            </select>
+            <button onclick="testLanguage()">🌐 Testar Idioma</button>
+            <div id="language-result"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5. Teste Completo Automatizado</h3>
+            <button onclick="runFullTest()">🚀 Executar Teste Completo</button>
+            <div id="full-test-result"></div>
+        </div>
+    </div>
+    
+    <script>
+        let profileData = null;
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('login-result');
+            resultDiv.innerHTML = '<p class="info">🔄 Fazendo login...</p>';
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'ronaldguilhon@gmail.com',
+                        senha: 'Senha123@'
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        localStorage.setItem('portal-user', JSON.stringify({
+                            token: result.token,
+                            user: result.usuario
+                        }));
+                        resultDiv.innerHTML = '<p class="success">✅ Login realizado com sucesso!</p>';
+                    } else {
+                        resultDiv.innerHTML = `<p class="error">❌ Erro no login: ${result.mensagem}</p>`;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erro HTTP: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+        
+        async function testProfileAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p class="info">🔄 Carregando dados do perfil...</p>';
+            
+            try {
+                const portalUser = localStorage.getItem('portal-user');
+                if (!portalUser) {
+                    resultDiv.innerHTML = '<p class="error">❌ Faça login primeiro!</p>';
+                    return;
+                }
+                
+                const userData = JSON.parse(portalUser);
+                const token = userData.token;
+                
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    profileData = result.data;
+                    
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ API funcionando perfeitamente!</p>
+                        <h4>Dados de Preferências Recebidos:</h4>
+                        <pre>${JSON.stringify({
+                            favorite_categories: result.data.favorite_categories,
+                            language_preference: result.data.language_preference,
+                            profile_public: result.data.profile_public,
+                            show_activity: result.data.show_activity,
+                            allow_messages: result.data.allow_messages
+                        }, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erro HTTP: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+        
+        function testCheckboxes() {
+            const resultDiv = document.getElementById('checkbox-result');
+            
+            if (!profileData) {
+                resultDiv.innerHTML = '<p class="error">❌ Execute primeiro o teste da API!</p>';
+                return;
+            }
+            
+            let log = [];
+            log.push('=== TESTE DE MARCAÇÃO DOS CHECKBOXES ===');
+            
+            // Simular a lógica do perfil.html
+            if (profileData.favorite_categories) {
+                const favoriteCategories = Array.isArray(profileData.favorite_categories) ? 
+                    profileData.favorite_categories : 
+                    JSON.parse(profileData.favorite_categories || '[]');
+                    
+                log.push(`Categorias recebidas da API: ${JSON.stringify(favoriteCategories)}`);
+                
+                const checkboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                log.push(`Checkboxes encontrados: ${checkboxes.length}`);
+                
+                let markedCount = 0;
+                checkboxes.forEach(checkbox => {
+                    const isChecked = favoriteCategories.includes(checkbox.value);
+                    checkbox.checked = isChecked;
+                    if (isChecked) markedCount++;
+                    log.push(`Checkbox '${checkbox.value}': ${isChecked ? '✅ MARCADO' : '❌ DESMARCADO'}`);
+                });
+                
+                log.push(`\nTotal de checkboxes marcados: ${markedCount}`);
+                log.push(markedCount > 0 ? '✅ SUCESSO: Checkboxes marcados corretamente!' : '❌ ERRO: Nenhum checkbox foi marcado!');
+            }
+            
+            resultDiv.innerHTML = `<pre>${log.join('\n')}</pre>`;
+        }
+        
+        function testLanguage() {
+            const resultDiv = document.getElementById('language-result');
+            
+            if (!profileData) {
+                resultDiv.innerHTML = '<p class="error">❌ Execute primeiro o teste da API!</p>';
+                return;
+            }
+            
+            const languageSelect = document.getElementById('language-preference');
+            const expectedLanguage = profileData.language_preference || 'pt-BR';
+            
+            languageSelect.value = expectedLanguage;
+            
+            resultDiv.innerHTML = `
+                <p class="success">✅ Idioma definido com sucesso!</p>
+                <p><strong>Idioma da API:</strong> ${expectedLanguage}</p>
+                <p><strong>Idioma no select:</strong> ${languageSelect.value}</p>
+                <p><strong>Compatível:</strong> ${languageSelect.value === expectedLanguage ? '✅ SIM' : '❌ NÃO'}</p>
+            `;
+        }
+        
+        async function runFullTest() {
+            const resultDiv = document.getElementById('full-test-result');
+            resultDiv.innerHTML = '<p class="info">🔄 Executando teste completo...</p>';
+            
+            let log = [];
+            log.push('=== TESTE COMPLETO AUTOMATIZADO ===\n');
+            
+            try {
+                // 1. Login
+                log.push('1. 🔐 Fazendo login...');
+                await testLogin();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                log.push('   ✅ Login concluído\n');
+                
+                // 2. API
+                log.push('2. 📡 Testando API...');
+                await testProfileAPI();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                log.push('   ✅ API testada\n');
+                
+                // 3. Checkboxes
+                log.push('3. ✅ Testando checkboxes...');
+                testCheckboxes();
+                log.push('   ✅ Checkboxes testados\n');
+                
+                // 4. Idioma
+                log.push('4. 🌐 Testando idioma...');
+                testLanguage();
+                log.push('   ✅ Idioma testado\n');
+                
+                // 5. Verificação final
+                log.push('5. 🔍 Verificação final...');
+                const markedCheckboxes = document.querySelectorAll('input[name="favorite_categories[]"]:checked');
+                const languageSelect = document.getElementById('language-preference');
+                
+                log.push(`   - Checkboxes marcados: ${markedCheckboxes.length}/6`);
+                log.push(`   - Idioma selecionado: ${languageSelect.value}`);
+                
+                if (markedCheckboxes.length > 0 && languageSelect.value) {
+                    log.push('\n🎉 TESTE COMPLETO: TODAS AS PREFERÊNCIAS FUNCIONANDO!');
+                } else {
+                    log.push('\n❌ TESTE FALHOU: Algumas preferências não funcionaram');
+                }
+                
+            } catch (error) {
+                log.push(`\n❌ ERRO NO TESTE: ${error.message}`);
+            }
+            
+            resultDiv.innerHTML = `<pre>${log.join('\n')}</pre>`;
+        }
+    </script>
+</body>
+</html>

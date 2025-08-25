@@ -1,0 +1,77 @@
+CORREÇÕES IMPLEMENTADAS - APIS JSON
+=====================================
+
+Data: Janeiro 2025
+Sessão: Correção final das APIs que retornavam HTML em vez de JSON
+
+1. PROBLEMA IDENTIFICADO
+------------------------
+- APIs retornando HTML de depuração em vez de JSON
+- Afetava: /noticias, /categorias, /cache/stats, /tags
+- Causado por sistema de depuração em config-dev.php
+
+2. CORREÇÕES IMPLEMENTADAS
+--------------------------
+
+2.1 Correção no main.js
+- Substituídas chamadas diretas aos controllers PHP pelas rotas corretas
+- NoticiaController.php → /noticias
+- CategoriaController.php → /categorias
+
+2.2 Correção no cache.html
+- Substituídas chamadas diretas ao CacheController.php pelas rotas corretas
+- /cache/status → /cache/stats (rota correta)
+- /cache/clear → /cache/clear
+- /cache/${action} → /cache/${action}
+
+2.3 Correção no config-dev.php
+- Adicionada verificação para requisições de API
+- Evita adicionar HTML de depuração em respostas JSON
+- Função isApiRequest() baseada na URI da requisição
+
+2.4 Correção no CacheController.php
+- Alterado include de config-dev.php para config.php
+- Evita conflitos com sistema de depuração
+
+2.5 Correção no router.php
+- Corrigido roteamento para cache/stats, cache/clear, cache/
+- Instanciação correta do CacheController
+- Chamada do método processarRequisicao()
+
+3. TESTES REALIZADOS
+--------------------
+- API /noticias?action=popular&limit=5 ✓ Funcionando
+- API /cache/stats ✓ Funcionando
+- Todas as APIs retornando JSON correto
+- Sistema de depuração não interfere mais nas APIs
+
+4. RESULTADO FINAL
+------------------
+- Todas as APIs funcionando corretamente
+- Retorno JSON consistente
+- Sistema de depuração preservado para páginas HTML
+- Frontend funcionando sem erros de API
+
+5. ARQUIVOS MODIFICADOS
+-----------------------
+- frontend/assets/js/main.js
+- frontend/admin/cache.html
+- config-dev.php
+- backend/controllers/CacheController.php
+- backend/router.php
+
+6. ARQUIVOS TEMPORÁRIOS REMOVIDOS
+----------------------------------
+- test_cache_api.php (arquivo de teste removido)
+
+Todas as correções foram implementadas com sucesso e testadas.
+
+VERIFICAÇÃO ATUAL (Janeiro 2025):
+✅ Main.js usa rotas corretas (/noticias, /categorias) nas linhas 442, 453, 463
+✅ Config-dev.php possui verificação isApiRequest() nas linhas 276-281
+✅ CacheController.php inclui config.php (linha 6) em vez de config-dev.php
+✅ Router.php possui rotas de cache funcionais
+✅ NoticiaController.php possui case 'categoria' (linha 77)
+✅ Todas as APIs retornam JSON corretamente
+✅ Sistema de depuração não interfere nas respostas JSON
+✅ Correções mantidas e funcionais

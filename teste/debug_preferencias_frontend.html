@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Preferências Frontend</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .checkbox-group { margin: 10px 0; }
+        .checkbox-group input { margin-right: 10px; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Debug das Preferências do Frontend</h1>
+    
+    <div class="debug-section">
+        <h2>1. Teste de Carregamento da API</h2>
+        <button onclick="testAPI()">Testar API</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. Checkboxes de Teste</h2>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="favorite_categories[]" value="economia"> Economia</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="esportes"> Esportes</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="tecnologia"> Tecnologia</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="saude"> Saúde</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="cultura"> Cultura</label><br>
+            <label><input type="checkbox" name="favorite_categories[]" value="politica"> Política</label><br>
+        </div>
+        <button onclick="testCheckboxes()">Testar Seleção de Checkboxes</button>
+        <div id="checkbox-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. Teste de Populate</h2>
+        <button onclick="testPopulate()">Testar Populate com Dados da API</button>
+        <div id="populate-result"></div>
+    </div>
+
+    <script>
+        let apiData = null;
+        
+        async function testAPI() {
+            const resultDiv = document.getElementById('api-result');
+            resultDiv.innerHTML = '<p>Carregando...</p>';
+            
+            try {
+                // Obter token
+                let token = null;
+                const portalUser = localStorage.getItem('portal-user');
+                
+                if (portalUser) {
+                    try {
+                        const userData = JSON.parse(portalUser);
+                        token = userData.token;
+                    } catch (e) {
+                        console.log('Erro ao parsear portal-user:', e);
+                    }
+                }
+                
+                if (!token) {
+                    token = localStorage.getItem('authToken');
+                }
+                
+                if (!token) {
+                    resultDiv.innerHTML = '<p class="error">❌ Token não encontrado. Faça login primeiro.</p>';
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    apiData = result.data;
+                    
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ API funcionando!</p>
+                        <h4>Dados de Preferências:</h4>
+                        <pre>${JSON.stringify({
+                            favorite_categories: result.data.favorite_categories,
+                            language_preference: result.data.language_preference,
+                            profile_public: result.data.profile_public,
+                            show_activity: result.data.show_activity,
+                            allow_messages: result.data.allow_messages
+                        }, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<p class="error">❌ Erro HTTP: ${response.status}</p>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p class="error">❌ Erro: ${error.message}</p>`;
+            }
+        }
+        
+        function testCheckboxes() {
+            const resultDiv = document.getElementById('checkbox-result');
+            const checkboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+            
+            resultDiv.innerHTML = `
+                <h4>Checkboxes encontrados: ${checkboxes.length}</h4>
+                <p>Seletores testados:</p>
+                <ul>
+                    <li>input[name="favorite_categories[]"] - ${checkboxes.length} elementos</li>
+                    <li>input[name="favorite_categories"] - ${document.querySelectorAll('input[name="favorite_categories"]').length} elementos</li>
+                </ul>
+            `;
+        }
+        
+        function testPopulate() {
+            const resultDiv = document.getElementById('populate-result');
+            
+            if (!apiData) {
+                resultDiv.innerHTML = '<p class="error">❌ Execute primeiro o teste da API</p>';
+                return;
+            }
+            
+            // Simular a função populateUserData para categorias favoritas
+            if (apiData.favorite_categories) {
+                const favoriteCategories = Array.isArray(apiData.favorite_categories) ? 
+                    apiData.favorite_categories : 
+                    JSON.parse(apiData.favorite_categories || '[]');
+                    
+                const checkboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                let markedCount = 0;
+                
+                checkboxes.forEach(checkbox => {
+                    if (favoriteCategories.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                        markedCount++;
+                    }
+                });
+                
+                resultDiv.innerHTML = `
+                    <p class="success">✅ Populate executado!</p>
+                    <p>Categorias favoritas: ${JSON.stringify(favoriteCategories)}</p>
+                    <p>Checkboxes marcados: ${markedCount}/${checkboxes.length}</p>
+                    <h4>Estado dos checkboxes:</h4>
+                    <ul>
+                        ${Array.from(checkboxes).map(cb => 
+                            `<li>${cb.value}: ${cb.checked ? '✅' : '❌'}</li>`
+                        ).join('')}
+                    </ul>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

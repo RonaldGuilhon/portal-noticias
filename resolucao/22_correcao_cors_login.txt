@@ -1,0 +1,65 @@
+CORREÇÃO DO PROBLEMA DE CORS NO LOGIN
+=====================================
+
+DATA: 24/08/2025
+HORÁRIO: 12:20
+
+PROBLEMA IDENTIFICADO:
+- Erro CORS ao tentar fazer login do frontend (localhost:8000) para backend (localhost:8001)
+- Mensagem: "Access to fetch at 'http://localhost:8001/auth/login' from origin 'http://localhost:8000' has been blocked by CORS policy"
+- Erro: "No 'Access-Control-Allow-Origin' header is present on the requested resource"
+
+CAUSA RAIZ:
+1. Inconsistência nos cabeçalhos CORS entre diferentes controladores
+2. Servidor PHP built-in não estava usando o router.php corretamente
+3. Falta do cabeçalho 'X-Requested-With' em alguns controladores
+
+SOLUÇÕES IMPLEMENTADAS:
+
+1. CORREÇÃO DOS CABEÇALHOS CORS NOS CONTROLADORES:
+   - AuthController.php: Alterado de '*' para 'http://localhost:8000'
+   - FileController.php: Alterado de '*' para 'http://localhost:8000'
+   - PushController.php: Alterado de '*' para 'http://localhost:8000'
+   - NotificacaoController.php: Alterado de '*' para 'http://localhost:8000'
+   
+   Cabeçalhos padronizados:
+   - Access-Control-Allow-Origin: http://localhost:8000
+   - Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+   - Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With
+   - Access-Control-Allow-Credentials: true
+
+2. CORREÇÃO DO SERVIDOR BACKEND:
+   - Reiniciado o servidor com: php -S localhost:8001 -t backend backend/router.php
+   - Isso garante que o router.php seja usado para processar todas as requisições
+
+3. TESTE DE VALIDAÇÃO:
+   - Requisição OPTIONS: StatusCode 200 OK com cabeçalhos CORS corretos
+   - Requisição POST: Chega ao servidor (erro 401 é esperado para credenciais inválidas)
+   - Não há mais erros de CORS no console do navegador
+
+ARQUIVOS MODIFICADOS:
+- backend/controllers/AuthController.php
+- backend/controllers/FileController.php
+- backend/controllers/PushController.php
+- backend/controllers/NotificacaoController.php
+
+CONSIDERAÇÕES DE SEGURANÇA:
+- Em produção, substituir 'http://localhost:8000' por domínios específicos
+- Manter cabeçalhos CORS restritivos conforme necessário
+- Validar origem das requisições adequadamente
+
+STATUS: ✅ RESOLVIDO
+
+TESTE FINAL:
+- Frontend pode fazer requisições para backend sem erros de CORS
+- Requisições OPTIONS (preflight) são tratadas corretamente
+- APIs respondem adequadamente às requisições cross-origin
+
+VERIFICAÇÃO ATUAL (Janeiro 2025):
+✅ Router.php com cabeçalhos CORS padronizados (linhas 5-8)
+✅ AuthController.php com CORS específico (linha 37)
+✅ FileController.php com CORS específico (linha 11)
+✅ PushController.php com CORS específico (linha 26)
+✅ NotificacaoController.php com CORS específico (linha 27)
+✅ Tratamento de OPTIONS no router.php (linhas 11-14)
+✅ Todas as correções de CORS mantidas e funcionais

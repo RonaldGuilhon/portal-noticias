@@ -275,9 +275,15 @@ if (DEV_CONFIG['show_debug_bar'] || !file_exists(__DIR__ . '/backend/logs')) {
 if (DEV_CONFIG['show_debug_bar'] && php_sapi_name() !== 'cli') {
     register_shutdown_function(function() {
         if (isDevelopment()) {
-            // Só adicionar debug info se não for uma resposta JSON
+            // Só adicionar debug info se não for uma resposta JSON ou API
             $headers = headers_list();
             $isJsonResponse = false;
+            $isApiRequest = strpos($_SERVER['REQUEST_URI'], '/api/') !== false || 
+                           strpos($_SERVER['REQUEST_URI'], '/cache/') !== false ||
+                           strpos($_SERVER['REQUEST_URI'], '/noticias') !== false ||
+                           strpos($_SERVER['REQUEST_URI'], '/categorias') !== false ||
+                           strpos($_SERVER['REQUEST_URI'], '/tags') !== false;
+            
             foreach ($headers as $header) {
                 if (stripos($header, 'content-type: application/json') !== false) {
                     $isJsonResponse = true;
@@ -285,7 +291,7 @@ if (DEV_CONFIG['show_debug_bar'] && php_sapi_name() !== 'cli') {
                 }
             }
             
-            if (!$isJsonResponse) {
+            if (!$isJsonResponse && !$isApiRequest) {
                 echo "\n<!-- DEBUG INFO -->\n";
                 echo "<!-- Environment: " . APP_CONFIG['environment'] . " -->\n";
                 echo "<!-- Memory Usage: " . memory_get_peak_usage(true) / 1024 / 1024 . " MB -->\n";

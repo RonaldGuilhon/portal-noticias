@@ -46,6 +46,33 @@ if (preg_match('/^api\/user\/change-password\/?$/', $uri)) {
     return;
 }
 
+// Roteamento para preferências individuais
+if (preg_match('/^api\/user\/preferences\/individual\/?$/', $uri)) {
+    $_GET['action'] = 'individual-preference';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
+// Roteamento para preferências gerais
+if (preg_match('/^api\/user\/preferences\/?$/', $uri)) {
+    $_GET['action'] = 'preferences';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
+// Roteamento para categorias favoritas
+if (preg_match('/^api\/user\/preferences\/categories\/?$/', $uri)) {
+    $_GET['action'] = 'favorite-categories';
+    require_once 'controllers/AuthController.php';
+    $controller = new AuthController();
+    $controller->processarRequisicao();
+    return;
+}
+
 // Roteamento para autenticação
 if (preg_match('/^auth\/login\/?$/', $uri)) {
     $_GET['action'] = 'login';
@@ -244,23 +271,44 @@ if (preg_match('/^admin\/activity\/?$/', $uri)) {
     return;
 }
 
+// Roteamento para servir fotos de perfil
+if (preg_match('/^files\/profile\/(.+)$/', $uri, $matches)) {
+    $_GET['action'] = 'serve_profile_photo';
+    $_GET['file'] = $matches[1];
+    require_once 'controllers/FileController.php';
+    return;
+}
+
 // Roteamento para cache
 if (preg_match('/^cache\/stats\/?$/', $uri)) {
     $_GET['action'] = 'stats';
     require_once 'controllers/CacheController.php';
+    $controller = new CacheController();
+    $controller->processarRequisicao();
     return;
 }
 
 if (preg_match('/^cache\/clear\/?$/', $uri)) {
     $_GET['action'] = 'clear';
     require_once 'controllers/CacheController.php';
+    $controller = new CacheController();
+    $controller->processarRequisicao();
     return;
 }
 
 if (preg_match('/^cache\/?$/', $uri)) {
     $_GET['action'] = 'stats';
     require_once 'controllers/CacheController.php';
+    $controller = new CacheController();
+    $controller->processarRequisicao();
     return;
+}
+
+// Roteamento para a raiz - redirecionar para frontend
+if ($uri === '' || $uri === '/' || $uri === '/index.php') {
+    header('Location: /frontend/');
+    http_response_code(302);
+    exit();
 }
 
 // Se não encontrou nenhuma rota, retorna false para que o servidor processe normalmente

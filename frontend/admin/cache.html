@@ -211,7 +211,7 @@
         // Carregar status do cache
         async function loadCacheStatus() {
             try {
-                const response = await fetch('http://localhost:8001/controllers/CacheController.php?action=status');
+                const response = await fetch('http://localhost:8001/cache/stats');
                 const data = await response.json();
                 
                 if (data.sucesso) {
@@ -245,7 +245,7 @@
         // Carregar estatísticas do cache
         async function loadCacheStats() {
             try {
-                const response = await fetch('http://localhost:8001/controllers/CacheController.php?action=stats');
+                const response = await fetch('http://localhost:8001/cache/stats');
                 const data = await response.json();
                 
                 if (data.sucesso) {
@@ -296,7 +296,7 @@
         // Executar ação do cache
         async function executeCacheAction(action, method = 'POST') {
             try {
-                const response = await fetch(`http://localhost:8001/controllers/CacheController.php?action=${action}`, {
+                const response = await fetch(`http://localhost:8001/cache/${action}`, {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',

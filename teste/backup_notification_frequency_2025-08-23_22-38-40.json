@@ -1,0 +1,46 @@
+[
+    {
+        "id": 1,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 2,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 8,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 9,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 10,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 11,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 12,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 13,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 14,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 15,
+        "notification_frequency": "diario"
+    },
+    {
+        "id": 16,
+        "notification_frequency": "diario"
+    }
+]

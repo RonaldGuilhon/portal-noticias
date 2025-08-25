@@ -216,7 +216,6 @@ class Usuario {
             $this->dark_mode = $row['dark_mode'];
             
             // Configurações de notificação
-
             $this->email_newsletter = $row['email_newsletter'];
             $this->email_breaking = $row['email_breaking'];
             $this->email_comments = $row['email_comments'];
@@ -224,6 +223,16 @@ class Usuario {
             $this->push_breaking = $row['push_breaking'];
             $this->push_interests = $row['push_interests'];
             $this->push_comments = $row['push_comments'];
+            
+            // Configurações de privacidade
+            $this->profile_public = $row['profile_public'];
+            $this->show_activity = $row['show_activity'];
+            $this->allow_messages = $row['allow_messages'];
+            
+            // Preferências de conteúdo
+            $this->favorite_categories = $row['favorite_categories'];
+            $this->language_preference = $row['language_preference'];
+            
             return true;
         }
         
@@ -406,6 +415,7 @@ class Usuario {
         $stmt = $this->conn->prepare($query);
         
         $nova_senha_hash = hashPassword($nova_senha);
+        
         $stmt->bindParam(":senha", $nova_senha_hash);
         $stmt->bindParam(":id", $this->id);
 

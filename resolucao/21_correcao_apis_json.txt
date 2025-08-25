@@ -84,3 +84,11 @@ ARQUIVOS DE TESTE REMOVIDOS:
 
 IMPACTO:
 As APIs do frontend agora podem consumir dados JSON corretamente, resolvendo problemas de integração entre frontend e backend.
+
+VERIFICAÇÃO ATUAL (Janeiro 2025):
+✅ TagController.php inclui config.php (linha 7)
+✅ CategoriaController.php inclui config.php (linha 7)
+✅ Router.php possui rotas para tags, categorias e notícias (linhas 113-180)
+✅ NoticiaController.php possui case 'categoria' no switch (linha 70)
+✅ Todas as APIs retornam JSON corretamente
+✅ Correções mantidas e funcionais

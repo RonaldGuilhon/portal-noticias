@@ -1,0 +1,155 @@
+=== CORREÇÃO DAS PREFERÊNCIAS DO PERFIL - CATEGORIAS FAVORITAS COMO CHECKBOX ===
+Data: 24/08/2025
+Problema: Preferências na página perfil.html não atualizavam nem retornavam dados do banco
+Solicitação: Alterar categorias favoritas de select para checkbox
+
+=== PROBLEMAS IDENTIFICADOS ===
+
+1. CARREGAMENTO DE DADOS:
+   - A função populateUserData() não estava carregando os campos favorite_categories e language_preference
+   - Esses campos eram retornados pela API mas não eram aplicados na interface
+
+2. API DE PERFIL:
+   - O método obterPerfil() no AuthController.php não estava retornando os campos favorite_categories e language_preference
+   - Campos essenciais para as preferências de conteúdo estavam ausentes na resposta
+
+3. INTERFACE DE CATEGORIAS:
+   - Categorias favoritas implementadas como <select multiple>
+   - Solicitação para alterar para checkboxes para melhor usabilidade
+
+=== CORREÇÕES IMPLEMENTADAS ===
+
+1. CORREÇÃO NO AuthController.php:
+   - Adicionados os campos favorite_categories e language_preference na resposta do método obterPerfil()
+   - favorite_categories: decodificado de JSON para array
+   - language_preference: retornado com valor padrão 'pt-BR' se não definido
+
+   Código adicionado:
+   ```php
+   // Preferências de conteúdo
+   'favorite_categories' => json_decode($usuario->favorite_categories ?? '[]', true),
+   'language_preference' => $usuario->language_preference ?? 'pt-BR'
+   ```
+
+2. CORREÇÃO NO perfil.html - Carregamento de dados:
+   - Atualizada a função populateUserData() para carregar favorite_categories e language_preference
+   - Implementada lógica para marcar checkboxes das categorias favoritas
+   - Adicionado carregamento do idioma preferido
+
+   Código adicionado:
+   ```javascript
+   // Carregar categorias favoritas (checkboxes)
+   if (data.favorite_categories && Array.isArray(data.favorite_categories)) {
+       data.favorite_categories.forEach(category => {
+           const checkbox = document.querySelector(`input[name="favorite_categories"][value="${category}"]`);
+           if (checkbox) {
+               checkbox.checked = true;
+           }
+       });
+   }
+   
+   // Carregar idioma preferido
+   if (data.language_preference) {
+       const languageSelect = document.getElementById('language_preference');
+       if (languageSelect) {
+           languageSelect.value = data.language_preference;
+       }
+   }
+   ```
+
+3. ALTERAÇÃO DE SELECT PARA CHECKBOXES:
+   - Substituído o elemento <select multiple> por um grupo de checkboxes
+   - Mantidas todas as categorias disponíveis: Economia, Esportes, Tecnologia, Saúde, Cultura
+   - Melhor experiência do usuário com seleção visual individual
+
+   HTML alterado:
+   ```html
+   <div class="form-group">
+       <label>Categorias Favoritas</label>
+       <div class="checkbox-group">
+           <label class="checkbox-item">
+               <input type="checkbox" name="favorite_categories" value="economia">
+               <span>Economia</span>
+           </label>
+           <label class="checkbox-item">
+               <input type="checkbox" name="favorite_categories" value="esportes">
+               <span>Esportes</span>
+           </label>
+           <label class="checkbox-item">
+               <input type="checkbox" name="favorite_categories" value="tecnologia">
+               <span>Tecnologia</span>
+           </label>
+           <label class="checkbox-item">
+               <input type="checkbox" name="favorite_categories" value="saude">
+               <span>Saúde</span>
+           </label>
+           <label class="checkbox-item">
+               <input type="checkbox" name="favorite_categories" value="cultura">
+               <span>Cultura</span>
+           </label>
+       </div>
+   </div>
+   ```
+
+4. CORREÇÃO NO ENVIO DO FORMULÁRIO:
+   - Atualizada a coleta de dados para trabalhar com checkboxes
+   - Mapeamento correto dos valores selecionados para array
+
+   Código alterado:
+   ```javascript
+   // Coletar categorias favoritas dos checkboxes
+   const favoriteCategories = Array.from(document.querySelectorAll('input[name="favorite_categories"]:checked'))
+       .map(checkbox => checkbox.value);
+   ```
+
+=== TESTES REALIZADOS ===
+
+1. TESTE DA API:
+   - Criado script test_preferences_api.php para verificar retorno dos dados
+   - Confirmado que favorite_categories e language_preference são retornados corretamente
+   - Verificado que todos os campos de preferências estão funcionais
+
+2. TESTE DE INTERFACE:
+   - Servidor iniciado em localhost:8001
+   - Interface testada para carregamento e salvamento de preferências
+   - Checkboxes funcionando corretamente para seleção múltipla
+
+=== ARQUIVOS MODIFICADOS ===
+
+1. backend/controllers/AuthController.php
+   - Método obterPerfil(): Adicionados campos favorite_categories e language_preference
+
+2. frontend/perfil.html
+   - Função populateUserData(): Carregamento de categorias favoritas e idioma
+   - HTML: Alteração de select para checkboxes nas categorias favoritas
+   - Função de envio: Coleta de dados dos checkboxes
+
+3. teste/test_preferences_api.php (novo)
+   - Script de teste para verificar funcionamento da API
+
+=== RESULTADO ===
+
+✅ Problema das preferências não atualizarem: RESOLVIDO
+✅ Campos favorite_categories e language_preference: FUNCIONANDO
+✅ Alteração para checkboxes: IMPLEMENTADA
+✅ Carregamento de dados: CORRIGIDO
+✅ Salvamento de preferências: FUNCIONAL
+✅ Compatibilidade com outras funcionalidades: MANTIDA
+
+=== OBSERVAÇÕES ===
+
+- Todas as correções foram implementadas sem afetar outras funcionalidades
+- A mudança para checkboxes melhora significativamente a usabilidade
+- Os dados são mantidos em formato JSON no banco de dados
+- A API retorna os dados no formato correto para o frontend
+- Testes confirmam que o sistema está funcionando corretamente
+
+=== PRÓXIMOS PASSOS (se necessário) ===
+
+- Monitorar o comportamento em produção
+- Considerar adicionar validação adicional no frontend
+- Avaliar a necessidade de migração de dados existentes
+
+Correção implementada com sucesso por: Assistente IA
+Teste realizado em: 24/08/2025
+Status: CONCLUÍDO ✅

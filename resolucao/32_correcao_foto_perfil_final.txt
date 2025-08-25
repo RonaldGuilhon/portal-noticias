@@ -1,0 +1,87 @@
+=== CORREÇÃO DO PROBLEMA DE FOTO DE PERFIL ===
+Data: 24/01/2025
+Status: RESOLVIDO
+
+== PROBLEMA IDENTIFICADO ==
+1. As fotos de perfil não estavam sendo exibidas no perfil.html
+2. URLs das fotos estavam usando formato antigo com FileController.php diretamente
+3. Faltava rota no router.php para servir as fotos de perfil
+4. Configuração de URL estava desatualizada
+
+== ANÁLISE TÉCNICA ==
+- Foto de perfil armazenada no banco: http://localhost:8001/controllers/FileController.php?action=serve_profile_photo&file=/profile_2_1756081611_b19614c456a5ff10.jpeg
+- Arquivo físico existe em: D:\portal-noticias-uploads\profile-photos\profile_2_1756081611_b19614c456a5ff10.jpeg
+- Problema: FileController.php não estava sendo roteado corretamente
+
+== CORREÇÕES IMPLEMENTADAS ==
+
+1. **Adicionada rota no router.php:**
+   ```php
+   // Roteamento para servir fotos de perfil
+   if (preg_match('/^files\/profile\/(.+)$/', $uri, $matches)) {
+       $_GET['action'] = 'serve_profile_photo';
+       $_GET['file'] = $matches[1];
+       require_once 'controllers/FileController.php';
+       return;
+   }
+   ```
+
+2. **Atualizada configuração de URL em upload.php:**
+   ```php
+   // URL base para acessar as fotos através do FileController
+   const PROFILE_PHOTOS_URL = 'http://localhost:8001/files/profile/';
+   ```
+
+3. **Corrigidas URLs no banco de dados:**
+   - URL antiga: http://localhost:8001/controllers/FileController.php?action=serve_profile_photo&file=/profile_2_1756081611_b19614c456a5ff10.jpeg
+   - URL nova: http://localhost:8001/files/profile/profile_2_1756081611_b19614c456a5ff10.jpeg
+
+== ARQUIVOS MODIFICADOS ==
+- backend/router.php (adicionada rota para fotos)
+- backend/config/upload.php (atualizada URL base)
+- Banco de dados (URLs corrigidas via script)
+
+== ARQUIVOS CRIADOS ==
+- corrigir_foto_perfil.php (script de correção das URLs)
+- teste_foto_perfil.html (arquivo de teste)
+- verificar_usuario.php (script de verificação)
+
+== TESTES REALIZADOS ==
+1. ✅ Arquivo físico existe: D:\portal-noticias-uploads\profile-photos\profile_2_1756081611_b19614c456a5ff10.jpeg
+2. ✅ Nova rota funciona: http://localhost:8001/files/profile/profile_2_1756081611_b19614c456a5ff10.jpeg (Status 200)
+3. ✅ URL no banco atualizada com sucesso
+4. ✅ FileController.php serve a imagem corretamente
+
+== ESTRUTURA DE ARQUIVOS ==
+```
+D:/portal-noticias-uploads/
+└── profile-photos/
+    └── profile_2_1756081611_b19614c456a5ff10.jpeg
+```
+
+== FLUXO DE FUNCIONAMENTO ==
+1. Usuário faz upload de foto → AuthController.php
+2. Arquivo salvo em D:/portal-noticias-uploads/profile-photos/
+3. URL salva no banco: http://localhost:8001/files/profile/[nome_arquivo]
+4. Frontend carrega foto via nova rota
+5. Router.php direciona para FileController.php
+6. FileController.php serve a imagem com headers CORS corretos
+
+== CONFIGURAÇÕES IMPORTANTES ==
+- Diretório de upload: D:/portal-noticias-uploads/profile-photos/
+- URL base: http://localhost:8001/files/profile/
+- Rota: /files/profile/{filename}
+- CORS configurado para http://localhost:8000
+
+== PRÓXIMOS PASSOS ==
+- Problema de autenticação 401 no perfil.html precisa ser investigado separadamente
+- Sistema de foto de perfil está funcionando corretamente
+- Recomenda-se testar upload de novas fotos para confirmar funcionamento completo
+
+== NOTAS TÉCNICAS ==
+- FileController.php já tinha a lógica correta para servir imagens
+- Problema era apenas de roteamento e configuração de URL
+- Sistema mantém compatibilidade com uploads futuros
+- Headers CORS configurados corretamente para frontend
+
+=== CORREÇÃO CONCLUÍDA COM SUCESSO ===

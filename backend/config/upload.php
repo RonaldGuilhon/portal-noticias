@@ -10,7 +10,7 @@ class UploadConfig {
     const PROFILE_PHOTOS_DIR = self::BASE_UPLOAD_DIR . '/profile-photos';
     
     // URL base para acessar as fotos através do FileController
-    const PROFILE_PHOTOS_URL = 'http://localhost:8001/controllers/FileController.php?action=serve_profile_photo&file=';
+    const PROFILE_PHOTOS_URL = 'http://localhost:8001/files/profile/';
     
     // Configurações de imagem
     const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

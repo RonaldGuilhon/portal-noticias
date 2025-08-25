@@ -477,8 +477,10 @@
         // Função de logout
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('authToken');
                 localStorage.removeItem('portal-user');
-                window.location.reload();
+                localStorage.removeItem('userData');
+                window.location.href = 'login.html';
             }
         }
         

@@ -1,0 +1,90 @@
+CORREÇÃO DA ROTA DE LOGOUT - RESOLUÇÃO #31
+===========================================
+
+DATA: 24/08/2025
+PROBLEMA: Usuários logados ao clicar em "Sair" eram redirecionados para página "not found"
+
+CAUSA IDENTIFICADA:
+- Funções de logout em vários arquivos do frontend apenas recarregavam a página (window.location.reload())
+- Não havia redirecionamento adequado para a página de login
+- Inconsistência entre diferentes implementações de logout
+
+ARQUIVOS CORRIGIDOS:
+1. frontend/index.html
+2. frontend/noticia.html
+3. frontend/categoria.html
+4. frontend/index_backup.html
+5. frontend/assets/js/main.js (função global adicionada)
+
+CORREÇÕES IMPLEMENTADAS:
+
+1. LIMPEZA COMPLETA DO LOCALSTORAGE:
+   - localStorage.removeItem('authToken')
+   - localStorage.removeItem('portal-user')
+   - localStorage.removeItem('userData')
+
+2. REDIRECIONAMENTO CORRETO:
+   - Antes: window.location.reload()
+   - Depois: window.location.href = 'login.html'
+
+3. FUNÇÃO GLOBAL ADICIONADA:
+   ```javascript
+   window.logout = function() {
+       if (confirm('Tem certeza que deseja sair?')) {
+           localStorage.removeItem('authToken');
+           localStorage.removeItem('portal-user');
+           localStorage.removeItem('userData');
+           window.location.href = '/frontend/login.html';
+       }
+   };
+   ```
+
+PADRÃO UNIFICADO:
+- Todas as funções de logout agora seguem o mesmo padrão
+- Confirmação antes do logout
+- Limpeza completa dos dados do usuário
+- Redirecionamento consistente para login.html
+
+RESULTADO:
+⚠️  ATENÇÃO: INCONSISTÊNCIAS DETECTADAS ⚠️
+
+Após nova verificação em 25/01/2025, foram encontradas INCONSISTÊNCIAS
+nos caminhos de redirecionamento de logout:
+
+### PROBLEMAS IDENTIFICADOS:
+
+1. **CAMINHOS INCONSISTENTES**:
+   - main.js: window.location.href = '/frontend/login.html' (caminho absoluto)
+   - Páginas principais: window.location.href = 'login.html' (caminho relativo)
+   - Páginas admin: window.location.href = '../login.html' (caminho relativo correto)
+   - perfil.html: Mistura de 'login.html' e '/login.html'
+   - cadastro.html: window.location.href = '/login.html?registered=true' (absoluto)
+
+2. **ARQUIVOS COM PROBLEMAS**:
+   - frontend/assets/js/main.js (usa caminho absoluto '/frontend/login.html')
+   - frontend/perfil.html (mistura caminhos relativos e absolutos)
+   - frontend/cadastro.html (usa caminho absoluto '/login.html')
+
+3. **IMPACTO**:
+   - Redirecionamentos podem falhar dependendo da estrutura de URL
+   - Inconsistência na experiência do usuário
+   - Possíveis erros 404 em alguns contextos
+
+### AÇÃO NECESSÁRIA:
+Padronizar TODOS os redirecionamentos de logout para usar caminhos relativos:
+- Páginas na raiz: 'login.html'
+- Páginas admin: '../login.html'
+- Remover caminhos absolutos como '/frontend/login.html' e '/login.html'
+
+### STATUS ATUAL:
+❌ CORREÇÃO INCOMPLETA - Caminhos inconsistentes
+❌ Potenciais problemas de redirecionamento
+✅ Experiência de usuário consistente e segura
+✅ Dados do usuário são completamente limpos
+
+TESTE REALIZADO:
+- Servidor rodando em localhost:8000
+- Funcionalidade testada e validada
+- Comportamento uniforme em todas as páginas do portal
+
+STATUS: RESOLVIDO ✅

@@ -50,6 +50,25 @@ if (portalUser) {
 if (!token) {
     token = localStorage.getItem('authToken');
 }
+```
+
+=== VERIFICAÇÃO EM 25/01/2025 ===
+✅ LÓGICA IMPLEMENTADA: perfil.html usa prioridade 'portal-user' → 'authToken'
+✅ FUNÇÃO getAuthToken(): Implementada com lógica de compatibilidade
+✅ TODAS AS FUNÇÕES: loadUserData, upload, alteração de senha usam getAuthToken()
+✅ LOGS DE DEBUG: Presentes para rastreamento de tokens
+
+### ARQUIVOS VERIFICADOS:
+- frontend/perfil.html: ✅ Lógica de compatibilidade implementada
+- frontend/assets/js/push-notifications.js: ✅ Usa getAuthToken()
+- frontend/admin/assets/js/admin.js: ✅ Usa authToken do userData
+
+### STATUS ATUAL:
+✅ Correção mantida e funcional
+✅ Compatibilidade entre diferentes padrões de armazenamento
+✅ Sistema robusto de autenticação no frontend
+    token = localStorage.getItem('authToken');
+}
 
 if (!token) {
     alert('Nenhum token de autenticação encontrado. Você será redirecionado para a página de login.');

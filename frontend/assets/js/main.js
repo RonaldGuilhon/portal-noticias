@@ -442,7 +442,7 @@ class PortalNoticias {
     // Carrega notícias em destaque
     async loadFeaturedNews() {
         try {
-            const news = await this.apiRequest('/controllers/NoticiaController.php?action=featured');
+            const news = await this.apiRequest('/noticias?action=featured');
             this.displayFeaturedNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias em destaque:', error);
@@ -452,7 +452,7 @@ class PortalNoticias {
     // Carrega notícias populares
     async loadPopularNews() {
         try {
-            const news = await this.apiRequest('/controllers/NoticiaController.php?action=popular');
+            const news = await this.apiRequest('/noticias?action=popular');
             this.displayPopularNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias populares:', error);
@@ -462,7 +462,7 @@ class PortalNoticias {
     // Carrega categorias
     async loadCategories() {
         try {
-            const categories = await this.apiRequest('/controllers/CategoriaController.php');
+            const categories = await this.apiRequest('/categorias');
             this.displayCategories(categories);
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);
@@ -733,6 +733,16 @@ if (document.readyState === 'loading') {
 } else {
     window.portalApp = new PortalNoticias();
 }
+
+// Função global de logout
+window.logout = function() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('portal-user');
+        localStorage.removeItem('userData');
+        window.location.href = '/frontend/login.html';
+    }
+};
 
 // Utilitários globais
 window.PortalUtils = {

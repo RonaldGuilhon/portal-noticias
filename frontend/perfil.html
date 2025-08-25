@@ -174,12 +174,12 @@
                                             <span data-user-info="nome" id="user-name">Usuário</span>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="/perfil.html">
-                                                <i class="fas fa-user me-2"></i>Meu Perfil
-                                            </a>
-                                            <a class="dropdown-item" href="/favoritos.html">
-                                                <i class="fas fa-heart me-2"></i>Favoritos
-                                            </a>
+                                            <a class="dropdown-item" href="perfil.html">
+                                <i class="fas fa-user me-2"></i>Meu Perfil
+                            </a>
+                            <a class="dropdown-item" href="favoritos.html">
+                                <i class="fas fa-heart me-2"></i>Favoritos
+                            </a>
                                             <a class="dropdown-item admin-only" href="/admin/" style="display: none;">
                                                 <i class="fas fa-cogs me-2"></i>Painel Administrativo
                                             </a>
@@ -223,7 +223,7 @@
                     </div>
                     <div class="col-md-3 text-right">
                         <div class="d-flex align-items-center justify-content-end">
-                            <a href="/newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
+                            <a href="newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
                                 <i class="fas fa-envelope me-1"></i>
                                 Newsletter
                             </a>
@@ -410,6 +410,7 @@
                                 </div>
                                 <div class="card-body">
                                     <form id="profile-form">
+                                        
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-floating">
@@ -588,88 +589,132 @@
                                     <h5 class="mb-0">Preferências</h5>
                                 </div>
                                 <div class="card-body">
-                                    <form id="preferences-form">
-                                        <!-- Notification Preferences -->
-                                        <div class="preferences-section">
-                                            <h6>Notificações</h6>
-                                            <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="email-notifications" name="email_notifications" checked>
-                                                <label class="form-check-label" for="email-notifications">
-                                                    Receber notificações por email
-                                                </label>
+                                    <!-- Notification Preferences -->
+                                    <div class="preferences-section">
+                                        <h6>Notificações</h6>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="email-notifications" name="email_notifications" data-preference="email_notifications" checked>
+                                            <label class="form-check-label" for="email-notifications">
+                                                Receber notificações por email
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="push-notifications" name="push_notifications" data-preference="push_notifications" checked>
+                                            <label class="form-check-label" for="push-notifications">
+                                                Receber notificações push
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="newsletter" name="email_newsletter" data-preference="email_newsletter">
+                                            <label class="form-check-label" for="newsletter">
+                                                Receber newsletter semanal
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Privacy Preferences -->
+                                    <div class="preferences-section">
+                                        <h6>Privacidade</h6>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="profile-public" name="profile_public" data-preference="profile_public" checked>
+                                            <label class="form-check-label" for="profile-public">
+                                                Perfil público
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="show-activity" name="show_activity" data-preference="show_activity">
+                                            <label class="form-check-label" for="show-activity">
+                                                Mostrar atividade recente
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-switch mb-2">
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="allow-messages" name="allow_messages" data-preference="allow_messages" checked>
+                                            <label class="form-check-label" for="allow-messages">
+                                                Permitir mensagens de outros usuários
+                                            </label>
+                                        </div>
+                                    </div>
+                                        
+                                    <!-- Content Preferences -->
+                                    <div class="preferences-section">
+                                        <h6>Conteúdo</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Categorias Favoritas</label>
+                                            <div id="favorite-categories" class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-politica" name="favorite_categories[]" value="politica">
+                                                        <label class="form-check-label" for="cat-politica">Política</label>
+                                                    </div>
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-economia" name="favorite_categories[]" value="economia">
+                                                        <label class="form-check-label" for="cat-economia">Economia</label>
+                                                    </div>
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-esportes" name="favorite_categories[]" value="esportes">
+                                                        <label class="form-check-label" for="cat-esportes">Esportes</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-tecnologia" name="favorite_categories[]" value="tecnologia">
+                                                        <label class="form-check-label" for="cat-tecnologia">Tecnologia</label>
+                                                    </div>
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-saude" name="favorite_categories[]" value="saude">
+                                                        <label class="form-check-label" for="cat-saude">Saúde</label>
+                                                    </div>
+                                                    <div class="form-check mb-2">
+                                                        <input class="form-check-input" type="checkbox" id="cat-entretenimento" name="favorite_categories[]" value="entretenimento">
+                                                        <label class="form-check-label" for="cat-entretenimento">Entretenimento</label>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="push-notifications" name="push_notifications" checked>
-                                                <label class="form-check-label" for="push-notifications">
-                                                    Receber notificações push
-                                                </label>
-                                            </div>
-                                            <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="newsletter" name="email_newsletter">
-                                                <label class="form-check-label" for="newsletter">
-                                                    Receber newsletter semanal
-                                                </label>
-                                            </div>
+                                            <div class="form-text mb-2">Selecione suas categorias de interesse</div>
                                         </div>
                                         
-                                        <!-- Privacy Preferences -->
-                                        <div class="preferences-section">
-                                            <h6>Privacidade</h6>
+                                        <!-- Display Preferences -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Preferências de Exibição</label>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="profile-public" name="profile_public" checked>
-                                                <label class="form-check-label" for="profile-public">
-                                                    Perfil público
+                                                <input class="form-check-input preference-checkbox" type="checkbox" id="show-images" name="show_images" data-preference="show_images" checked>
+                                                <label class="form-check-label" for="show-images">
+                                                    Exibir imagens automaticamente
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="show-activity" name="show_activity">
-                                                <label class="form-check-label" for="show-activity">
-                                                    Mostrar atividade recente
+                                                <input class="form-check-input preference-checkbox" type="checkbox" id="auto-play-videos" name="auto_play_videos" data-preference="auto_play_videos">
+                                                <label class="form-check-label" for="auto-play-videos">
+                                                    Reproduzir vídeos automaticamente
                                                 </label>
                                             </div>
                                             <div class="form-check form-switch mb-2">
-                                                <input class="form-check-input" type="checkbox" id="allow-messages" name="allow_messages" checked>
-                                                <label class="form-check-label" for="allow-messages">
-                                                    Permitir mensagens de outros usuários
-                                                </label>
-                                            </div>
+                                            <input class="form-check-input preference-checkbox" type="checkbox" id="dark-mode" name="dark_mode" data-preference="dark_mode">
+                                            <label class="form-check-label" for="dark-mode">
+                                                Modo escuro
+                                            </label>
                                         </div>
-                                        
-                                        <!-- Content Preferences -->
-                                        <div class="preferences-section">
-                                            <h6>Conteúdo</h6>
-                                            <div class="mb-3">
-                                                <label for="favorite-categories" class="form-label">Categorias Favoritas</label>
-                                                <select class="form-select" id="favorite-categories" name="favorite_categories[]" multiple>
-                                                    <option value="politica">Política</option>
-                                                    <option value="economia">Economia</option>
-                                                    <option value="esportes">Esportes</option>
-                                                    <option value="tecnologia">Tecnologia</option>
-                                                    <option value="saude">Saúde</option>
-                                                    <option value="cultura">Cultura</option>
-                                                </select>
-                                                <div class="form-text">Segure Ctrl para selecionar múltiplas categorias</div>
-                                            </div>
-                                            
-                                            <div class="mb-3">
-                                                <label for="language-preference" class="form-label">Idioma Preferido</label>
-                                                <select class="form-select" id="language-preference" name="language_preference">
-                                                    <option value="pt-BR" selected>Português (Brasil)</option>
-                                                    <option value="en-US">English (US)</option>
-                                                    <option value="es-ES">Español</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="d-flex gap-2">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fas fa-save"></i> Salvar Preferências
-                                            </button>
-                                            <button type="button" class="btn btn-outline-secondary" onclick="showSection('overview')">
-                                                <i class="fas fa-times"></i> Cancelar
-                                            </button>
-                                        </div>
-                                    </form>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="language-preference" class="form-label">Idioma Preferido</label>
+                                        <select class="form-select preference-select" id="language-preference" name="language_preference" data-preference="language_preference">
+                                            <option value="pt-BR" selected>Português (Brasil)</option>
+                                            <option value="en-US">English (US)</option>
+                                            <option value="es-ES">Español</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Botões para salvar e cancelar preferências -->
+                                    <div class="d-flex gap-2">
+                                        <button type="button" class="btn btn-primary" onclick="saveAllPreferences()">
+                                            <i class="fas fa-save"></i> Salvar Alterações
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary" onclick="showSection('overview')">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -877,6 +922,19 @@
             if (document.getElementById('allow-messages')) {
                 document.getElementById('allow-messages').checked = userData.allow_messages !== undefined ? userData.allow_messages : true;
             }
+            
+            // Update content preferences (checkboxes)
+            if (userData.favorite_categories) {
+                const favoriteCategories = Array.isArray(userData.favorite_categories) ? userData.favorite_categories : JSON.parse(userData.favorite_categories || '[]');
+                const checkboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = favoriteCategories.includes(checkbox.value);
+                });
+            }
+            
+            if (document.getElementById('language-preference') && userData.language_preference) {
+                document.getElementById('language-preference').value = userData.language_preference;
+            }
         }
         
         // Handle profile form submission
@@ -984,7 +1042,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/profile?action=change-password', {
+                const response = await fetch('http://localhost:8001/api/user/change-password', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1010,46 +1068,68 @@
             }
         });
         
-        // Handle preferences form submission
-        document.getElementById('preferences-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Function to get authentication token
+        function getAuthToken() {
+            let token = null;
+            const portalUser = localStorage.getItem('portal-user');
             
-            const preferences = {
-                email_notifications: document.getElementById('email-notifications').checked,
-                push_notifications: document.getElementById('push-notifications').checked,
-                newsletter: document.getElementById('newsletter').checked,
-                profile_public: document.getElementById('profile-public').checked,
-                show_activity: document.getElementById('show-activity').checked,
-                allow_messages: document.getElementById('allow-messages').checked,
-                favorite_categories: Array.from(document.getElementById('favorite-categories').selectedOptions).map(option => option.value),
-                language_preference: document.getElementById('language-preference').value
-            };
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                } catch (e) {
+                    console.log('Erro ao parsear portal-user:', e);
+                }
+            }
             
+            if (!token) {
+                token = localStorage.getItem('authToken');
+            }
+            
+            return token;
+        }
+        
+        // Function to save all preferences
+        async function saveAllPreferences() {
             try {
-                // Verifica primeiro 'portal-user' (padrão do sistema)
-                let token = null;
-                const portalUser = localStorage.getItem('portal-user');
-                
-                if (portalUser) {
-                    try {
-                        const userData = JSON.parse(portalUser);
-                        token = userData.token;
-                    } catch (e) {
-                        console.log('Erro ao parsear portal-user:', e);
-                    }
-                }
-                
-                // Fallback para 'authToken' (compatibilidade)
+                const token = getAuthToken();
                 if (!token) {
-                    token = localStorage.getItem('authToken');
-                }
-                
-                if (!token) {
-                    alert('Token de autenticação não encontrado');
+                    alert('Token de autenticação não encontrado. Faça login novamente.');
+                    window.location.href = 'login.html';
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/profile', {
+                // Collect all preferences
+                const preferences = {
+                    notifications: {
+                        email_notifications: document.getElementById('email-notifications')?.checked || false,
+                        push_notifications: document.getElementById('push-notifications')?.checked || false,
+                        email_newsletter: document.getElementById('newsletter')?.checked || false
+                    },
+                    privacy: {
+                        profile_public: document.getElementById('profile-public')?.checked || false,
+                        show_activity: document.getElementById('show-activity')?.checked || false,
+                        allow_messages: document.getElementById('allow-messages')?.checked || false
+                    },
+                    content: {
+                        show_images: document.getElementById('show-images')?.checked || false,
+                        auto_play_videos: document.getElementById('auto-play-videos')?.checked || false,
+                        dark_mode: document.getElementById('dark-mode')?.checked || false,
+                        language_preference: document.getElementById('language-preference')?.value || 'pt-BR'
+                    }
+                };
+                
+                // Collect favorite categories
+                const categoryCheckboxes = document.querySelectorAll('input[name="favorite_categories[]"]');
+                const selectedCategories = [];
+                categoryCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedCategories.push(checkbox.value);
+                    }
+                });
+                preferences.content.favorite_categories = selectedCategories;
+                
+                const response = await fetch('http://localhost:8001/api/user/preferences', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1059,16 +1139,16 @@
                 });
                 
                 if (response.ok) {
-                    alert('Preferências salvas com sucesso!');
+                    alert('Alterações salvas com sucesso!');
                     showSection('overview');
                 } else {
-                    alert('Erro ao salvar preferências');
+                    alert('Erro ao salvar alterações');
                 }
             } catch (error) {
-                console.error('Erro na requisição:', error);
-                alert('Erro ao salvar preferências');
+                console.error('Error saving preferences:', error);
+                alert('Erro ao salvar alterações');
             }
-        });
+        }
         
         // Handle avatar upload
         document.getElementById('avatar-input').addEventListener('change', async function(e) {
@@ -1189,6 +1269,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadUserData();
         });
+        
+        // Make saveAllPreferences globally available
+        window.saveAllPreferences = saveAllPreferences;
     </script>
     
     <!-- Bootstrap JS -->
