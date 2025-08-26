@@ -124,6 +124,7 @@ if (preg_match('/^auth\/forgot-password\/?$/', $uri)) {
 
 // Roteamento para notícias
 if (preg_match('/^noticias\/?$/', $uri)) {
+    $_GET['action'] = 'list';
     require_once 'controllers/NoticiaController.php';
     $controller = new NoticiaController();
     $controller->processarRequisicao();

@@ -1,0 +1,47 @@
+CORREÇÃO DO CSS DA PÁGINA CATEGORIA/POLITICA
+============================================
+
+Data: 25/08/2025
+Problema: CSS e JavaScript não carregavam na página categoria/politica
+Status: RESOLVIDO ✅
+
+DESCRIÇÃO DO PROBLEMA:
+- Ao acessar /categoria/politica, os assets CSS e JS retornavam erro 404
+- Erro: net::ERR_ABORTED para assets/css/style.css e assets/js/main.js
+- Causa: Caminhos relativos incorretos quando a URL contém subpastas
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. CORREÇÃO DOS CAMINHOS NO ARQUIVO categoria.html:
+   - CSS: assets/css/style.css → /assets/css/style.css
+   - JavaScript: assets/js/main.js → /assets/js/main.js
+   - Favicons: assets/img/favicon.ico → /assets/img/favicon.ico
+   - Favicon Apple: assets/img/apple-touch-icon.png → /assets/img/apple-touch-icon.png
+
+2. UTILIZAÇÃO DO ROUTER PHP:
+   - Servidor reiniciado com: php -S localhost:8000 -t frontend frontend/router.php
+   - Router já configurado para lidar com rotas de categoria
+   - Roteamento: /categoria/{slug} → categoria.html
+
+3. VERIFICAÇÃO:
+   - Terminal confirma status 200 para todos os assets
+   - Página carrega corretamente com estilos aplicados
+   - Funcionalidades JavaScript operacionais
+
+ARQUIVOS MODIFICADOS:
+- frontend/categoria.html (caminhos dos assets corrigidos)
+
+RESULTADO:
+- Página http://localhost:8000/categoria/politica totalmente funcional
+- CSS carregando corretamente
+- JavaScript operacional
+- Todos os assets servidos com sucesso
+
+OBSERVAÇÕES TÉCNICAS:
+- Problema comum em SPAs com roteamento por URL
+- Caminhos absolutos (/assets/) resolvem o problema de contexto
+- Router PHP essencial para URLs amigáveis no servidor built-in
+- Solução aplicável a outras páginas com roteamento similar
+
+============================================
+Resolução concluída com sucesso.

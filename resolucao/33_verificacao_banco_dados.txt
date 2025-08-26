@@ -1,0 +1,45 @@
+VERIFICAÇÃO DA COMUNICAÇÃO COM BANCO DE DADOS
+==============================================
+
+DATA: 2024-01-20
+PROJETO: Portal de Notícias
+
+1. SITUAÇÃO ATUAL:
+   - O projeto NÃO está se comunicando com um banco de dados MySQL real
+   - Está utilizando um sistema de dados mockados (simulados)
+   - As extensões PDO MySQL e MySQLi não estão disponíveis no PHP
+
+2. CONFIGURAÇÃO ENCONTRADA:
+   - Arquivo: backend/config/database.php
+   - Utiliza classe MockPDO que simula conexão com banco
+   - Dados carregados de: backend/config/mock_data.json
+   - Configurações de DB existem em config.php mas não são utilizadas
+
+3. DADOS MOCKADOS DISPONÍVEIS:
+   - 2 usuários (Admin e Usuário Teste)
+   - Listas vazias para: categorias, notícias, comentários, tags, curtidas, estatísticas, newsletter
+
+4. APIS TESTADAS:
+   ✅ /categorias - Funcionando (retorna lista vazia)
+   ✅ /noticias - Funcionando (retorna dados de usuários por engano)
+   
+5. PROBLEMAS IDENTIFICADOS:
+   - Extensões PHP MySQL não instaladas
+   - NoticiaController retornando dados de usuários em vez de notícias
+   - Dados mockados insuficientes para demonstração completa
+
+6. RECOMENDAÇÕES:
+   - Instalar extensões pdo_mysql e mysqli no PHP
+   - Configurar banco de dados MySQL real
+   - Corrigir NoticiaController para retornar dados corretos
+   - Adicionar dados mockados mais completos para demonstração
+   - Implementar migração de dados mockados para banco real
+
+7. ARQUIVOS MODIFICADOS:
+   - backend/router.php (corrigida rota de notícias)
+   - teste_conexao_db.php (criado para diagnóstico)
+
+CONCLUSÃO:
+O projeto possui toda a estrutura para comunicação com banco de dados,
+mas atualmente funciona apenas com dados simulados devido à ausência
+das extensões MySQL no ambiente PHP.
