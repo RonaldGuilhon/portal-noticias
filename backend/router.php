@@ -1,13 +1,27 @@
 <?php
-// Router para o servidor PHP built-in
+require_once __DIR__ . '/../config-unified.php';
+
+// Função para configurar CORS dinâmico
+function setupCORS() {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    
+    if (isOriginAllowed($origin)) {
+        header("Access-Control-Allow-Origin: $origin");
+    } else {
+        // Fallback para o primeiro origin permitido
+        $allowedOrigins = getCorsOrigins();
+        header("Access-Control-Allow-Origin: " . $allowedOrigins[0]);
+    }
+    
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+    header("Access-Control-Allow-Credentials: true");
+}
 
 // Configurar CORS
-header('Access-Control-Allow-Origin: http://localhost:8000');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-header('Access-Control-Allow-Credentials: true');
+setupCORS();
 
-// Responder a requisições OPTIONS (preflight)
+// Tratar requisições OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit();
