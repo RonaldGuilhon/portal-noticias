@@ -547,12 +547,20 @@
         
         // Carrega dados da categoria
         document.addEventListener('DOMContentLoaded', function() {
-            // Extrai o slug da URL ou dos parâmetros
-            const urlParams = new URLSearchParams(window.location.search);
-            categorySlug = urlParams.get('categoria') || window.location.pathname.split('/').pop();
+            // Extrai o slug da URL
+            const pathParts = window.location.pathname.split('/');
+            const categoriaIndex = pathParts.indexOf('categoria');
+            
+            if (categoriaIndex !== -1 && pathParts[categoriaIndex + 1]) {
+                categorySlug = pathParts[categoriaIndex + 1];
+            } else {
+                // Fallback para parâmetros de URL
+                const urlParams = new URLSearchParams(window.location.search);
+                categorySlug = urlParams.get('categoria');
+            }
             
             // Remove extensão .html se presente
-            if (categorySlug.endsWith('.html')) {
+            if (categorySlug && categorySlug.endsWith('.html')) {
                 categorySlug = categorySlug.replace('.html', '');
             }
             
@@ -824,12 +832,17 @@
         // Carrega notícias em destaque
         async function loadFeaturedNews() {
             try {
-                const response = await fetch(`http://localhost:8001/noticias/categoria/${categorySlug}/destaques`);
+                const params = new URLSearchParams({
+                    action: 'featured',
+                    categoria_id: categoryData ? categoryData.id : '',
+                    limit: 3
+                });
+                const response = await fetch(`http://localhost:8001/noticias?${params}`);
                 const result = await response.json();
                 
-                if (result.success && result.data.length > 0) {
+                if (result.noticias && result.noticias.length > 0) {
                     document.getElementById('featured-news-section').style.display = 'block';
-                    displayFeaturedNews(result.data);
+                    displayFeaturedNews(result.noticias);
                 }
             } catch (error) {
                 console.error('Erro ao carregar notícias em destaque:', error);
@@ -874,8 +887,8 @@
                 const response = await fetch('http://localhost:8001/categorias');
                 const result = await response.json();
                 
-                if (result.success) {
-                    const categories = result.data.filter(cat => cat.slug !== categorySlug).slice(0, 8);
+                if (result.success && result.data.categorias) {
+                    const categories = result.data.categorias.filter(cat => cat.slug !== categorySlug).slice(0, 8);
                     displayRelatedCategories(categories);
                 }
             } catch (error) {

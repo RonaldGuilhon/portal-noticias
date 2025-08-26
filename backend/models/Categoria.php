@@ -177,15 +177,14 @@ class Categoria {
             
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                $this->preencherPropriedades($row);
-                return true;
+                return $row;
             }
             
-            return false;
+            return null;
             
         } catch(Exception $e) {
             logError('Erro ao buscar categoria por slug: ' . $e->getMessage());
-            return false;
+            return null;
         }
     }
     
