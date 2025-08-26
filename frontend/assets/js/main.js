@@ -5,7 +5,7 @@
 
 // Configurações globais
 const CONFIG = {
-    API_BASE_URL: 'http://localhost:8000',
+    API_BASE_URL: 'http://localhost:8001',
     ITEMS_PER_PAGE: 12,
     DEBOUNCE_DELAY: 300,
     ANIMATION_DURATION: 300,
@@ -740,7 +740,7 @@ window.logout = function() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('portal-user');
         localStorage.removeItem('userData');
-        window.location.href = '/frontend/login.html';
+        window.location.href = 'login.html';
     }
 };
 

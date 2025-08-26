@@ -8,20 +8,23 @@
  * Classe mock para simular PDO quando não há drivers disponíveis
  */
 class MockPDO {
-    private static $dataFile = __DIR__ . '/../database/mock_data.json';
-    private static $userData = null;
+    private static $dataFile = __DIR__ . '/mock_data.json';
+    private static $allData = null;
     
-    private static function loadUserData() {
-        if (self::$userData === null) {
+    private static function loadData() {
+        if (self::$allData === null) {
             if (file_exists(self::$dataFile)) {
-                $data = json_decode(file_get_contents(self::$dataFile), true);
-                self::$userData = $data['usuarios'][0] ?? self::getDefaultUser();
+                self::$allData = json_decode(file_get_contents(self::$dataFile), true);
             } else {
-                self::$userData = self::getDefaultUser();
-                self::saveUserData();
+                self::$allData = [
+                    'usuarios' => [self::getDefaultUser()],
+                    'categorias' => [],
+                    'noticias' => []
+                ];
+                self::saveData();
             }
         }
-        return self::$userData;
+        return self::$allData;
     }
     
     private static function getDefaultUser() {
@@ -39,32 +42,35 @@ class MockPDO {
         ];
     }
     
-    private static function saveUserData() {
+    private static function saveData() {
         $dir = dirname(self::$dataFile);
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
         
-        $data = ['usuarios' => [self::$userData]];
-        file_put_contents(self::$dataFile, json_encode($data, JSON_PRETTY_PRINT));
+        file_put_contents(self::$dataFile, json_encode(self::$allData, JSON_PRETTY_PRINT));
     }
     
     public function prepare($statement) {
+        $data = self::loadData();
+        
         // Retornar dados mock para queries específicas
         if (strpos($statement, 'usuarios') !== false && strpos($statement, 'SELECT') !== false) {
-            return new MockPDOStatement([self::$userData]);
+            return new MockPDOStatement($data['usuarios'], $statement);
         }
         if (strpos($statement, 'usuarios') !== false && strpos($statement, 'UPDATE') !== false) {
             return new MockPDOStatement([], $statement);
         }
+        if (strpos($statement, 'categorias') !== false) {
+            return new MockPDOStatement($data['categorias'] ?? [], $statement);
+        }
+        if (strpos($statement, 'noticias') !== false) {
+            return new MockPDOStatement($data['noticias'] ?? [], $statement);
+        }
         return new MockPDOStatement();
     }
     
-    public static function updateUserData($field, $value) {
-        if (array_key_exists($field, self::$userData)) {
-            self::$userData[$field] = $value;
-        }
-    }
+
     
     public function query($statement) {
         // Retornar dados mock baseados na query
@@ -90,6 +96,7 @@ class MockPDOStatement {
     private $data;
     private $statement;
     private $params = [];
+    private $filteredData = [];
     
     public function __construct($data = [], $statement = '') {
         $this->data = $data;
@@ -97,29 +104,37 @@ class MockPDOStatement {
     }
     
     public function execute($params = []) {
+        // Aplicar filtros baseados nos parâmetros
+        $this->filteredData = $this->data;
+        
+        if (strpos($this->statement, 'SELECT') !== false && strpos($this->statement, 'usuarios') !== false) {
+            // Filtrar por email se especificado
+            if (isset($this->params[':email'])) {
+                $email = $this->params[':email'];
+                $this->filteredData = array_filter($this->data, function($user) use ($email) {
+                    return $user['email'] === $email;
+                });
+            }
+        }
+        
         // Se é um UPDATE na tabela usuarios, simular a atualização
         if (strpos($this->statement, 'UPDATE') !== false && strpos($this->statement, 'usuarios') !== false) {
-            // Atualizar os dados mock com os parâmetros
-            foreach ($this->params as $param => $value) {
-                $field = str_replace(':', '', $param);
-                if ($field !== 'id') {
-                    MockPDO::updateUserData($field, $value);
-                }
-            }
+            // Simular atualização bem-sucedida
+            $this->filteredData = [1]; // Simular que 1 linha foi afetada
         }
         return true;
     }
     
     public function fetch($fetch_style = null) {
-        return array_shift($this->data);
+        return array_shift($this->filteredData);
     }
     
     public function fetchAll($fetch_style = null) {
-        return $this->data;
+        return array_values($this->filteredData);
     }
     
     public function rowCount() {
-        return count($this->data);
+        return count($this->filteredData);
     }
     
     public function bindParam($parameter, &$variable, $data_type = null) {
@@ -141,7 +156,7 @@ class Database {
     private $charset;
     public $conn;
     private $use_sqlite = false; // Fallback para SQLite se MySQL não disponível
-    private $force_mysql = true; // Forçar uso do MySQL
+    private $force_mysql = false; // Forçar uso do MySQL
 
     public function __construct() {
         // Carregar configurações do .env
