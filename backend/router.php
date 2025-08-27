@@ -142,6 +142,30 @@ if (preg_match('/^auth\/forgot-password\/?$/', $uri)) {
 }
 
 // Roteamento para notícias
+if (preg_match('/^noticias\/destaques\/?$/', $uri)) {
+    $_GET['action'] = 'featured';
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
+    return;
+}
+
+if (preg_match('/^noticias\/populares\/?$/', $uri)) {
+    $_GET['action'] = 'popular';
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
+    return;
+}
+
+if (preg_match('/^noticias\/recentes\/?$/', $uri)) {
+    $_GET['action'] = 'recent';
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
+    return;
+}
+
 if (preg_match('/^noticias\/?$/', $uri)) {
     $_GET['action'] = 'list';
     require_once 'controllers/NoticiaController.php';

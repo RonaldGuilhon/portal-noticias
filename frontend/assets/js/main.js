@@ -442,7 +442,7 @@ class PortalNoticias {
     // Carrega notícias em destaque
     async loadFeaturedNews() {
         try {
-            const news = await this.apiRequest('/noticias?action=featured');
+            const news = await this.apiRequest('/noticias/destaques');
             this.displayFeaturedNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias em destaque:', error);
@@ -452,7 +452,7 @@ class PortalNoticias {
     // Carrega notícias populares
     async loadPopularNews() {
         try {
-            const news = await this.apiRequest('/noticias?action=popular');
+            const news = await this.apiRequest('/noticias/populares');
             this.displayPopularNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias populares:', error);
