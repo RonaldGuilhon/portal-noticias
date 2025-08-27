@@ -229,24 +229,18 @@ INSERT INTO curtidas_comentarios (comentario_id, usuario_id, tipo, data_criacao)
 -- =============================================
 
 INSERT INTO estatisticas_acesso (noticia_id, ip_address, user_agent, referer, data_acesso) VALUES 
--- Acessos variados nas notícias
 (1, '192.168.1.100', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'https://google.com', '2024-01-15 10:35:00'),
 (1, '192.168.1.101', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)', 'https://facebook.com', '2024-01-15 10:45:00'),
 (1, '192.168.1.102', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 'https://twitter.com', '2024-01-15 11:00:00'),
-
 (2, '192.168.1.103', 'Mozilla/5.0 (Android 13; Mobile)', 'https://google.com', '2024-01-15 14:20:00'),
 (2, '192.168.1.104', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'https://portal-noticias.com', '2024-01-15 14:30:00'),
-
 (3, '192.168.1.105', 'Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X)', 'https://google.com', '2024-01-15 08:50:00'),
 (3, '192.168.1.106', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'https://yahoo.com', '2024-01-15 09:00:00'),
-
 (5, '192.168.1.107', 'Mozilla/5.0 (Android 13; Mobile)', 'https://globoesporte.com', '2024-01-14 22:35:00'),
 (5, '192.168.1.108', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)', 'https://espn.com.br', '2024-01-14 22:45:00'),
 (5, '192.168.1.109', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'https://google.com', '2024-01-14 23:00:00'),
-
 (7, '192.168.1.110', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)', 'https://techcrunch.com', '2024-01-15 13:50:00'),
 (7, '192.168.1.111', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'https://google.com', '2024-01-15 14:00:00'),
-
 (9, '192.168.1.112', 'Mozilla/5.0 (Android 13; Mobile)', 'https://google.com', '2024-01-15 09:20:00'),
 (9, '192.168.1.113', 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)', 'https://facebook.com', '2024-01-15 09:30:00'),
 (9, '192.168.1.114', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', 'https://portal-noticias.com', '2024-01-15 09:45:00');
