@@ -522,7 +522,7 @@ class PortalNoticias {
                     
                     <div class="news-card-meta">
                         <div class="news-card-author">
-                            <img src="${news.autor_foto || '/assets/img/default-avatar.png'}" alt="${news.autor}">
+                            <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor}">
                             <span>${news.autor}</span>
                         </div>
                         

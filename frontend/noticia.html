@@ -253,7 +253,7 @@
                             
                             <div class="article-meta d-flex flex-wrap align-items-center justify-content-between mb-4">
                                 <div class="author-info d-flex align-items-center">
-                                    <img src="/assets/img/default-avatar.png" alt="Autor" class="author-avatar me-2" id="author-avatar">
+                                    <img src="/assets/images/default-avatar.png" alt="Autor" class="author-avatar me-2" id="author-avatar">
                                     <div>
                                         <div class="author-name fw-bold" id="author-name">Nome do Autor</div>
                                         <div class="article-date text-muted small" id="article-date">Data de publicação</div>
@@ -361,7 +361,7 @@
                         <!-- Author Bio -->
                         <div class="author-bio mt-4 p-3 bg-light rounded" id="author-bio-container" style="display: none;">
                             <div class="d-flex">
-                                <img src="/assets/img/default-avatar.png" alt="Autor" class="author-bio-avatar me-3" id="author-bio-avatar">
+                                <img src="/assets/images/default-avatar.png" alt="Autor" class="author-bio-avatar me-3" id="author-bio-avatar">
                                 <div class="flex-grow-1">
                                     <h6 class="mb-1" id="author-bio-name">Nome do Autor</h6>
                                     <p class="mb-2 text-muted small" id="author-bio-description">Descrição do autor</p>
@@ -690,7 +690,7 @@
             
             // Author info
             document.getElementById('author-name').textContent = article.autor;
-            document.getElementById('author-avatar').src = article.autor_foto || '/assets/img/default-avatar.svg';
+            document.getElementById('author-avatar').src = article.autor_foto || '/assets/images/default-avatar.png';
             document.getElementById('article-date').textContent = formatDate(article.data_publicacao);
             
             // Stats
@@ -736,7 +736,7 @@
             if (article.autor_bio) {
                 document.getElementById('author-bio-container').style.display = 'block';
                 document.getElementById('author-bio-name').textContent = article.autor;
-                document.getElementById('author-bio-avatar').src = article.autor_foto || '/assets/img/default-avatar.svg';
+                document.getElementById('author-bio-avatar').src = article.autor_foto || '/assets/images/default-avatar.png';
                 document.getElementById('author-bio-description').textContent = article.autor_bio;
             }
             
@@ -816,7 +816,7 @@
                 <div class="comment mb-4 p-3 border rounded">
                     <div class="comment-header d-flex align-items-center justify-content-between mb-2">
                         <div class="d-flex align-items-center">
-                            <img src="${comment.usuario_foto || '/assets/img/default-avatar.png'}" alt="${comment.usuario_nome}" class="comment-avatar me-2">
+                            <img src="${comment.usuario_foto || '/assets/images/default-avatar.png'}" alt="${comment.usuario_nome}" class="comment-avatar me-2">
                             <div>
                                 <div class="comment-author fw-bold">${comment.usuario_nome}</div>
                                 <div class="comment-date text-muted small">${formatDate(comment.data_criacao)}</div>

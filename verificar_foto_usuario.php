@@ -102,14 +102,14 @@ try {
     
     // Verificar configuração do avatar padrão
     echo "<h2>🖼️ Avatar Padrão</h2>";
-    $defaultAvatarPath = __DIR__ . '/frontend/assets/img/default-avatar.svg';
+    $defaultAvatarPath = __DIR__ . '/frontend/assets/images/default-avatar.png';
     echo "<div style='background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;'>";
     echo "<strong>Caminho:</strong> {$defaultAvatarPath}<br>";
     echo "<strong>Existe:</strong> " . (file_exists($defaultAvatarPath) ? '<span style="color: green;">✅ Sim</span>' : '<span style="color: red;">❌ Não</span>') . "<br>";
     
     if (file_exists($defaultAvatarPath)) {
         echo "<strong>Tamanho:</strong> " . number_format(filesize($defaultAvatarPath)) . " bytes<br>";
-        echo "<strong>URL de acesso:</strong> <a href='http://localhost:8000/assets/img/default-avatar.svg' target='_blank'>http://localhost:8000/assets/img/default-avatar.svg</a><br>";
+        echo "<strong>URL de acesso:</strong> <a href='http://localhost:8000/assets/images/default-avatar.png' target='_blank'>http://localhost:8000/assets/images/default-avatar.png</a><br>";
     }
     echo "</div>";
     

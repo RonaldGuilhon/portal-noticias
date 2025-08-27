@@ -1,0 +1,93 @@
+CORREÇÃO DO ERRO 404 - AVATAR PADRÃO
+=====================================
+
+Data: 2025-01-17
+Problema: GET http://localhost:8000/assets/img/default-avatar.png 404 (Not Found)
+
+## DIAGNÓSTICO
+
+### Problema Identificado
+- O código estava tentando acessar o avatar padrão em `/assets/img/default-avatar.png`
+- O arquivo correto está localizado em `/assets/images/default-avatar.png`
+- Inconsistência nos caminhos de referência ao avatar padrão
+
+### Estrutura de Arquivos
+```
+frontend/assets/
+├── images/
+│   └── default-avatar.png ✅ (arquivo correto)
+└── img/
+    ├── default-avatar.jpg
+    ├── default-avatar.svg
+    └── outros arquivos...
+```
+
+## CORREÇÕES REALIZADAS
+
+### Arquivos Corrigidos
+
+1. **frontend/noticia.html**
+   - Linha 256: `src="/assets/img/default-avatar.png"` → `src="/assets/images/default-avatar.png"`
+   - Linha 364: `src="/assets/img/default-avatar.png"` → `src="/assets/images/default-avatar.png"`
+   - Linha 693: `'/assets/img/default-avatar.svg'` → `'/assets/images/default-avatar.png'`
+   - Linha 739: `'/assets/img/default-avatar.svg'` → `'/assets/images/default-avatar.png'`
+   - Linha 819: `'/assets/img/default-avatar.png'` → `'/assets/images/default-avatar.png'`
+
+2. **frontend/categoria.html**
+   - Linha 826: `'/assets/img/default-avatar.png'` → `'/assets/images/default-avatar.png'`
+
+3. **frontend/assets/js/main.js**
+   - Linha 525: `'/assets/img/default-avatar.png'` → `'/assets/images/default-avatar.png'`
+
+4. **frontend/perfil.html**
+   - Linha 292: `src="assets/img/default-avatar.svg"` → `src="assets/images/default-avatar.png"`
+   - Linha 900: `'assets/img/default-avatar.svg'` → `'assets/images/default-avatar.png'`
+
+5. **verificar_foto_usuario.php**
+   - Linha 105: `'/frontend/assets/img/default-avatar.svg'` → `'/frontend/assets/images/default-avatar.png'`
+   - Linha 112: URL de acesso corrigida para o caminho correto
+
+## PADRONIZAÇÃO IMPLEMENTADA
+
+### Antes (Inconsistente)
+- `/assets/img/default-avatar.png` ❌
+- `/assets/img/default-avatar.svg` ❌
+- `assets/img/default-avatar.svg` ❌
+
+### Depois (Padronizado)
+- `/assets/images/default-avatar.png` ✅
+- `assets/images/default-avatar.png` ✅ (para caminhos relativos)
+
+## IMPACTO DA CORREÇÃO
+
+### Funcionalidades Corrigidas
+- ✅ Avatar padrão carrega corretamente em todas as páginas
+- ✅ Não há mais erro 404 no console
+- ✅ Interface do usuário exibe avatar padrão quando usuário não tem foto
+- ✅ Comentários mostram avatar padrão corretamente
+- ✅ Páginas de categoria e notícia funcionam sem erros
+- ✅ Perfil do usuário carrega avatar padrão adequadamente
+
+### Arquivos Não Alterados (Apenas Documentação/Teste)
+- `teste/perfil_usuario/test_default_avatar.html` (arquivo de teste)
+- `resolucao/38_diagnostico_avatar_padrao.txt` (documentação histórica)
+- `resolucao/27_correcao_links_absolutos_relativos.txt` (documentação histórica)
+- `resolucao/39_processo_upload_avatar.txt` (documentação histórica)
+
+## VERIFICAÇÃO
+
+### Como Testar
+1. Acesse qualquer página do portal
+2. Verifique se não há erros 404 no console do navegador
+3. Confirme que avatares padrão são exibidos corretamente
+4. Teste em páginas: index, categoria, notícia, perfil
+
+### URLs Funcionais
+- ✅ http://localhost:8000/assets/images/default-avatar.png
+- ❌ http://localhost:8000/assets/img/default-avatar.png (não deve mais ser usado)
+
+## CONCLUSÃO
+
+O erro 404 foi completamente resolvido através da padronização dos caminhos de referência ao avatar padrão. Todos os arquivos do sistema agora referenciam corretamente o arquivo `default-avatar.png` localizado em `/assets/images/`.
+
+A correção garante uma experiência de usuário consistente e elimina erros desnecessários no console do navegador.
