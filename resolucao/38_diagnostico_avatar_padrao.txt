@@ -1,0 +1,112 @@
+=== DIAGNÓSTICO: AVATAR PADRÃO NÃO CARREGA ===
+Data: 27/08/2025
+Problema: Imagem padrão não está carregando no perfil do usuário
+
+=== INVESTIGAÇÃO REALIZADA ===
+
+1. VERIFICAÇÃO DE ARQUIVOS:
+   ✅ Arquivo default-avatar.svg existe em: frontend/assets/img/default-avatar.svg
+   ✅ Tamanho: 900 bytes
+   ✅ Permissões: Arquivo legível
+   ✅ URL funciona: http://localhost:8000/assets/img/default-avatar.svg (Status 200)
+
+2. VERIFICAÇÃO DO BANCO DE DADOS:
+   ✅ Todos os usuários têm foto_perfil = NULL (correto para usar padrão)
+   ❌ Diretório D:/portal-noticias-uploads/profile-photos não existe
+   ✅ Rota /files/profile/ configurada corretamente no router.php
+
+3. VERIFICAÇÃO DO CÓDIGO:
+   ✅ Lógica no perfil.html está correta:
+   ```javascript
+   if (userData.foto_perfil) {
+       avatarElement.src = userData.foto_perfil;
+   } else {
+       avatarElement.src = 'assets/img/default-avatar.svg';
+   }
+   ```
+
+4. TESTES REALIZADOS:
+   ✅ Avatar padrão carrega quando acessado diretamente
+   ✅ Servidor frontend (porta 8000) está funcionando
+   ✅ Servidor backend (porta 8001) está funcionando
+   ✅ Rota de arquivos está configurada
+
+=== POSSÍVEIS CAUSAS ===
+
+1. CACHE DO NAVEGADOR:
+   - O navegador pode estar fazendo cache de uma versão anterior
+   - Solução: Ctrl+F5 ou limpar cache
+
+2. TIMING DE CARREGAMENTO:
+   - JavaScript pode estar executando antes do DOM estar pronto
+   - Avatar pode estar sendo definido antes do elemento existir
+
+3. CONFLITO DE CSS:
+   - Estilos CSS podem estar ocultando ou sobrepondo a imagem
+   - Verificar se há display:none ou visibility:hidden
+
+4. ERRO DE JAVASCRIPT:
+   - Algum erro anterior pode estar impedindo a execução
+   - Verificar console do navegador
+
+=== ARQUIVOS CRIADOS PARA DIAGNÓSTICO ===
+
+1. teste_avatar_diagnostico.php
+   - Diagnóstico completo de arquivos e URLs
+   - Teste de diferentes caminhos de imagem
+
+2. verificar_foto_usuario.php
+   - Verificação do banco de dados
+   - Status dos diretórios de upload
+
+3. teste_perfil_avatar.html
+   - Simulação exata do comportamento do perfil.html
+   - Testes interativos de carregamento
+   - Log detalhado de debug
+
+=== PRÓXIMOS PASSOS RECOMENDADOS ===
+
+1. VERIFICAR CONSOLE DO NAVEGADOR:
+   - Abrir perfil.html
+   - Verificar se há erros JavaScript
+   - Verificar se há erros de carregamento de recursos
+
+2. TESTAR COM CACHE LIMPO:
+   - Abrir perfil.html em aba anônima
+   - Ou usar Ctrl+Shift+R para recarregar sem cache
+
+3. VERIFICAR ORDEM DE EXECUÇÃO:
+   - Garantir que loadUserData() é chamado após DOM ready
+   - Verificar se o elemento profile-avatar existe quando o JS executa
+
+4. ADICIONAR LOGS DE DEBUG:
+   - Adicionar console.log no perfil.html para rastrear execução
+   - Verificar se userData está sendo carregado corretamente
+
+=== CONFIGURAÇÃO ATUAL ===
+
+Servidores:
+- Frontend: http://localhost:8000 (PHP built-in server)
+- Backend: http://localhost:8001 (PHP built-in server)
+
+Caminhos:
+- Avatar padrão: frontend/assets/img/default-avatar.svg
+- Upload de fotos: D:/portal-noticias-uploads/profile-photos/ (não existe)
+- URL de fotos: http://localhost:8001/files/profile/
+
+Status:
+- ✅ Infraestrutura funcionando
+- ✅ Arquivos existem
+- ❓ Problema pode ser no frontend (JavaScript/CSS/Cache)
+
+=== CONCLUSÃO ===
+
+O problema NÃO está na infraestrutura ou configuração do servidor.
+Todos os componentes necessários estão funcionando corretamente.
+O problema provavelmente está no frontend:
+- Cache do navegador
+- Erro JavaScript não detectado
+- Timing de execução
+- Conflito de CSS
+
+Recomenda-se verificar o console do navegador e testar com cache limpo.

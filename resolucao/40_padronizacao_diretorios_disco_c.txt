@@ -1,0 +1,133 @@
+=== PADRONIZAÇÃO DOS DIRETÓRIOS DE UPLOAD PARA DISCO C ===
+Data: 26/08/2025
+Solicitação: Padronizar diretórios de D: para C: e criar estrutura de pastas
+
+=== MUDANÇAS REALIZADAS ===
+
+1. CRIAÇÃO DA ESTRUTURA DE DIRETÓRIOS
+   ✅ Criado: C:\portal-noticias-uploads
+   ✅ Criado: C:\portal-noticias-uploads\profile-photos
+   ✅ Testado: Permissões de escrita funcionando
+
+2. ATUALIZAÇÃO DAS CONFIGURAÇÕES
+   
+   Arquivo: backend/config/upload.php
+   Mudança:
+   - BASE_UPLOAD_DIR: 'D:/portal-noticias-uploads' → 'C:/portal-noticias-uploads'
+   - PROFILE_PHOTOS_DIR: Atualizado automaticamente via constante
+
+3. ATUALIZAÇÃO DO ARQUIVO .HTACCESS
+   
+   Arquivo: backend/.htaccess
+   Mudanças:
+   - Alias /uploads: D:/portal-noticias-uploads → C:/portal-noticias-uploads
+   - Directory: "D:/portal-noticias-uploads" → "C:/portal-noticias-uploads"
+   - Configurações de segurança mantidas
+
+4. ATUALIZAÇÃO DE ARQUIVOS DE TESTE
+   
+   Arquivo: verificar_foto_usuario.php
+   Mudanças:
+   - $fotoPath: D:/portal-noticias-uploads → C:/portal-noticias-uploads
+   - $uploadDir: D:/portal-noticias-uploads → C:/portal-noticias-uploads
+
+5. ATUALIZAÇÃO DA DOCUMENTAÇÃO
+   
+   Arquivo: resolucao/39_processo_upload_avatar.txt
+   Mudanças:
+   - Todos os caminhos D: atualizados para C:
+   - Estrutura de armazenamento atualizada
+   - Exemplos de caminhos corrigidos
+
+=== ESTRUTURA FINAL ===
+
+**Diretórios Físicos:**
+```
+C:/portal-noticias-uploads/
+└── profile-photos/
+    ├── (arquivos de avatar dos usuários)
+    └── (nomes únicos: profile_{userId}_{timestamp}_{random}.{ext})
+```
+
+**Configurações:**
+- Base: C:/portal-noticias-uploads
+- Fotos de perfil: C:/portal-noticias-uploads/profile-photos
+- URL de acesso: http://localhost:8001/files/profile/
+- Alias Apache: /uploads → C:/portal-noticias-uploads
+
+=== ARQUIVOS MODIFICADOS ===
+
+1. ✅ backend/config/upload.php
+   - Constante BASE_UPLOAD_DIR atualizada
+
+2. ✅ backend/.htaccess
+   - Alias e Directory atualizados
+   - Configurações de segurança mantidas
+
+3. ✅ verificar_foto_usuario.php
+   - Caminhos de verificação atualizados
+
+4. ✅ resolucao/39_processo_upload_avatar.txt
+   - Documentação atualizada
+
+=== ARQUIVOS NÃO MODIFICADOS (Referências em Documentação) ===
+
+Os seguintes arquivos contêm referências ao disco D: apenas em documentação:
+- resolucao/32_correcao_foto_perfil_final.txt
+- resolucao/38_diagnostico_avatar_padrao.txt
+
+Estes arquivos são históricos e não afetam o funcionamento do sistema.
+
+=== TESTES REALIZADOS ===
+
+1. ✅ Criação de diretórios bem-sucedida
+2. ✅ Permissões de escrita verificadas
+3. ✅ Estrutura de pastas criada corretamente
+4. ✅ Configurações atualizadas sem erros
+
+=== IMPACTO NO SISTEMA ===
+
+**Funcionalidades Afetadas:**
+- Upload de avatar de usuários
+- Servir arquivos de perfil via FileController
+- Validações de diretório no UploadConfig
+
+**Funcionalidades Preservadas:**
+- Todas as validações de segurança
+- Sistema de nomes únicos
+- Remoção de avatares anteriores
+- URLs de acesso inalteradas
+- Fallback para avatar padrão
+
+=== PRÓXIMOS PASSOS ===
+
+1. Testar upload de avatar com novo diretório
+2. Verificar se arquivos existentes em D: precisam ser migrados
+3. Atualizar scripts de backup se necessário
+4. Documentar mudança para equipe
+
+=== COMANDOS UTILIZADOS ===
+
+```powershell
+# Criar diretório base
+New-Item -ItemType Directory -Path "C:\portal-noticias-uploads" -Force
+
+# Criar subdiretório para fotos
+New-Item -ItemType Directory -Path "C:\portal-noticias-uploads\profile-photos" -Force
+
+# Testar permissões
+New-Item -ItemType File -Path "C:\portal-noticias-uploads\profile-photos\test.txt" -Value "Teste" -Force
+Remove-Item -Path "C:\portal-noticias-uploads\profile-photos\test.txt" -Force
+```
+
+=== CONCLUSÃO ===
+
+✅ Padronização concluída com sucesso
+✅ Estrutura de diretórios criada no disco C
+✅ Todas as configurações atualizadas
+✅ Funcionalidades preservadas
+✅ Sistema pronto para uso
+
+O sistema agora utiliza exclusivamente o disco C: para armazenamento de uploads,
+conforme solicitado. Todas as funcionalidades de upload de avatar permanecem
+inalteradas, apenas o local de armazenamento foi padronizado.

@@ -64,16 +64,16 @@ RewriteRule ^cache/clear/?$ controllers/CacheController.php?action=clear [L,QSA]
 RewriteRule ^cache/?$ controllers/CacheController.php?action=stats [L,QSA]
 
 # Configuração para servir arquivos de upload do disco D
-Alias /uploads D:/portal-noticias-uploads
+Alias /uploads C:/portal-noticias-uploads
 
-<Directory "D:/portal-noticias-uploads">
+<Directory "C:/portal-noticias-uploads">
     Options Indexes FollowSymLinks
     AllowOverride None
     Require all granted
 </Directory>
 
 # Configurações de segurança para uploads
-<Directory "D:/portal-noticias-uploads">
+<Directory "C:/portal-noticias-uploads">
     <FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
         Require all denied
     </FilesMatch>

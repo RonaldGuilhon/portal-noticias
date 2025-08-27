@@ -53,21 +53,37 @@ define('DB_PORT', $_ENV['DB_PORT'] ?? '3306');
 
 // URLs e Portas
 define('FRONTEND_PORT', $_ENV['FRONTEND_PORT'] ?? '8000');
-define('BACKEND_PORT', $_ENV['BACKEND_PORT'] ?? '8080');
+define('BACKEND_PORT', $_ENV['BACKEND_PORT'] ?? '8001');
 define('FRONTEND_URL', $_ENV['FRONTEND_URL'] ?? 'http://localhost:8000');
-define('BACKEND_URL', $_ENV['BACKEND_URL'] ?? 'http://localhost:8080');
+define('BACKEND_URL', $_ENV['BACKEND_URL'] ?? 'http://localhost:8001');
 
 // CORS
 define('CORS_ORIGINS', $_ENV['CORS_ORIGINS'] ?? 'http://localhost:8000');
 
 // Upload
 define('UPLOAD_PATH', $_ENV['UPLOAD_PATH'] ?? 'backend/uploads');
-define('UPLOAD_URL', $_ENV['UPLOAD_URL'] ?? 'http://localhost:8080/backend/uploads');
+define('UPLOAD_URL', $_ENV['UPLOAD_URL'] ?? 'http://localhost:8001/backend/uploads');
 define('UPLOAD_MAX_SIZE', $_ENV['UPLOAD_MAX_SIZE'] ?? '10485760');
+define('MAX_FILE_SIZE', 10 * 1024 * 1024); // 10MB
+define('ALLOWED_IMAGE_TYPES', ['jpg', 'jpeg', 'png', 'gif', 'webp']);
+define('ALLOWED_VIDEO_TYPES', ['mp4', 'avi', 'mov', 'wmv']);
+define('ALLOWED_AUDIO_TYPES', ['mp3', 'wav', 'ogg']);
+define('ALLOWED_TYPES', array_merge(ALLOWED_IMAGE_TYPES, ALLOWED_VIDEO_TYPES, ALLOWED_AUDIO_TYPES));
 
 // JWT
 define('JWT_SECRET', $_ENV['JWT_SECRET'] ?? 'default_secret_key');
 define('JWT_EXPIRATION', $_ENV['JWT_EXPIRATION'] ?? '3600');
+
+// Email SMTP
+define('SMTP_HOST', $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com');
+define('SMTP_PORT', $_ENV['SMTP_PORT'] ?? '587');
+define('SMTP_USERNAME', $_ENV['SMTP_USERNAME'] ?? 'seu-email@gmail.com');
+define('SMTP_PASSWORD', $_ENV['SMTP_PASSWORD'] ?? 'sua-senha-app');
+define('SMTP_SECURE', $_ENV['SMTP_SECURE'] ?? 'tls');
+define('SMTP_FROM_EMAIL', $_ENV['SMTP_FROM_EMAIL'] ?? 'noreply@portalnoticias.com');
+define('SMTP_FROM_NAME', $_ENV['SMTP_FROM_NAME'] ?? 'Portal de Notícias');
+define('FROM_EMAIL', $_ENV['FROM_EMAIL'] ?? 'noreply@portalnoticias.com');
+define('FROM_NAME', $_ENV['FROM_NAME'] ?? 'Portal de Notícias');
 
 // Email
 define('MAIL_HOST', $_ENV['MAIL_HOST'] ?? 'localhost');
@@ -79,10 +95,18 @@ define('MAIL_FROM', $_ENV['MAIL_FROM'] ?? 'noreply@localhost');
 // Cache
 define('CACHE_ENABLED', filter_var($_ENV['CACHE_ENABLED'] ?? 'true', FILTER_VALIDATE_BOOLEAN));
 define('CACHE_TTL', $_ENV['CACHE_TTL'] ?? '3600');
+define('CACHE_TIME', 3600); // 1 hora
+define('CACHE_CONFIG', [
+    'enabled' => true,
+    'type' => 'file',
+    'ttl' => 3600,
+    'path' => __DIR__ . '/backend/cache'
+]);
 
 // Logs
 define('LOG_LEVEL', $_ENV['LOG_LEVEL'] ?? 'debug');
 define('LOG_PATH', $_ENV['LOG_PATH'] ?? 'backend/logs');
+define('LOGS_PATH', __DIR__ . '/backend/logs/');
 
 // Configurações de erro baseadas no ambiente
 if (APP_DEBUG) {
@@ -113,8 +137,102 @@ function isOriginAllowed($origin) {
     return in_array($origin, $allowedOrigins);
 }
 
-echo "Configuração carregada para ambiente: " . APP_ENV . "\n";
-echo "Frontend URL: " . FRONTEND_URL . "\n";
-echo "Backend URL: " . BACKEND_URL . "\n";
-echo "CORS Origins: " . CORS_ORIGINS . "\n";
+// Configurações adicionais baseadas no config antigo
+define('PASSWORD_MIN_LENGTH', $_ENV['PASSWORD_MIN_LENGTH'] ?? '6');
+define('MAX_LOGIN_ATTEMPTS', $_ENV['MAX_LOGIN_ATTEMPTS'] ?? '5');
+define('LOCKOUT_DURATION', $_ENV['LOCKOUT_DURATION'] ?? '900');
+define('ITEMS_PER_PAGE', 12);
+define('MAX_ITEMS_PER_PAGE', 50);
+
+/**
+ * Função para sanitizar dados de entrada
+ */
+if (!function_exists('sanitizeInput')) {
+    function sanitizeInput($data) {
+        if (is_array($data)) {
+            return array_map('sanitizeInput', $data);
+        }
+        return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+    }
+}
+
+/**
+ * Função para validar email
+ */
+if (!function_exists('isValidEmail')) {
+    function isValidEmail($email) {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+    }
+}
+
+/**
+ * Função para gerar token seguro
+ */
+if (!function_exists('generateSecureToken')) {
+    function generateSecureToken($length = 32) {
+        return bin2hex(random_bytes($length));
+    }
+}
+
+/**
+ * Função para hash de senha
+ */
+if (!function_exists('hashPassword')) {
+    function hashPassword($password) {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+}
+
+/**
+ * Função para verificar senha
+ */
+if (!function_exists('verifyPassword')) {
+    function verifyPassword($password, $hash) {
+        if (strpos($hash, '$2y$') === 0) {
+            return password_verify($password, $hash);
+        }
+        return sha1($password) === $hash;
+    }
+}
+
+/**
+ * Função para gerar slug
+ */
+if (!function_exists('generateSlug')) {
+    function generateSlug($text) {
+        $text = strtolower($text);
+        $text = preg_replace('/[^a-z0-9\s-]/', '', $text);
+        $text = preg_replace('/[\s-]+/', '-', $text);
+        return trim($text, '-');
+    }
+}
+
+/**
+ * Função para log de erros
+ */
+if (!function_exists('logError')) {
+    function logError($message, $file = 'error.log') {
+        $timestamp = date('Y-m-d H:i:s');
+        $logMessage = "[{$timestamp}] {$message}" . PHP_EOL;
+        $logPath = LOG_PATH . '/' . $file;
+        if (!is_dir(dirname($logPath))) {
+            mkdir(dirname($logPath), 0755, true);
+        }
+        file_put_contents($logPath, $logMessage, FILE_APPEND | LOCK_EX);
+    }
+}
+
+/**
+ * Função para resposta JSON
+ */
+if (!function_exists('jsonResponse')) {
+    function jsonResponse($data, $status = 200) {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+}
+
+// Configuração carregada silenciosamente
 ?>

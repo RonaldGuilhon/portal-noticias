@@ -4,7 +4,7 @@
  * Portal de Notícias
  */
 
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../../config-unified.php';
 
 class Categoria {
     private $conn;
@@ -177,7 +177,8 @@ class Categoria {
             
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                return $row;
+                $this->preencherPropriedades($row);
+                return $row; // Retorna os dados da categoria
             }
             
             return null;
@@ -657,10 +658,9 @@ class Categoria {
         $this->descricao = $row['descricao'];
         $this->cor = $row['cor'];
         $this->icone = $row['icone'];
-        $this->ativo = $row['ativo'];
+        $this->ativo = $row['ativa']; // Corrigido: coluna na tabela é 'ativa'
         $this->ordem = $row['ordem'];
-        $this->meta_title = $row['meta_title'];
-        $this->meta_description = $row['meta_description'];
+        // Removido meta_title e meta_description pois não existem na tabela categorias
         $this->data_criacao = $row['data_criacao'];
         $this->data_atualizacao = $row['data_atualizacao'];
     }

@@ -1,4 +1,9 @@
 <?php
+// Configurar charset UTF-8 globalmente
+mb_internal_encoding('UTF-8');
+ini_set('default_charset', 'UTF-8');
+header('Content-Type: application/json; charset=UTF-8');
+
 require_once __DIR__ . '/../config-unified.php';
 
 // Função para configurar CORS dinâmico

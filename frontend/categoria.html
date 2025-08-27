@@ -94,8 +94,8 @@
                             </div>
                             <div class="user-actions">
                                 <div class="logged-out-only">
-                                    <a href="login.html" class="btn btn-sm btn-outline-primary me-2">Entrar</a>
-                                    <a href="cadastro.html" class="btn btn-sm btn-primary">Cadastrar</a>
+                                    <a href="/login.html" class="btn btn-sm btn-outline-primary me-2">Entrar</a>
+                        <a href="/cadastro.html" class="btn btn-sm btn-primary">Cadastrar</a>
                                 </div>
                                 <div class="logged-in-only" style="display: none;">
                                     <div class="dropdown">
@@ -104,10 +104,10 @@
                                             <span data-user-info="nome">Usuário</span>
                                         </button>
                                         <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="perfil.html">
+                                            <a class="dropdown-item" href="/perfil.html">
                                 <i class="fas fa-user me-2"></i>Meu Perfil
                             </a>
-                            <a class="dropdown-item" href="favoritos.html">
+                            <a class="dropdown-item" href="/favoritos.html">
                                 <i class="fas fa-heart me-2"></i>Favoritos
                             </a>
                                             <div class="dropdown-divider"></div>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="col-md-3 text-right">
                         <div class="d-flex align-items-center justify-content-end">
-                            <a href="newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
+                            <a href="/newsletter.html" class="btn btn-outline-secondary btn-sm me-2">
                                 <i class="fas fa-envelope me-1"></i>
                                 Newsletter
                             </a>
@@ -547,6 +547,20 @@
         
         // Carrega dados da categoria
         document.addEventListener('DOMContentLoaded', function() {
+            // Aguarda o main.js carregar completamente
+            setTimeout(() => {
+                console.log('Verificando window.portalApp:', window.portalApp);
+                // Atualiza interface do usuário se o main.js estiver carregado
+                if (window.portalApp && typeof window.portalApp.updateUserInterface === 'function') {
+                    console.log('Chamando window.portalApp.updateUserInterface()');
+                    window.portalApp.updateUserInterface();
+                    console.log('updateUserInterface() executada com sucesso');
+                } else {
+                    console.error('window.portalApp ou updateUserInterface não encontrada!');
+                    console.log('window.portalApp:', window.portalApp);
+                }
+            }, 100);
+            
             // Extrai o slug da URL
             const pathParts = window.location.pathname.split('/');
             const categoriaIndex = pathParts.indexOf('categoria');

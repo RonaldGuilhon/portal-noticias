@@ -1,0 +1,43 @@
+CORREÇÃO DOS ERROS DE SYNTAX ERROR NAS APIS
+===========================================
+
+Data: 26/08/2025
+Problema: SyntaxError: Unexpected token '<' ao carregar dados da categoria e tags populares
+
+ERROS IDENTIFICADOS:
+
+1. MÉTODO buscarPorSlug() RETORNANDO BOOLEAN
+   - Arquivo: backend/models/Categoria.php
+   - Problema: Método retornava true/false em vez dos dados da categoria
+   - Erro gerado: "Warning: Trying to access array offset on true" no NoticiaController.php linha 489
+   - Solução: Alterado para retornar $row (dados da categoria) quando encontrada e null quando não encontrada
+
+2. REDECLARAÇÃO DA FUNÇÃO sanitizeInput()
+   - Problema: Função declarada em config.php e config-unified.php
+   - Erro gerado: "Fatal error: Cannot redeclare sanitizeInput()"
+   - Arquivos corrigidos:
+     * backend/controllers/TagController.php - alterado require para config-unified.php
+     * backend/models/Tag.php - corrigido caminho para ../../config-unified.php
+     * backend/models/Newsletter.php - corrigido caminho para ../../config-unified.php
+     * backend/models/Notificacao.php - corrigido caminho para ../../config-unified.php
+
+3. WARNINGS DE CHAVES DE ARRAY INDEFINIDAS
+   - Arquivo: backend/models/Categoria.php método preencherPropriedades()
+   - Problema: Tentativa de acessar chaves 'ativo', 'meta_title', 'meta_description' inexistentes
+   - Solução: Alterado 'ativo' para 'ativa' e removidas propriedades inexistentes
+
+RESULTADOS:
+
+✅ API /noticias/categoria/politica retorna JSON válido
+✅ API /tags?action=popular retorna JSON válido
+✅ API /categorias/slug/politica retorna JSON válido
+✅ Página /categoria/politica carrega sem erros de JavaScript
+✅ Assets CSS e JS carregando com status 200
+
+TESTES REALIZADOS:
+
+- Invoke-WebRequest para todas as APIs - Status 200 OK
+- Verificação no navegador - Sem erros de console
+- Verificação dos logs do servidor - Assets carregando corretamente
+
+STATUS: RESOLVIDO ✅

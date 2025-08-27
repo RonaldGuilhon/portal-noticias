@@ -4,8 +4,8 @@
  * Portal de Notícias
  */
 
+require_once __DIR__ . '/../../config-unified.php';
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/config.php';
 
 class Usuario {
     private $conn;
@@ -206,32 +206,32 @@ class Usuario {
             $this->preferencias = $row['preferencias'];
             $this->data_nascimento = $row['data_nascimento'];
             $this->genero = $row['genero'];
-            $this->telefone = $row['telefone'];
-            $this->cidade = $row['cidade'];
-            $this->estado = $row['estado'];
+            $this->telefone = isset($row['telefone']) ? $row['telefone'] : '';
+            $this->cidade = isset($row['cidade']) ? $row['cidade'] : '';
+            $this->estado = isset($row['estado']) ? $row['estado'] : '';
             
             // Configurações de exibição
-            $this->show_images = $row['show_images'];
-            $this->auto_play_videos = $row['auto_play_videos'];
-            $this->dark_mode = $row['dark_mode'];
+            $this->show_images = isset($row['show_images']) ? $row['show_images'] : 1;
+            $this->auto_play_videos = isset($row['auto_play_videos']) ? $row['auto_play_videos'] : 0;
+            $this->dark_mode = isset($row['dark_mode']) ? $row['dark_mode'] : 0;
             
             // Configurações de notificação
-            $this->email_newsletter = $row['email_newsletter'];
-            $this->email_breaking = $row['email_breaking'];
-            $this->email_comments = $row['email_comments'];
-            $this->email_marketing = $row['email_marketing'];
-            $this->push_breaking = $row['push_breaking'];
-            $this->push_interests = $row['push_interests'];
-            $this->push_comments = $row['push_comments'];
+            $this->email_newsletter = isset($row['email_newsletter']) ? $row['email_newsletter'] : 0;
+            $this->email_breaking = isset($row['email_breaking']) ? $row['email_breaking'] : 0;
+            $this->email_comments = isset($row['email_comments']) ? $row['email_comments'] : 0;
+            $this->email_marketing = isset($row['email_marketing']) ? $row['email_marketing'] : 0;
+            $this->push_breaking = isset($row['push_breaking']) ? $row['push_breaking'] : 0;
+            $this->push_interests = isset($row['push_interests']) ? $row['push_interests'] : 0;
+            $this->push_comments = isset($row['push_comments']) ? $row['push_comments'] : 0;
             
             // Configurações de privacidade
-            $this->profile_public = $row['profile_public'];
-            $this->show_activity = $row['show_activity'];
-            $this->allow_messages = $row['allow_messages'];
+            $this->profile_public = isset($row['profile_public']) ? $row['profile_public'] : 1;
+            $this->show_activity = isset($row['show_activity']) ? $row['show_activity'] : 1;
+            $this->allow_messages = isset($row['allow_messages']) ? $row['allow_messages'] : 1;
             
             // Preferências de conteúdo
-            $this->favorite_categories = $row['favorite_categories'];
-            $this->language_preference = $row['language_preference'];
+            $this->favorite_categories = isset($row['favorite_categories']) ? $row['favorite_categories'] : '[]';
+            $this->language_preference = isset($row['language_preference']) ? $row['language_preference'] : 'pt';
             
             return true;
         }
@@ -292,6 +292,57 @@ class Usuario {
         }
         if (is_null($this->foto_perfil) || $this->foto_perfil === '') {
             $this->foto_perfil = $current_data['foto_perfil'];
+        }
+        
+        // Preservar campos de preferências se não foram definidos
+        if (!isset($this->profile_public)) {
+            $this->profile_public = $current_data['profile_public'] ?? 1;
+        }
+        if (!isset($this->show_activity)) {
+            $this->show_activity = $current_data['show_activity'] ?? 1;
+        }
+        if (!isset($this->allow_messages)) {
+            $this->allow_messages = $current_data['allow_messages'] ?? 1;
+        }
+        if (!isset($this->favorite_categories)) {
+            $this->favorite_categories = $current_data['favorite_categories'] ?? '[]';
+        }
+        if (!isset($this->language_preference)) {
+            $this->language_preference = $current_data['language_preference'] ?? 'pt';
+        }
+        
+        // Preservar campos de configuração se não foram definidos
+        if (!isset($this->show_images)) {
+            $this->show_images = $current_data['show_images'] ?? 1;
+        }
+        if (!isset($this->auto_play_videos)) {
+            $this->auto_play_videos = $current_data['auto_play_videos'] ?? 0;
+        }
+        if (!isset($this->dark_mode)) {
+            $this->dark_mode = $current_data['dark_mode'] ?? 0;
+        }
+        
+        // Preservar campos de notificação se não foram definidos
+        if (!isset($this->email_newsletter)) {
+            $this->email_newsletter = $current_data['email_newsletter'] ?? 0;
+        }
+        if (!isset($this->email_breaking)) {
+            $this->email_breaking = $current_data['email_breaking'] ?? 0;
+        }
+        if (!isset($this->email_comments)) {
+            $this->email_comments = $current_data['email_comments'] ?? 0;
+        }
+        if (!isset($this->email_marketing)) {
+            $this->email_marketing = $current_data['email_marketing'] ?? 0;
+        }
+        if (!isset($this->push_breaking)) {
+            $this->push_breaking = $current_data['push_breaking'] ?? 0;
+        }
+        if (!isset($this->push_interests)) {
+            $this->push_interests = $current_data['push_interests'] ?? 0;
+        }
+        if (!isset($this->push_comments)) {
+            $this->push_comments = $current_data['push_comments'] ?? 0;
         }
         
         $query = "UPDATE " . $this->table_name . " 

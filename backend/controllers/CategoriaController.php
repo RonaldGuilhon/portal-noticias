@@ -5,7 +5,7 @@
  */
 
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../../config-unified.php';
 require_once __DIR__ . '/../models/Categoria.php';
 require_once __DIR__ . '/../models/Usuario.php';
 

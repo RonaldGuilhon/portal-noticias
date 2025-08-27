@@ -1,0 +1,171 @@
+=== PROCESSO DE UPLOAD E SALVAMENTO DE IMAGENS DE PERFIL ===
+Data: 25/01/2025
+Pergunta: "Quando o usuário seleciona uma imagem no perfil, como fica salvo essa imagem?"
+
+=== FLUXO COMPLETO DO UPLOAD DE AVATAR ===
+
+1. SELEÇÃO DA IMAGEM (Frontend)
+   Arquivo: frontend/perfil.html (linhas 1154-1225)
+   
+   Processo:
+   - Usuário clica no input de arquivo (avatar-input)
+   - JavaScript valida o arquivo:
+     * Verifica se é uma imagem (file.type.startsWith('image/'))
+     * Verifica tamanho máximo (5MB)
+   - Converte arquivo para base64 usando fileToBase64()
+   - Obtém token de autenticação do localStorage
+
+2. ENVIO PARA O BACKEND (Frontend → Backend)
+   
+   Requisição HTTP:
+   - URL: http://localhost:8001/api/user/avatar
+   - Método: POST
+   - Headers: Authorization: Bearer {token}, Content-Type: application/json
+   - Body: {"image": "data:image/jpeg;base64,/9j/4AAQ..."}
+
+3. ROTEAMENTO (Backend)
+   Arquivo: backend/router.php (linhas 31-37)
+   
+   - Router identifica rota /api/user/avatar
+   - Define action 'upload_avatar'
+   - Carrega AuthController.php
+   - Chama $controller->processarRequisicao()
+
+4. PROCESSAMENTO DO UPLOAD (Backend)
+   Arquivo: backend/controllers/AuthController.php (método uploadAvatar)
+   
+   Etapas:
+   a) AUTENTICAÇÃO:
+      - Extrai token do header Authorization
+      - Valida token JWT usando JWTHelper
+      - Obtém ID do usuário do payload
+   
+   b) VALIDAÇÃO DOS DADOS:
+      - Verifica se dados de imagem foram enviados
+      - Valida formato base64 (regex: /^data:image\/(jpeg|jpg|png|gif|webp);base64,/)
+      - Decodifica base64 para dados binários
+      - Verifica tamanho do arquivo (máx 5MB)
+   
+   c) PREPARAÇÃO DO ARQUIVO:
+      - Garante que diretório existe (UploadConfig::ensureUploadDirectoryExists())
+      - Gera nome único: profile_{userId}_{timestamp}_{random}.{extension}
+      - Define caminho: C:/portal-noticias-uploads/profile-photos/{filename}
+
+5. SALVAMENTO FÍSICO DO ARQUIVO
+   Configuração: backend/config/upload.php
+   
+   Diretórios:
+   - Base: C:/portal-noticias-uploads
+   - Fotos de perfil: C:/portal-noticias-uploads/profile-photos
+   
+   Processo:
+   - Remove avatar anterior (se existir)
+   - Salva novo arquivo usando file_put_contents()
+   - Aplica otimização alternativa (sem redimensionamento)
+
+6. ATUALIZAÇÃO NO BANCO DE DADOS
+   Arquivo: backend/models/Usuario.php (método atualizarAvatar)
+   
+   - Gera URL de acesso: http://localhost:8001/files/profile/{filename}
+   - Atualiza campo 'foto_perfil' na tabela 'usuarios'
+   - Define data_atualizacao = NOW()
+
+7. SERVIR A IMAGEM (Acesso via URL)
+   Arquivo: backend/controllers/FileController.php
+   Rota: /files/profile/{filename}
+   
+   - Sanitiza nome do arquivo
+   - Verifica existência no diretório físico
+   - Define headers apropriados (Content-Type, Cache-Control)
+   - Serve o arquivo usando readfile()
+
+=== ESTRUTURA DE ARMAZENAMENTO ===
+
+1. FÍSICO (Disco):
+   C:/portal-noticias-uploads/profile-photos/
+   ├── profile_1_1640995200_a1b2c3d4.jpg
+   ├── profile_2_1640995300_e5f6g7h8.png
+   └── profile_3_1640995400_i9j0k1l2.webp
+
+2. BANCO DE DADOS (Campo foto_perfil):
+   - NULL: Usuário sem foto (usa default-avatar.svg)
+   - URL: http://localhost:8001/files/profile/profile_1_1640995200_a1b2c3d4.jpg
+
+3. FRONTEND (Exibição):
+   - Com foto: <img src="http://localhost:8001/files/profile/filename.jpg">
+   - Sem foto: <img src="assets/img/default-avatar.svg">
+
+=== CONFIGURAÇÕES TÉCNICAS ===
+
+1. VALIDAÇÕES:
+   - Formatos aceitos: JPG, JPEG, PNG, GIF, WEBP
+   - Tamanho máximo: 5MB
+   - Tipos MIME válidos: image/jpeg, image/png, image/gif, image/webp
+
+2. SEGURANÇA:
+   - Autenticação JWT obrigatória
+   - Validação rigorosa de formato
+   - Nomes de arquivo únicos (previne conflitos)
+   - Sanitização de nomes de arquivo
+   - Remoção de avatar anterior
+
+3. PERFORMANCE:
+   - Conversão base64 → binário
+   - Headers de cache apropriados
+   - Otimização de imagem (método alternativo)
+
+=== FLUXO DE DADOS RESUMIDO ===
+
+[Usuário] → [Input File] → [JavaScript] → [Base64] → [HTTP POST]
+    ↓
+[Router] → [AuthController] → [Validação] → [Arquivo Físico]
+    ↓
+[Banco de dados] ← [URL gerada] ← [Nome único] ← [Salvamento]
+    ↓
+[FileController] ← [Requisição /files/profile/] ← [Frontend]
+
+=== ARQUIVOS ENVOLVIDOS ===
+
+1. Frontend:
+   - frontend/perfil.html (interface e JavaScript)
+   - frontend/assets/img/default-avatar.svg (imagem padrão)
+
+2. Backend:
+   - backend/router.php (roteamento)
+   - backend/controllers/AuthController.php (upload)
+   - backend/controllers/FileController.php (servir arquivos)
+   - backend/models/Usuario.php (banco de dados)
+   - backend/config/upload.php (configurações)
+
+3. Testes:
+   - teste/perfil_usuario/test_avatar_upload_fix.html
+   - teste/upload_arquivos/test_avatar_upload.html
+
+=== POSSÍVEIS PROBLEMAS E SOLUÇÕES ===
+
+1. Diretório não existe:
+   - Solução: UploadConfig::ensureUploadDirectoryExists()
+
+2. Permissões de escrita:
+   - Verificação: is_writable() no diretório
+
+3. Token inválido:
+   - Validação JWT no AuthController
+
+4. Arquivo muito grande:
+   - Validação de tamanho antes do upload
+
+5. Formato inválido:
+   - Regex de validação base64 e MIME type
+
+=== CONCLUSÃO ===
+
+O sistema implementa um processo completo e seguro de upload de avatares:
+✅ Validação rigorosa de entrada
+✅ Autenticação JWT
+✅ Armazenamento físico organizado
+✅ URLs de acesso padronizadas
+✅ Remoção de arquivos antigos
+✅ Fallback para imagem padrão
+
+O fluxo está bem estruturado e segue boas práticas de segurança e organização.

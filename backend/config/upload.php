@@ -3,8 +3,8 @@
 // Portal de Notícias
 
 class UploadConfig {
-    // Diretório base para uploads no disco D
-    const BASE_UPLOAD_DIR = 'D:/portal-noticias-uploads';
+    // Diretório base para uploads no disco C
+    const BASE_UPLOAD_DIR = 'C:/portal-noticias-uploads';
     
     // Diretório específico para fotos de perfil
     const PROFILE_PHOTOS_DIR = self::BASE_UPLOAD_DIR . '/profile-photos';

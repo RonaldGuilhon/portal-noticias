@@ -4,7 +4,7 @@
  * Portal de Notícias
  */
 
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../../config-unified.php';
 
 class UploadService {
     private $uploadPath;

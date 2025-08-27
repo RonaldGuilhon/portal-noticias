@@ -1,0 +1,34 @@
+CORREÇÃO DE LINKS RELATIVOS - PROBLEMA DE ROTEAMENTO
+=====================================================
+
+DATA: 26/08/2025
+PROBLEMA: "categoria não encontrada" ao acessar perfil de páginas de categoria/notícia
+
+CAUSA RAIZ:
+- Links relativos nas páginas categoria.html e noticia.html
+- Quando em /categoria/politica, link "perfil.html" virava "/categoria/perfil.html"
+- Router interpretava como busca por categoria "perfil.html"
+
+ARQUIVOS CORRIGIDOS:
+
+1. frontend/categoria.html:
+   - perfil.html → /perfil.html
+   - login.html → /login.html
+   - cadastro.html → /cadastro.html
+   - favoritos.html → /favoritos.html
+   - newsletter.html → /newsletter.html
+
+2. frontend/noticia.html:
+   - perfil.html → /perfil.html
+   - login.html → /login.html
+   - cadastro.html → /cadastro.html
+   - favoritos.html → /favoritos.html
+   - newsletter.html → /newsletter.html
+
+SOLUÇÃO:
+- Alteração de caminhos relativos para absolutos
+- Todos os links agora funcionam corretamente de qualquer página
+- Navegação consistente em todo o site
+
+STATUS: ✅ RESOLVIDO
+TESTE: Acesso ao perfil funciona de todas as páginas de categoria e notícia
