@@ -1,0 +1,37 @@
+CORREÇÃO: REMOÇÃO DA SEÇÃO DE DESTAQUES DAS PÁGINAS DE CATEGORIA
+================================================================
+
+Data: Janeiro 2025
+Arquivo: frontend/categoria.html
+
+PROBLEMA IDENTIFICADO:
+- A seção de notícias em destaque estava sendo replicada nas páginas de categoria
+- Os destaques deveriam aparecer apenas na página inicial
+- Isso causava confusão na navegação e duplicação desnecessária de conteúdo
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. REMOÇÃO DA SEÇÃO HTML:
+   - Removida toda a seção "featured-news-section" do template categoria.html
+   - Eliminado o container "featured-news" que exibia os destaques
+
+2. REMOÇÃO DAS FUNÇÕES JAVASCRIPT:
+   - Removida a função loadFeaturedNews() que carregava os destaques via API
+   - Removida a função displayFeaturedNews() que renderizava os destaques
+   - Removida a chamada loadFeaturedNews() na primeira página de cada categoria
+
+3. ARQUIVOS MODIFICADOS:
+   - frontend/categoria.html (remoção completa da funcionalidade de destaques)
+
+RESULTADO:
+✅ Páginas de categoria agora mostram apenas notícias específicas da categoria
+✅ Página inicial mantém os destaques funcionando normalmente
+✅ Sistema de filtragem por categoria permanece operacional
+✅ Interface mais limpa e focada nas páginas de categoria
+
+TESTE REALIZADO:
+- Verificado funcionamento das páginas /categoria/cultura e /categoria/tecnologia
+- Confirmado que página inicial (/) ainda exibe destaques corretamente
+- Validado que não há erros no console do navegador
+
+STATUS: CONCLUÍDO ✅

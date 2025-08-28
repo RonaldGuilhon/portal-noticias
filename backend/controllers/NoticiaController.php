@@ -354,12 +354,18 @@ class NoticiaController {
     private function obterPopulares() {
         try {
             $limite = min((int)($_GET['limit'] ?? 10), 20);
+            $categoria_id = $_GET['categoria_id'] ?? null;
             
             $filtros = [
                 'ordem' => 'mais_lidas',
                 'limit' => $limite,
                 'page' => 1
             ];
+            
+            // Adicionar filtro por categoria se fornecido
+            if($categoria_id) {
+                $filtros['categoria_id'] = $categoria_id;
+            }
 
             $noticias = $this->noticia->listar($filtros);
             jsonResponse([
@@ -409,6 +415,7 @@ class NoticiaController {
         try {
             error_log("[NOTICIA DEBUG] Função obterDestaques chamada");
             $limite = min((int)($_GET['limit'] ?? 5), 10);
+            $categoria_id = $_GET['categoria_id'] ?? null;
             error_log("[NOTICIA DEBUG] Limite definido: $limite");
             
             $filtros = [
@@ -416,6 +423,12 @@ class NoticiaController {
                 'limit' => $limite,
                 'page' => 1
             ];
+            
+            // Adicionar filtro por categoria se fornecido
+            if($categoria_id) {
+                $filtros['categoria_id'] = $categoria_id;
+            }
+            
             error_log("[NOTICIA DEBUG] Filtros: " . json_encode($filtros));
 
             $noticias = $this->noticia->listar($filtros);

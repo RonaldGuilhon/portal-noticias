@@ -277,16 +277,7 @@
                         </div>
                     </div>
                     
-                    <!-- Featured News (if any) -->
-                    <section class="featured-news mb-4" id="featured-news-section" style="display: none;">
-                        <h3 class="section-title mb-3">
-                            <i class="fas fa-star text-warning me-2"></i>
-                            Destaques da Categoria
-                        </h3>
-                        <div class="row" id="featured-news">
-                            <!-- Notícias em destaque serão carregadas via JavaScript -->
-                        </div>
-                    </section>
+
                     
                     <!-- News List -->
                     <section class="news-list">
@@ -565,23 +556,34 @@
             const pathParts = window.location.pathname.split('/');
             const categoriaIndex = pathParts.indexOf('categoria');
             
+            console.log('[DEBUG] URL atual:', window.location.pathname);
+            console.log('[DEBUG] Path parts:', pathParts);
+            console.log('[DEBUG] Categoria index:', categoriaIndex);
+            
             if (categoriaIndex !== -1 && pathParts[categoriaIndex + 1]) {
                 categorySlug = pathParts[categoriaIndex + 1];
+                console.log('[DEBUG] Category slug extraído do path:', categorySlug);
             } else {
                 // Fallback para parâmetros de URL
                 const urlParams = new URLSearchParams(window.location.search);
                 categorySlug = urlParams.get('categoria');
+                console.log('[DEBUG] Category slug do parâmetro URL:', categorySlug);
             }
             
             // Remove extensão .html se presente
             if (categorySlug && categorySlug.endsWith('.html')) {
                 categorySlug = categorySlug.replace('.html', '');
+                console.log('[DEBUG] Category slug após remover .html:', categorySlug);
             }
             
-            // Se ainda não temos um slug válido, usa um padrão para teste
+            // Verifica se temos um slug válido
             if (!categorySlug || categorySlug === 'categoria') {
-                categorySlug = 'politica'; // categoria padrão para teste
+                console.error('[DEBUG] Category slug inválido:', categorySlug);
+                showError('Categoria não especificada na URL.');
+                return;
             }
+            
+            console.log('[DEBUG] Category slug final:', categorySlug);
             
             loadCategoryData();
             setupEventListeners();
@@ -725,8 +727,14 @@
                     sort: currentSort
                 });
                 
-                const response = await fetch(`http://localhost:8001/noticias/categoria/${categorySlug}?${params}`);
+                const url = `http://localhost:8001/noticias/categoria/${categorySlug}?${params}`;
+                console.log('[DEBUG] Fazendo requisição para:', url);
+                console.log('[DEBUG] Category slug:', categorySlug);
+                
+                const response = await fetch(url);
                 const result = await response.json();
+                
+                console.log('[DEBUG] Resposta da API:', result);
                 
                 if (result.success) {
                     displayNews(result.data.noticias, reset);
@@ -744,10 +752,7 @@
                     hasMoreNews = paginaAtual < result.data.paginacao.total_paginas;
                     document.getElementById('load-more-news').style.display = hasMoreNews ? 'block' : 'none';
                     
-                    // Carrega notícias em destaque se for a primeira página
-                    if (currentPage === 1) {
-                        loadFeaturedNews();
-                    }
+
                 } else {
                     if (currentPage === 1) {
                         showNoResults();
@@ -843,50 +848,7 @@
             `;
         }
         
-        // Carrega notícias em destaque
-        async function loadFeaturedNews() {
-            try {
-                const params = new URLSearchParams({
-                    action: 'featured',
-                    categoria_id: categoryData ? categoryData.id : '',
-                    limit: 3
-                });
-                const response = await fetch(`http://localhost:8001/noticias?${params}`);
-                const result = await response.json();
-                
-                if (result.noticias && result.noticias.length > 0) {
-                    document.getElementById('featured-news-section').style.display = 'block';
-                    displayFeaturedNews(result.noticias);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar notícias em destaque:', error);
-            }
-        }
-        
-        // Exibe notícias em destaque
-        function displayFeaturedNews(news) {
-            const container = document.getElementById('featured-news');
-            container.innerHTML = news.map(item => `
-                <div class="col-md-6 mb-3">
-                    <div class="card news-card featured-card">
-                        <div class="news-card-image">
-                            <img src="${item.imagem}" alt="${item.titulo}" class="card-img">
-                            <div class="featured-badge">
-                                <i class="fas fa-star"></i>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="news-card-title">
-                                <a href="/noticia/${item.slug}">${item.titulo}</a>
-                            </h6>
-                            <div class="news-card-meta">
-                                <small class="text-muted">${formatDate(item.data_publicacao)}</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+
         
         // Carrega dados da sidebar
         async function loadSidebarData() {
@@ -929,7 +891,14 @@
         // Carrega notícias populares
         async function loadPopularNews() {
             try {
-                const response = await fetch('http://localhost:8001/noticias?action=popular&limit=5');
+                let url = 'http://localhost:8001/noticias?action=popular&limit=5';
+                
+                // Se temos dados da categoria, filtra por categoria
+                if (categoryData && categoryData.id) {
+                    url += `&categoria_id=${categoryData.id}`;
+                }
+                
+                const response = await fetch(url);
                 const result = await response.json();
                 
                 if (result.success) {

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Categoria Simples</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .news-item { border: 1px solid #ccc; margin: 10px 0; padding: 10px; }
+        .debug { background: #f0f0f0; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Teste Categoria Simples</h1>
+    
+    <div class="debug">
+        <h3>Debug Info:</h3>
+        <div id="debug-info"></div>
+    </div>
+    
+    <div>
+        <label>Categoria: </label>
+        <select id="category-select">
+            <option value="cultura">Cultura</option>
+            <option value="politica">Política</option>
+            <option value="tecnologia">Tecnologia</option>
+            <option value="esportes">Esportes</option>
+            <option value="economia">Economia</option>
+        </select>
+        <button onclick="loadCategoryNews()">Carregar Notícias</button>
+    </div>
+    
+    <div id="news-container"></div>
+
+    <script>
+        function debugLog(message) {
+            console.log(message);
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.innerHTML += '<p>' + new Date().toLocaleTimeString() + ': ' + message + '</p>';
+        }
+
+        async function loadCategoryNews() {
+            const categorySlug = document.getElementById('category-select').value;
+            debugLog(`Carregando notícias para categoria: ${categorySlug}`);
+            
+            try {
+                const url = `http://localhost:8001/noticias/categoria/${categorySlug}?page=1&limit=10`;
+                debugLog(`URL da requisição: ${url}`);
+                
+                const response = await fetch(url);
+                debugLog(`Status da resposta: ${response.status}`);
+                
+                const result = await response.json();
+                debugLog(`Resposta recebida: ${JSON.stringify(result, null, 2)}`);
+                
+                if (result.success) {
+                    displayNews(result.data.noticias, result.data.categoria);
+                    debugLog(`Notícias carregadas com sucesso: ${result.data.noticias.length} itens`);
+                } else {
+                    debugLog(`Erro na API: ${result.message}`);
+                }
+            } catch (error) {
+                debugLog(`Erro na requisição: ${error.message}`);
+            }
+        }
+
+        function displayNews(news, category) {
+            const container = document.getElementById('news-container');
+            
+            let html = `<h2>Notícias da Categoria: ${category.nome}</h2>`;
+            
+            if (news.length === 0) {
+                html += '<p>Nenhuma notícia encontrada para esta categoria.</p>';
+            } else {
+                news.forEach((item, index) => {
+                    html += `
+                        <div class="news-item">
+                            <h3>${item.titulo}</h3>
+                            <p><strong>Categoria:</strong> ${item.categoria_nome} (ID: ${item.categoria_id})</p>
+                            <p><strong>Autor:</strong> ${item.autor_nome}</p>
+                            <p><strong>Data:</strong> ${item.data_publicacao}</p>
+                            <p><strong>Visualizações:</strong> ${item.visualizacoes}</p>
+                            ${item.resumo ? `<p><strong>Resumo:</strong> ${item.resumo}</p>` : ''}
+                        </div>
+                    `;
+                });
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Carrega automaticamente a primeira categoria ao carregar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('Página carregada, testando categoria padrão...');
+            loadCategoryNews();
+        });
+    </script>
+</body>
+</html>

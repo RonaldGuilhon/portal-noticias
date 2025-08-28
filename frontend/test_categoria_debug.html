@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Debug Categoria</title>
+</head>
+<body>
+    <h1>Teste de Debug - Categoria</h1>
+    <div id="results"></div>
+    <div id="logs"></div>
+
+    <script>
+        function log(message) {
+            console.log(message);
+            const logsDiv = document.getElementById('logs');
+            logsDiv.innerHTML += '<p>' + message + '</p>';
+        }
+
+        async function testCategoryAPI() {
+            log('Iniciando teste da API de categoria...');
+            
+            const categories = ['cultura', 'politica', 'tecnologia', 'esportes'];
+            
+            for (const category of categories) {
+                try {
+                    log(`Testando categoria: ${category}`);
+                    const url = `http://localhost:8001/noticias/categoria/${category}?page=1&limit=5`;
+                    log(`URL: ${url}`);
+                    
+                    const response = await fetch(url);
+                    const result = await response.json();
+                    
+                    log(`Categoria ${category}: ${result.success ? 'SUCESSO' : 'ERRO'}`);
+                    if (result.success) {
+                        log(`  - Total de notícias: ${result.data.noticias.length}`);
+                        log(`  - Categoria retornada: ${result.data.categoria.nome}`);
+                        log(`  - Total de itens: ${result.data.paginacao.total_itens}`);
+                        
+                        result.data.noticias.forEach((noticia, index) => {
+                            log(`  - Notícia ${index + 1}: ${noticia.titulo} (Categoria: ${noticia.categoria_nome})`);
+                        });
+                    } else {
+                        log(`  - Erro: ${result.message || 'Erro desconhecido'}`);
+                    }
+                    log('---');
+                } catch (error) {
+                    log(`Erro ao testar categoria ${category}: ${error.message}`);
+                }
+            }
+        }
+
+        // Executa o teste quando a página carrega
+        document.addEventListener('DOMContentLoaded', testCategoryAPI);
+    </script>
+</body>
+</html>
