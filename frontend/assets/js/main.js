@@ -25,6 +25,7 @@ class PortalNoticias {
 
     // Inicialização
     init() {
+        console.log('PortalNoticias.init() chamada');
         this.loadUserFromStorage();
         this.initTheme();
         this.bindEvents();

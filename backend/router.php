@@ -26,8 +26,13 @@ function setupCORS() {
 // Configurar CORS
 setupCORS();
 
+// Log de debug para requisições
+error_log("[ROUTER DEBUG] Requisição recebida: {$_SERVER['REQUEST_METHOD']} {$_SERVER['REQUEST_URI']}");
+error_log("[ROUTER DEBUG] Origin: " . ($_SERVER['HTTP_ORIGIN'] ?? 'não definido'));
+
 // Tratar requisições OPTIONS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    error_log("[ROUTER DEBUG] Requisição OPTIONS processada");
     http_response_code(200);
     exit();
 }
@@ -143,6 +148,7 @@ if (preg_match('/^auth\/forgot-password\/?$/', $uri)) {
 
 // Roteamento para notícias
 if (preg_match('/^noticias\/destaques\/?$/', $uri)) {
+    error_log("[ROUTER DEBUG] Rota de notícias em destaque acessada");
     $_GET['action'] = 'featured';
     require_once 'controllers/NoticiaController.php';
     $controller = new NoticiaController();
