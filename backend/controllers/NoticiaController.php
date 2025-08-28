@@ -407,17 +407,25 @@ class NoticiaController {
      */
     private function obterDestaques() {
         try {
+            error_log("[NOTICIA DEBUG] Função obterDestaques chamada");
             $limite = min((int)($_GET['limit'] ?? 5), 10);
+            error_log("[NOTICIA DEBUG] Limite definido: $limite");
             
             $filtros = [
                 'destaque' => true,
                 'limit' => $limite,
                 'page' => 1
             ];
+            error_log("[NOTICIA DEBUG] Filtros: " . json_encode($filtros));
 
             $noticias = $this->noticia->listar($filtros);
+            error_log("[NOTICIA DEBUG] Notícias obtidas: " . count($noticias) . " itens");
+            error_log("[NOTICIA DEBUG] Dados das notícias: " . json_encode($noticias));
+            
             jsonResponse(['noticias' => $noticias]);
+            error_log("[NOTICIA DEBUG] Resposta JSON enviada");
         } catch(Exception $e) {
+            error_log("[NOTICIA DEBUG] Erro capturado: " . $e->getMessage());
             logError('Erro ao obter destaques: ' . $e->getMessage());
             jsonResponse(['erro' => 'Erro interno do servidor'], 500);
         }

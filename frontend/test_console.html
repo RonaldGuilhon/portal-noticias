@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Console</title>
+</head>
+<body>
+    <h1>Teste Console JavaScript</h1>
+    <div id="status">Verificando JavaScript...</div>
+    
+    <script>
+        console.log('=== TESTE CONSOLE INICIADO ===');
+        
+        // Verificar se o JavaScript está funcionando
+        document.getElementById('status').textContent = 'JavaScript funcionando!';
+        console.log('JavaScript básico funcionando');
+        
+        // Verificar se fetch está disponível
+        if (typeof fetch !== 'undefined') {
+            console.log('Fetch API disponível');
+        } else {
+            console.error('Fetch API não disponível');
+        }
+        
+        // Verificar se consegue acessar o main.js
+        console.log('Tentando carregar main.js...');
+        
+        // Simular carregamento do main.js
+        const script = document.createElement('script');
+        script.src = '/assets/js/main.js';
+        script.onload = function() {
+            console.log('main.js carregado com sucesso');
+            
+            // Verificar se PortalNoticias existe
+            if (typeof PortalNoticias !== 'undefined') {
+                console.log('Classe PortalNoticias encontrada');
+            } else {
+                console.error('Classe PortalNoticias não encontrada');
+            }
+            
+            // Verificar se window.portalApp existe
+            if (typeof window.portalApp !== 'undefined') {
+                console.log('window.portalApp encontrado:', window.portalApp);
+            } else {
+                console.error('window.portalApp não encontrado');
+            }
+        };
+        script.onerror = function() {
+            console.error('Erro ao carregar main.js');
+        };
+        document.head.appendChild(script);
+        
+        console.log('=== FIM DO TESTE INICIAL ===');
+    </script>
+</body>
+</html>
