@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Console</title>
+</head>
+<body>
+    <h1>Debug Console</h1>
+    <div id="output"></div>
+    
+    <script>
+        console.log('Script carregado');
+        
+        // Simular a estrutura da página principal
+        document.body.innerHTML += `
+            <div class="featured-news"></div>
+            <div class="popular-news"></div>
+        `;
+        
+        // Testar se o JavaScript principal está funcionando
+        const CONFIG = {
+            API_BASE_URL: 'http://localhost:8001'
+        };
+        
+        async function testAPI() {
+            try {
+                console.log('Testando API...');
+                const response = await fetch(CONFIG.API_BASE_URL + '/noticias/destaques');
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Data received:', data);
+                
+                document.getElementById('output').innerHTML = `
+                    <h2>Resultado do teste:</h2>
+                    <p>Status: ${response.status}</p>
+                    <p>Dados: ${JSON.stringify(data, null, 2)}</p>
+                `;
+            } catch (error) {
+                console.error('Erro na API:', error);
+                document.getElementById('output').innerHTML = `
+                    <h2>Erro:</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        // Executar teste quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM carregado, executando teste...');
+            testAPI();
+        });
+    </script>
+</body>
+</html>

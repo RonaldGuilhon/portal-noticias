@@ -155,13 +155,21 @@ class PortalNoticias {
 
     // Carrega dados iniciais
     loadInitialData() {
+        console.log('loadInitialData chamada');
+        
         // Carrega notícias em destaque se estivermos na página inicial
-        if (document.querySelector('.featured-news')) {
+        const featuredContainer = document.querySelector('.featured-news');
+        console.log('Featured container encontrado:', !!featuredContainer);
+        if (featuredContainer) {
+            console.log('Carregando notícias em destaque...');
             this.loadFeaturedNews();
         }
 
         // Carrega notícias mais lidas
-        if (document.querySelector('.popular-news')) {
+        const popularContainer = document.querySelector('.popular-news');
+        console.log('Popular container encontrado:', !!popularContainer);
+        if (popularContainer) {
+            console.log('Carregando notícias populares...');
             this.loadPopularNews();
         }
 
@@ -442,7 +450,11 @@ class PortalNoticias {
     // Carrega notícias em destaque
     async loadFeaturedNews() {
         try {
-            const news = await this.apiRequest('/noticias/destaques');
+            console.log('Fazendo requisição para /noticias/destaques');
+            const response = await this.apiRequest('/noticias/destaques');
+            console.log('Resposta da API destaques:', response);
+            const news = response.noticias || response.data || response;
+            console.log('Notícias extraídas (destaques):', news);
             this.displayFeaturedNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias em destaque:', error);
@@ -452,7 +464,11 @@ class PortalNoticias {
     // Carrega notícias populares
     async loadPopularNews() {
         try {
-            const news = await this.apiRequest('/noticias/populares');
+            console.log('Fazendo requisição para /noticias/populares');
+            const response = await this.apiRequest('/noticias/populares');
+            console.log('Resposta da API populares:', response);
+            const news = response.noticias || response.data || response;
+            console.log('Notícias extraídas (populares):', news);
             this.displayPopularNews(news);
         } catch (error) {
             console.error('Erro ao carregar notícias populares:', error);
@@ -471,19 +487,41 @@ class PortalNoticias {
 
     // Exibe notícias em destaque
     displayFeaturedNews(news) {
+        console.log('displayFeaturedNews chamada com:', news);
         const container = document.querySelector('.featured-news');
-        if (!container || !news.length) return;
+        console.log('Container featured encontrado:', !!container);
+        if (!container) {
+            console.error('Container .featured-news não encontrado');
+            return;
+        }
+        if (!news || !news.length) {
+            console.error('News vazio ou sem length:', news);
+            return;
+        }
 
+        console.log('Criando', news.length, 'cards de notícias em destaque');
         container.innerHTML = news.map(item => this.createNewsCard(item, 'featured')).join('');
         container.classList.add('fade-in');
+        console.log('Cards de destaque criados com sucesso');
     }
 
     // Exibe notícias populares
     displayPopularNews(news) {
+        console.log('displayPopularNews chamada com:', news);
         const container = document.querySelector('.popular-news');
-        if (!container || !news.length) return;
+        console.log('Container popular encontrado:', !!container);
+        if (!container) {
+            console.error('Container .popular-news não encontrado');
+            return;
+        }
+        if (!news || !news.length) {
+            console.error('News vazio ou sem length:', news);
+            return;
+        }
 
+        console.log('Criando', news.length, 'cards de notícias populares');
         container.innerHTML = news.map(item => this.createNewsCard(item, 'compact')).join('');
+        console.log('Cards populares criados com sucesso');
     }
 
     // Exibe categorias

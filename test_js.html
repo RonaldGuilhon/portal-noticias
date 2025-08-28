@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste JavaScript</title>
+</head>
+<body>
+    <h1>Teste de Carregamento de Notícias</h1>
+    <div id="result"></div>
+    
+    <script>
+        const API_BASE_URL = 'http://localhost:8001';
+        
+        async function testAPI() {
+            try {
+                console.log('Testando API...');
+                const response = await fetch(`${API_BASE_URL}/noticias/destaques`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'http://localhost:8000'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                const news = data.noticias || data.data || data;
+                console.log('Extracted news:', news);
+                
+                document.getElementById('result').innerHTML = `
+                    <h2>Resultado:</h2>
+                    <p>Status: ${response.status}</p>
+                    <p>Notícias encontradas: ${news ? news.length : 0}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Erro:', error);
+                document.getElementById('result').innerHTML = `
+                    <h2>Erro:</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+        
+        // Executa o teste quando a página carrega
+        window.onload = testAPI;
+    </script>
+</body>
+</html>
