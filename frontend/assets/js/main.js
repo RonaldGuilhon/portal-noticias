@@ -663,7 +663,7 @@ class PortalNoticias {
         console.log('Criando', limitedNews.length, 'cards de últimas notícias (limitado a 3)');
         
         container.innerHTML = limitedNews.map(item => `
-            <div class="col-12 mb-3">
+            <div class="col-md-6 col-lg-4 mb-4">
                 ${this.createNewsCard(item)}
             </div>
         `).join('');
@@ -702,7 +702,7 @@ class PortalNoticias {
         const baseCard = `
             <article class="card news-card ${type === 'featured' ? 'news-card-featured' : ''}">
                 ${news.imagem ? `
-                    <img src="${news.imagem}" alt="${news.titulo}" class="card-img lazy" data-src="${news.imagem}">
+                    <img src="${news.imagem}" alt="${news.titulo}" class="card-img-top lazy" data-src="${news.imagem}">
                 ` : ''}
                 
                 <div class="news-card-category">${news.categoria}</div>
@@ -744,6 +744,15 @@ class PortalNoticias {
         return baseCard;
     }
 
+    // Formata data para exibição
+    formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('pt-BR', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    }
+
     // Configura o botão "Carregar mais"
     setupLoadMoreButton() {
         const loadMoreBtn = document.querySelector('#load-more-news');
@@ -783,7 +792,7 @@ class PortalNoticias {
 
     // Adiciona notícias ao container
     appendNews(news) {
-        const container = document.querySelector('#news-list');
+        const container = document.querySelector('.news-list');
         if (!container) return;
 
         const newsHtml = news.map(item => this.createNewsCard(item, 'col-12')).join('');

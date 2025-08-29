@@ -1,0 +1,42 @@
+REVERSÃO: ESTILO DOS CARDS DA PÁGINA INICIAL
+
+Data: 29/08/2025
+Arquivos modificados: frontend/assets/js/main.js
+
+PROBLEMA IDENTIFICADO:
+- A alteração anterior (arquivo 34_estilo_cards_home.txt) aplicou o estilo horizontal dos cards das páginas de categoria na página inicial
+- Isso prejudicou o layout das páginas de categoria, causando conflitos visuais
+- O usuário solicitou desfazer a última alteração
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. REVERSÃO DA FUNÇÃO createNewsCard:
+   - Removidas classes: news-card-horizontal, h-100
+   - Restaurada estrutura original com card-img-top
+   - Removida estrutura news-card-image e overlay
+   - Restaurado card-body sem flexbox
+   - Removida seção news-card-meta com data
+   - Restaurado news-card-meta original com autor e estatísticas
+   - Restaurados ícones originais (icon-eye, icon-heart, icon-comment)
+
+2. REVERSÃO DA FUNÇÃO displayLatestNews:
+   - Restaurada estrutura de grid: col-md-6 col-lg-4 mb-4
+   - Removida estrutura de lista col-12 mb-3
+
+3. REVERSÃO DA FUNÇÃO appendNews:
+   - Restaurado formato original sem wrapper div
+   - Removida estrutura col-12 mb-4
+
+RESULTADO:
+- Cards da página inicial voltaram ao formato original em grid (2-3 colunas)
+- Páginas de categoria mantêm o estilo horizontal específico
+- Separação clara entre os estilos de cada página
+- Layout das categorias não foi prejudicado
+
+TESTES REALIZADOS:
+- Verificação da página inicial (http://localhost:8000/)
+- Verificação da página de categoria saúde (http://localhost:8000/categoria/saude)
+- Confirmação de que ambos os layouts funcionam independentemente
+
+STATUS: CONCLUÍDO
+Os cards da página inicial voltaram ao formato original, mantendo a funcionalidade específica das páginas de categoria.

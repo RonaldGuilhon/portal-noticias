@@ -1,0 +1,46 @@
+CORREÇÃO: APLICAÇÃO DO ESTILO HORIZONTAL DOS CARDS NA PÁGINA INICIAL
+
+Data: 29/08/2025
+Arquivos modificados: frontend/assets/js/main.js
+
+PROBLEMA IDENTIFICADO:
+- Os cards de notícias da página inicial (home) tinham um estilo diferente dos cards das páginas de categoria
+- Os cards da home eram exibidos em formato vertical/grid, enquanto os das categorias eram horizontais
+- Falta de consistência visual entre as páginas
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. MODIFICAÇÃO DA FUNÇÃO createNewsCard:
+   - Alterada a estrutura HTML para usar o formato horizontal
+   - Adicionadas classes: news-card-horizontal, h-100
+   - Implementada estrutura com news-card-image e overlay
+   - Reorganizado card-body com flexbox (d-flex flex-column)
+   - Adicionada seção news-card-meta com data de publicação
+   - Implementado news-card-footer com informações do autor e estatísticas
+
+2. ADIÇÃO DA FUNÇÃO formatDate:
+   - Criada função para formatar datas no padrão brasileiro
+   - Formato: dia/mês/ano (ex: 15 ago 2025)
+
+3. ATUALIZAÇÃO DA FUNÇÃO displayLatestNews:
+   - Mantida estrutura de col-12 mb-3 para cada card
+   - Garantida compatibilidade com o novo formato horizontal
+
+4. CORREÇÃO DA FUNÇÃO appendNews:
+   - Atualizada para usar .news-list em vez de #news-list
+   - Estrutura de col-12 mb-4 para novos cards carregados
+
+RESULTADO:
+- Cards da página inicial agora têm o mesmo estilo horizontal das páginas de categoria
+- Layout consistente em todo o portal
+- Melhor aproveitamento do espaço horizontal
+- Informações organizadas de forma mais clara (data, autor, estatísticas)
+- Overlay com botão "Ler mais" para melhor UX
+
+TESTES REALIZADOS:
+- Verificação da página inicial (http://localhost:8000/)
+- Confirmação do carregamento correto dos arquivos CSS e JS
+- Validação da estrutura HTML gerada pelos cards
+
+STATUS: CONCLUÍDO
+Todos os cards da página inicial agora seguem o mesmo padrão visual das páginas de categoria.

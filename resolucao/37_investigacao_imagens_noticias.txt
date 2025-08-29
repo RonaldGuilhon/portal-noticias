@@ -1,0 +1,161 @@
+=== INVESTIGAÇÃO: ONDE FICAM SALVAS AS IMAGENS DAS NOTÍCIAS ===
+Data: 26/08/2025
+Solicitação: Investigar onde as imagens das notícias são armazenadas
+
+=== CONFIGURAÇÕES ENCONTRADAS ===
+
+1. CONFIGURAÇÃO PRINCIPAL DE UPLOAD
+   Arquivo: config-unified.php
+   - UPLOAD_PATH: 'backend/uploads' (definido no .env)
+   - UPLOAD_URL: 'http://localhost:8001/backend/uploads'
+   - Tipos permitidos: jpg, jpeg, png, gif, webp
+   - Tamanho máximo: 10MB
+
+2. CONFIGURAÇÃO ESPECÍFICA PARA FOTOS DE PERFIL
+   Arquivo: backend/config/upload.php
+   - BASE_UPLOAD_DIR: 'C:/portal-noticias-uploads'
+   - PROFILE_PHOTOS_DIR: 'C:/portal-noticias-uploads/profile-photos'
+   - URL de acesso: 'http://localhost:8001/files/profile/'
+
+3. ESTRUTURA DE DIRETÓRIOS ATUAL
+   
+   A) DIRETÓRIO PRINCIPAL (backend/uploads):
+   ```
+   backend/uploads/
+   ├── .gitkeep
+   ├── .htaccess
+   ├── anuncios/ (vazio)
+   ├── audios/ (vazio)
+   ├── documents/ (vazio)
+   ├── images/ (vazio)
+   ├── noticias/ (vazio)
+   ├── temp/ (vazio)
+   ├── usuarios/ (vazio)
+   └── videos/ (vazio)
+   ```
+   
+   B) DIRETÓRIO DISCO C (C:/portal-noticias-uploads):
+   ```
+   C:/portal-noticias-uploads/
+   └── profile-photos/
+       └── profile_1_1756260532_2fbfcb305e059763.jpeg
+   ```
+
+=== ANÁLISE DO CÓDIGO ===
+
+1. PROCESSAMENTO DE UPLOAD DE NOTÍCIAS
+   Arquivo: backend/controllers/NoticiaController.php
+   Linhas 655 e 724:
+   ```php
+   $this->noticia->imagem_destaque = $this->uploadService->processarUpload($dados['imagem_destaque'], 'images');
+   ```
+   
+   - As imagens de notícias são processadas pelo UploadService
+   - Tipo definido como 'images'
+   - Resultado salvo no campo 'imagem_destaque' da tabela noticias
+
+2. LÓGICA DO UPLOADSERVICE
+   Arquivo: backend/services/UploadService.php
+   - Usa UPLOAD_PATH do config (backend/uploads)
+   - Para tipo 'images': salva em backend/uploads/images/
+   - Retorna caminho relativo: 'uploads/images/nome_arquivo'
+
+3. DADOS DE EXEMPLO NO BANCO
+   Nos arquivos SQL de teste, as imagens são referenciadas como:
+   - '/uploads/noticias/congresso-lei.jpg'
+   - '/uploads/noticias/mobilidade-sp.jpg'
+   - '/uploads/noticias/inflacao-2023.jpg'
+   
+   Mas o código atual salva em 'uploads/images/'
+
+=== INCONSISTÊNCIAS IDENTIFICADAS ===
+
+1. DIVERGÊNCIA DE DIRETÓRIOS:
+   - Dados de teste apontam para: /uploads/noticias/
+   - Código atual salva em: backend/uploads/images/
+   - UploadService usa tipo 'images' em vez de 'noticias'
+
+2. DOIS SISTEMAS DE UPLOAD PARALELOS:
+   - Sistema 1: backend/uploads/ (para notícias, anúncios, etc.)
+   - Sistema 2: C:/portal-noticias-uploads/ (apenas para fotos de perfil)
+
+3. DIRETÓRIOS VAZIOS:
+   - Todos os diretórios de upload estão vazios
+   - Não há imagens de notícias armazenadas atualmente
+
+=== CONFIGURAÇÃO ATUAL PARA IMAGENS DE NOTÍCIAS ===
+
+**Local de Armazenamento:**
+- Diretório físico: backend/uploads/images/
+- Caminho completo: C:/Users/rsimplicio/Documents/GitHub/portal-noticias/backend/uploads/images/
+- URL de acesso: http://localhost:8001/backend/uploads/images/
+
+**Processo de Upload:**
+1. Upload via NoticiaController.php
+2. Processamento via UploadService.php
+3. Armazenamento em backend/uploads/images/
+4. Caminho salvo no banco: 'uploads/images/nome_arquivo'
+5. Acesso via URL: http://localhost:8001/backend/uploads/images/nome_arquivo
+
+=== CONFIGURAÇÃO DO APACHE (.htaccess) ===
+
+Arquivo: backend/.htaccess
+- Alias /uploads aponta para C:/portal-noticias-uploads
+- Mas o sistema de notícias usa backend/uploads/
+- Configuração inconsistente entre os dois sistemas
+
+=== CONCLUSÕES ===
+
+1. **RESPOSTA À PERGUNTA:**
+   As imagens das notícias são configuradas para serem salvas em:
+   - **Diretório local:** backend/uploads/images/
+   - **Não no disco C:** O disco C (C:/portal-noticias-uploads) é usado apenas para fotos de perfil
+
+2. **ESTADO ATUAL:**
+   - Não há imagens de notícias armazenadas no sistema
+   - Todos os diretórios de upload estão vazios
+   - Sistema está funcional mas sem conteúdo
+
+3. **ARQUITETURA:**
+   - Sistema híbrido com dois locais de armazenamento
+   - Fotos de perfil: C:/portal-noticias-uploads/profile-photos/
+   - Demais uploads: backend/uploads/[tipo]/
+
+=== RECOMENDAÇÕES ===
+
+1. **PADRONIZAÇÃO:**
+   - Considerar unificar todos os uploads em um local
+   - Ou documentar claramente a separação atual
+
+2. **CORREÇÃO DE DADOS:**
+   - Atualizar dados de teste para usar 'uploads/images/' em vez de 'uploads/noticias/'
+   - Ou ajustar código para usar 'noticias' como tipo
+
+3. **DOCUMENTAÇÃO:**
+   - Criar documentação clara sobre os dois sistemas de upload
+   - Especificar quando usar cada um
+
+=== ARQUIVOS ANALISADOS ===
+
+- config-unified.php (configurações gerais)
+- .env (variáveis de ambiente)
+- backend/config/upload.php (configurações específicas)
+- backend/services/UploadService.php (lógica de upload)
+- backend/controllers/NoticiaController.php (processamento de notícias)
+- backend/.htaccess (configurações Apache)
+- dados_teste_completos.sql (dados de exemplo)
+- Estrutura de diretórios backend/uploads/
+- Estrutura de diretórios C:/portal-noticias-uploads/
+
+=== RESPOSTA FINAL ===
+
+**As imagens das notícias NÃO são salvas no disco C.**
+
+Elas são configuradas para serem salvas em:
+- **Local:** backend/uploads/images/
+- **Caminho completo:** C:/Users/rsimplicio/Documents/GitHub/portal-noticias/backend/uploads/images/
+- **URL de acesso:** http://localhost:8001/backend/uploads/images/
+
+O disco C (C:/portal-noticias-uploads) é usado exclusivamente para fotos de perfil de usuários.
+
+Atualmente, não há imagens de notícias armazenadas no sistema, pois todos os diretórios de upload estão vazios.

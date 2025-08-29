@@ -1,0 +1,36 @@
+CORREÇÃO: Cards da Home Aparecendo nas Páginas de Categoria
+==========================================================
+
+DATA: 29/08/2025
+ARQUIVO MODIFICADO: frontend/categoria.html
+
+PROBLEMA IDENTIFICADO:
+- Após tentativas de alteração do estilo dos cards da home, os cards da página inicial começaram a aparecer também nas páginas de categoria
+- Isso ocorreu porque o container de notícias das páginas de categoria mantinha a classe 'news-list'
+- O JavaScript da página inicial usa o seletor '.news-list' para carregar as últimas notícias
+- Como as páginas de categoria também tinham um elemento com essa classe, as notícias da home eram carregadas incorretamente
+
+CAUSA RAIZ:
+- Linha 278 do arquivo categoria.html continha: <div id="category-news-container" class="news-list" style="display: none;">
+- A classe 'news-list' é específica para a página inicial e não deveria estar presente nas páginas de categoria
+- O JavaScript em main.js usa document.querySelector('.news-list') para encontrar o container das últimas notícias
+
+SOLUÇÃO IMPLEMENTADA:
+1. Removida a classe 'news-list' do container de notícias das páginas de categoria
+2. Alterada a linha 278 de:
+   <div id="category-news-container" class="news-list" style="display: none;">
+   Para:
+   <div id="category-news-container" style="display: none;">
+
+RESULTADO:
+- As páginas de categoria agora exibem apenas suas próprias notícias
+- A página inicial continua funcionando normalmente com seus cards
+- Não há mais interferência entre os diferentes tipos de exibição de notícias
+
+TESTE REALIZADO:
+- Verificada a página de categoria /categoria/saude - funcionando corretamente
+- Verificada a página inicial / - funcionando corretamente
+- Sem erros no terminal do servidor
+
+OBSERVAÇÃO:
+Esta correção resolve definitivamente o problema de conflito entre os containers de notícias das diferentes páginas, mantendo a separação adequada entre a funcionalidade da home e das páginas de categoria.

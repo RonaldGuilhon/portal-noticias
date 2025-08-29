@@ -275,7 +275,7 @@
                         </div>
                         
                         <!-- Container das notícias -->
-                        <div id="category-news-container" class="news-list" style="display: none;">
+                        <div id="category-news-container" style="display: none;">
                             <!-- Notícias serão carregadas aqui via JavaScript -->
                         </div>
                         
@@ -785,9 +785,9 @@
             return `
                 <div class="col-12 mb-4">
                     <div class="card news-card news-card-horizontal h-100">
-                        ${news.imagem ? `
+                        ${news.imagem_destaque ? `
                             <div class="news-card-image">
-                                <img src="${news.imagem}" alt="${news.titulo}" class="card-img lazy" loading="lazy">
+                                <img src="${news.imagem_destaque}" alt="${news.titulo}" class="card-img lazy" loading="lazy">
                                 <div class="news-card-overlay">
                                     <a href="/noticia/${news.slug}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-eye me-1"></i>
@@ -812,17 +812,17 @@
                             <div class="news-card-footer mt-auto">
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="author-info d-flex align-items-center">
-                                        <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor}" class="author-avatar-sm me-2">
-                                        <small class="text-muted">${news.autor}</small>
+                                        <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor_nome || 'Autor'}" class="author-avatar-sm me-2">
+                                        <small class="text-muted">${news.autor_nome || 'Autor não informado'}</small>
                                     </div>
                                     <div class="news-stats">
                                         <small class="text-muted me-2">
                                             <i class="fas fa-eye me-1"></i>
-                                            ${formatCategoryNumber(news.visualizacoes)}
+                                            ${formatCategoryNumber(news.visualizacoes || 0)}
                                         </small>
                                         <small class="text-muted">
                                             <i class="fas fa-heart me-1"></i>
-                                            ${formatCategoryNumber(news.curtidas)}
+                                            ${formatCategoryNumber(news.curtidas || 0)}
                                         </small>
                                     </div>
                                 </div>
@@ -843,13 +843,21 @@
         }
         
         function formatCategoryNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M';
+            // Verifica se o valor é válido
+            if (num === undefined || num === null || isNaN(num)) {
+                return '0';
             }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
+            
+            // Converte para número se for string
+            const number = typeof num === 'string' ? parseInt(num) : num;
+            
+            if (number >= 1000000) {
+                return (number / 1000000).toFixed(1) + 'M';
             }
-            return num.toString();
+            if (number >= 1000) {
+                return (number / 1000).toFixed(1) + 'K';
+            }
+            return number.toString();
         }
         
 

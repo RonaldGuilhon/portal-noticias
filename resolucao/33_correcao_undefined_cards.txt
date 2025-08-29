@@ -1,0 +1,54 @@
+CORREÇÃO DO PROBLEMA 'UNDEFINED' NOS CARDS DE NOTÍCIAS
+=======================================================
+
+DATA: 29/08/2025
+ARQUIVO: resolucao/33_correcao_undefined_cards.txt
+
+PROBLEMA IDENTIFICADO:
+- Campos 'undefined' aparecendo nos cards de notícias das páginas de categoria
+- Informações como autor, visualizações e curtidas não sendo exibidas corretamente
+
+CAUSA RAIZ:
+1. Incompatibilidade entre os campos retornados pela API e os campos acessados no JavaScript:
+   - API retorna: 'autor_nome', 'imagem_destaque'
+   - JavaScript acessava: 'autor', 'imagem'
+
+2. Função formatCategoryNumber não tratava valores undefined/null adequadamente
+
+3. Falta de valores padrão para campos opcionais
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. CORREÇÃO DOS CAMPOS NA FUNÇÃO createCategoryNewsHTML:
+   - Alterado 'news.imagem' para 'news.imagem_destaque'
+   - Alterado 'news.autor' para 'news.autor_nome'
+   - Adicionados valores padrão com operador || para evitar undefined
+
+2. MELHORIA DA FUNÇÃO formatCategoryNumber:
+   - Adicionada verificação para valores undefined, null ou NaN
+   - Conversão segura de strings para números
+   - Retorno padrão '0' para valores inválidos
+
+3. VALORES PADRÃO IMPLEMENTADOS:
+   - autor_nome: 'Autor não informado' se undefined
+   - visualizacoes: 0 se undefined
+   - curtidas: 0 se undefined
+
+ARQUIVOS MODIFICADOS:
+- frontend/categoria.html (função createCategoryNewsHTML e formatCategoryNumber)
+
+TESTES REALIZADOS:
+- Verificação da página de categoria Saúde
+- Confirmação de que os campos não mostram mais 'undefined'
+- Validação de que os valores padrão são exibidos corretamente
+
+RESULTADO:
+- Cards de notícias agora exibem informações corretas
+- Não há mais campos 'undefined' visíveis
+- Interface mais profissional e consistente
+- Tratamento robusto de dados ausentes ou inválidos
+
+OBSERVAÇÕES:
+- A correção garante compatibilidade com a estrutura de dados da API
+- Implementação de fallbacks previne problemas futuros
+- Melhoria na experiência do usuário com informações sempre visíveis
