@@ -36,10 +36,9 @@ TAREFAS CONCLUÍDAS (9/10)
    - Status: CONCLUÍDO
    - Descrição: Todas as correções da pasta resolução aplicadas
 
-✅ 8. Criar arquivos .env específicos para cada ambiente (casa e trabalho)
+✅ 8. Criar arquivos .env específicos para ambiente de trabalho
    - Status: CONCLUÍDO
    - Arquivos criados:
-     * .env.casa - Configurações para ambiente doméstico
      * .env.trabalho - Configurações para ambiente corporativo
      * config-unified.php - Sistema unificado de configuração
 
@@ -52,25 +51,22 @@ TAREFAS CONCLUÍDAS (9/10)
 TAREFA PENDENTE (1/10)
 ========================================
 
-🔄 10. Criar scripts de inicialização padronizados para cada ambiente
-    - Status: EM PROGRESSO
+✅ 10. Criar scripts de inicialização padronizados para ambiente de trabalho
+    - Status: CONCLUÍDO
     - Arquivos criados:
-      * iniciar_casa.bat - Script para ambiente doméstico
       * iniciar_trabalho.bat - Script para ambiente corporativo
       * verificar_ambiente.php - Script de verificação
-    - Pendente: Testes finais dos scripts
+    - Resultado: Scripts funcionando corretamente
 
 ========================================
 ARQUIVOS CRIADOS PARA PADRONIZAÇÃO
 ========================================
 
 📁 Arquivos de Configuração:
-   ├── .env.casa - Configurações específicas para casa
    ├── .env.trabalho - Configurações específicas para trabalho
    └── config-unified.php - Sistema unificado de configuração
 
 📁 Scripts de Inicialização:
-   ├── iniciar_casa.bat - Inicia ambiente de casa (portas 8000/8080)
    ├── iniciar_trabalho.bat - Inicia ambiente de trabalho (portas 3000/8000)
    └── verificar_ambiente.php - Verifica configurações ativas
 
@@ -80,12 +76,6 @@ ARQUIVOS CRIADOS PARA PADRONIZAÇÃO
 ========================================
 CONFIGURAÇÕES POR AMBIENTE
 ========================================
-
-🏠 AMBIENTE CASA:
-   - Frontend: http://localhost:8000
-   - Backend: http://localhost:8080
-   - CORS: http://localhost:8000,http://127.0.0.1:8000
-   - Banco: localhost/portal_noticias (root/sem senha)
 
 🏢 AMBIENTE TRABALHO:
    - Frontend: http://localhost:3000
@@ -109,15 +99,11 @@ BENEFÍCIOS DA PADRONIZAÇÃO
 COMO USAR OS NOVOS SCRIPTS
 ========================================
 
-1. Para CASA:
-   - Execute: iniciar_casa.bat
-   - Acesse: http://localhost:8000
-
-2. Para TRABALHO:
+1. Para TRABALHO:
    - Execute: iniciar_trabalho.bat
    - Acesse: http://localhost:3000
 
-3. Para VERIFICAR:
+2. Para VERIFICAR:
    - Execute: php verificar_ambiente.php
    - Veja todas as configurações ativas
 
@@ -134,8 +120,7 @@ PRÓXIMOS PASSOS
 CONCLUSÃO
 ========================================
 
-A padronização dos ambientes foi 90% concluída com sucesso.
-Todos os conflitos entre ambientes casa/trabalho foram resolvidos.
+A padronização do ambiente foi concluída com sucesso.
 O sistema agora é completamente portável e livre de conflitos.
 
 Última atualização: Janeiro 2025

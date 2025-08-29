@@ -498,7 +498,7 @@
             setLoading(true);
             
             try {
-                const response = await fetch('http://localhost:8001/auth/register', {
+                const response = await fetch('http://localhost:8000/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -666,7 +666,7 @@
             if (!email || !isValidEmail(email)) return;
             
             try {
-                const response = await fetch(`http://localhost:8001/auth/check-email?email=${encodeURIComponent(email)}`);
+                const response = await fetch(`http://localhost:8000/auth/check-email?email=${encodeURIComponent(email)}`);
                 const result = await response.json();
                 
                 if (!result.available) {

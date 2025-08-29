@@ -17,6 +17,25 @@ Um sistema completo de portal de notícias desenvolvido em PHP e JavaScript, com
 - **SEO Otimizado**: Meta tags, URLs amigáveis e sitemap
 - **Sistema de Curtidas**: Interação dos usuários com o conteúdo
 
+## ✅ Estado Atual do Projeto
+
+**Status**: ✅ **FUNCIONAL** - O projeto está totalmente operacional
+
+### Correções Recentes Implementadas:
+- ✅ URLs da API corrigidas (localhost:8001 → localhost:8000)
+- ✅ Páginas de categoria funcionando corretamente
+- ✅ Assets (CSS/JS) carregando sem problemas
+- ✅ Roteamento de arquivos estáticos configurado
+- ✅ Tags `<base href="/">` adicionadas para caminhos relativos
+- ✅ Estrutura do banco de dados atualizada
+- ✅ Arquivos obsoletos removidos
+
+### Arquivos Principais:
+- **Backend**: `backend/router.php` - API REST
+- **Frontend**: `frontend/router.php` - Interface do usuário
+- **Configuração**: `config-unified.php` - Configurações unificadas
+- **Banco**: `database/portal_noticias.sql` - Estrutura do banco
+
 ## 📋 Pré-requisitos
 
 - PHP 7.4 ou superior
@@ -24,7 +43,7 @@ Um sistema completo de portal de notícias desenvolvido em PHP e JavaScript, com
 - Apache ou Nginx
 - Extensões PHP: PDO, GD, mbstring, openssl
 
-## 🛠️ Instalação
+## 🛠️ Instalação e Execução
 
 ### 1. Clone o repositório
 ```bash
@@ -44,10 +63,26 @@ mysql -u root -p < database/portal_noticias.sql
 cp .env.example .env
 
 # Edite o arquivo .env com suas configurações
-nano .env
 ```
 
-### 4. Configure as permissões
+### 4. Inicie os servidores de desenvolvimento
+
+#### Backend (API)
+```bash
+php -S localhost:8000 -t backend backend/router.php
+```
+
+#### Frontend
+```bash
+php -S localhost:3000 -t frontend frontend/router.php
+```
+
+### 5. Acesse o sistema
+- **Frontend**: http://localhost:3000
+- **API Backend**: http://localhost:8000
+- **Painel Admin**: http://localhost:3000/admin
+
+### 6. Configure as permissões
 ```bash
 # Dê permissões de escrita aos diretórios necessários
 chmod 755 backend/uploads/

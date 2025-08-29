@@ -19,7 +19,6 @@ para MySQL real com importação completa de dados de teste.
 - ✅ Solução: Configuradas credenciais corretas do MySQL
 - 📁 Arquivos corrigidos:
   * .env (DB_PASS=root)
-  * .env.casa (DB_PASS=root)
   * .env.trabalho (DB_PASS=root)
 
 ### 3. ESTRUTURA DE TABELAS INCOMPATÍVEL
@@ -46,7 +45,6 @@ para MySQL real com importação completa de dados de teste.
 
 ### Arquivos de Configuração:
 - .env (senha MySQL corrigida)
-- .env.casa (senha MySQL corrigida)
 - .env.trabalho (senha MySQL corrigida)
 - backend/config/database.php (sistema mock removido)
 

@@ -5,7 +5,7 @@
 
 class AdminPanel {
     constructor() {
-        this.apiBase = 'http://localhost:8001';
+        this.apiBase = 'http://localhost:8000';
         const userData = localStorage.getItem('portal-user');
         this.authToken = null;
         if (userData) {
@@ -55,7 +55,7 @@ class AdminPanel {
         
         // Verificar se o token ainda é válido no servidor
         try {
-            const response = await fetch('http://localhost:8001/auth/check-auth', {
+            const response = await fetch('http://localhost:8000/auth/check-auth', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`,

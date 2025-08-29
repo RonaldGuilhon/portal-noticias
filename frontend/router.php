@@ -4,6 +4,11 @@
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $uri = ltrim($uri, '/');
 
+// Permitir arquivos estáticos (CSS, JS, imagens, etc.)
+if (preg_match('/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i', $uri)) {
+    return false; // Deixa o servidor built-in lidar com arquivos estáticos
+}
+
 // Roteamento para categoria
 if (preg_match('/^categoria\/([^\/?]+)\/?$/', $uri, $matches)) {
     $categoria_slug = $matches[1];
