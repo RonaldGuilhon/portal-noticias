@@ -756,12 +756,21 @@ class PortalNoticias {
                         <img src="/assets/images/default-news.jpg" alt="${news.titulo || 'Notícia'}">
                     `}
                     <div class="news-card-overlay">
-                        <a href="/noticia/${news.slug || '#'}" class="btn btn-primary">Ler mais</a>
+                        <a href="/noticia/${news.slug || '#'}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye me-1"></i>
+                            Ler mais
+                        </a>
                     </div>
                     <div class="news-card-category">${news.categoria || news.categoria_nome || 'Geral'}</div>
                 </div>
                 
                 <div class="card-body">
+                    <div class="news-card-meta mb-2">
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            ${this.formatDate(news.data_publicacao || news.created_at || new Date())}
+                        </small>
+                    </div>
                     <h3 class="news-card-title">
                         <a href="/noticia/${news.slug || '#'}">${news.titulo || 'Título não disponível'}</a>
                     </h3>

@@ -1,0 +1,45 @@
+RESOLUÇÃO: ORGANIZAÇÃO DOS ESTILOS DE CARDS
+===========================================
+
+DATA: 29/08/2025
+PROBLEMA: Duplicação de estilos de cards entre style.css e style_card.css
+
+DESCRIÇÃO DO PROBLEMA:
+- Havia estilos de cards duplicados entre os arquivos style.css e style_card.css
+- A propriedade border-bottom estava presente em múltiplas classes
+- Conflitos potenciais entre estilos duplicados
+- Arquitetura CSS desorganizada
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. REMOÇÃO DE BORDER-BOTTOM:
+   - Removida border-bottom da classe .card-header no style_card.css
+   - Removida border-bottom da classe .news-card-meta no style.css
+
+2. CONSOLIDAÇÃO DE ESTILOS DE CARDS:
+   - Removidos TODOS os estilos relacionados a cards do style.css
+   - Mantidos apenas no style_card.css para centralização
+   - Estilos removidos incluem:
+     * Classes base: .card, .card-header, .card-body, .card-footer
+     * News cards: .news-card, .news-card-image, .news-card-meta, .news-card-title
+     * Layouts: .news-grid, .news-list, .news-card-horizontal
+     * Estados: loading, animações
+     * Media queries específicas para cards
+
+3. ARQUIVOS MODIFICADOS:
+   - frontend/assets/css/style.css (remoção de estilos duplicados)
+   - frontend/assets/css/style_card.css (mantido como arquivo principal para cards)
+
+RESULTADO:
+- Cards agora utilizam exclusivamente o style_card.css
+- Eliminada duplicação de estilos
+- Arquitetura CSS mais organizada e maintível
+- Funcionalidade preservada em todas as páginas
+- Testes realizados: index.html, categorias.php, noticias.php
+
+STATUS: CONCLUÍDO ✓
+
+OBSERVAÇÕES:
+- O style.css continua necessário para estilos gerais (layout, navegação, formulários)
+- Ambos os arquivos CSS permanecem importados no HTML
+- Não há conflitos entre os arquivos após a reorganização
