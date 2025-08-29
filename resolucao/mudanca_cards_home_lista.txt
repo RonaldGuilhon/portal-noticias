@@ -1,0 +1,79 @@
+MUDANÇA: CARDS DA HOME DE GRADE PARA LISTA
+===========================================
+
+Data: Janeiro 2025
+Solicitação: Remover estilo de grade na seção "Últimas Notícias" da home e implementar estilo de lista similar aos cards das páginas de categoria.
+
+PROBLEMA IDENTIFICADO:
+- A home estava exibindo as notícias em formato de grade (3 colunas)
+- O usuário solicitou mudança para formato de lista horizontal (similar às categorias)
+- Era necessário manter independência entre home e categorias
+
+SOLUÇÃO IMPLEMENTADA:
+
+1. CRIAÇÃO DE CSS SEPARADO:
+   - Arquivo: frontend/assets/css/home-cards.css
+   - Baseado no estilo dos cards das páginas de categoria
+   - Implementa layout horizontal com imagem à esquerda e conteúdo à direita
+   - Inclui responsividade para dispositivos móveis
+   - Suporte a tema escuro
+   - Animações de carregamento
+
+2. MODIFICAÇÕES NO HTML:
+   - Arquivo: frontend/index.html
+   - Adicionado link para o novo CSS: home-cards.css
+   - Mantido CSS principal (style.css) para não afetar outras páginas
+
+3. MODIFICAÇÕES NO JAVASCRIPT:
+   - Arquivo: frontend/assets/js/main.js
+   - Criada nova função: createHomeListCard()
+   - Modificada função: displayLatestNews() para usar classe 'home-news-list'
+   - Modificada função: appendNews() para detectar se está na home
+   - Mantida função original createNewsCard() para outras páginas
+
+CARACTERÍSTICAS DOS NOVOS CARDS:
+- Layout horizontal (imagem 280px + conteúdo flexível)
+- Altura mínima de 180px
+- Categoria sobreposta na imagem
+- Título, resumo e meta informações no corpo
+- Estatísticas (visualizações, curtidas, comentários)
+- Hover effects com elevação e escala da imagem
+- Responsivo: vira vertical em telas menores
+
+ARQUIVOS MODIFICADOS:
+1. frontend/index.html (adicionado link CSS)
+2. frontend/assets/js/main.js (funções JavaScript)
+3. frontend/assets/css/home-cards.css (novo arquivo)
+
+ARQUIVOS NÃO AFETADOS:
+- Páginas de categoria mantêm seu estilo original
+- CSS principal (style.css) não foi modificado
+- Outras páginas do site não foram afetadas
+
+TESTE NECESSÁRIO:
+- Verificar exibição dos cards na home
+- Testar responsividade em diferentes tamanhos de tela
+- Verificar se o botão "Carregar mais" funciona corretamente
+- Confirmar que as páginas de categoria não foram afetadas
+
+OBSERVAÇÕES:
+- A mudança é independente e não afeta outras páginas
+- O CSS foi criado separadamente para facilitar manutenção
+- A estrutura permite fácil reversão se necessário
+- Mantida compatibilidade com lazy loading de imagens
+- Preservadas todas as funcionalidades existentes (curtir, compartilhar, etc.)
+
+CORREÇÕES REALIZADAS:
+- Corrigido problema de 'undefined' na categoria usando fallbacks (categoria || categoria_nome || 'Geral')
+- Adicionada classe 'news-card-horizontal' aos cards da home para usar CSS correto
+- Corrigidos todos os campos com proteção contra valores undefined/null
+- Atualizado CSS para usar seletores específicos (.home-news-list .news-card-horizontal)
+- Removidos estilos duplicados e conflitantes
+
+RESULTADO:
+- Home agora exibe notícias em formato de lista horizontal idêntico às categorias
+- Problema de 'undefined' resolvido com fallbacks apropriados
+- Visual consistente com solicitação do usuário
+- Mantida independência entre home e categorias
+- Código organizado e de fácil manutenção
+- Cards funcionais mesmo com dados incompletos

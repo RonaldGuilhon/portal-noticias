@@ -662,11 +662,12 @@ class PortalNoticias {
         const limitedNews = news.slice(0, this.currentNewsCount);
         console.log('Criando', limitedNews.length, 'cards de últimas notícias (limitado a 3)');
         
-        container.innerHTML = limitedNews.map(item => `
-            <div class="col-md-6 col-lg-4 mb-4">
-                ${this.createNewsCard(item)}
-            </div>
-        `).join('');
+        // Adiciona classe para estilo de lista e remove classes de grade
+        container.className = 'news-list home-news-list';
+        
+        container.innerHTML = limitedNews.map(item => 
+            this.createHomeListCard(item)
+        ).join('');
         
         // Configura o botão "Carregar mais"
         this.setupLoadMoreButton();
@@ -744,6 +745,57 @@ class PortalNoticias {
         return baseCard;
     }
 
+    // Cria card de notícia no estilo de lista para a home
+    createHomeListCard(news) {
+        const listCard = `
+            <article class="card news-card news-card-horizontal">
+                <div class="news-card-image">
+                    ${news.imagem ? `
+                        <img src="${news.imagem}" alt="${news.titulo || 'Notícia'}" class="lazy" data-src="${news.imagem}">
+                    ` : `
+                        <img src="/assets/images/default-news.jpg" alt="${news.titulo || 'Notícia'}">
+                    `}
+                    <div class="news-card-overlay">
+                        <a href="/noticia/${news.slug || '#'}" class="btn btn-primary">Ler mais</a>
+                    </div>
+                    <div class="news-card-category">${news.categoria || news.categoria_nome || 'Geral'}</div>
+                </div>
+                
+                <div class="card-body">
+                    <h3 class="news-card-title">
+                        <a href="/noticia/${news.slug || '#'}">${news.titulo || 'Título não disponível'}</a>
+                    </h3>
+                    
+                    <p class="news-card-excerpt">${news.resumo || news.conteudo ? news.conteudo.substring(0, 150) + '...' : 'Resumo não disponível'}</p>
+                    
+                    <div class="news-card-meta">
+                        <div class="news-card-author">
+                            <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor || 'Autor'}">
+                            <span>${news.autor || news.autor_nome || 'Autor desconhecido'}</span>
+                        </div>
+                        
+                        <div class="news-card-stats">
+                            <span class="news-card-stat">
+                                <i class="fas fa-eye"></i>
+                                ${PortalUtils.formatNumber(news.visualizacoes || 0)}
+                            </span>
+                            <span class="news-card-stat">
+                                <i class="fas fa-heart"></i>
+                                ${PortalUtils.formatNumber(news.curtidas || 0)}
+                            </span>
+                            <span class="news-card-stat">
+                                <i class="fas fa-comment"></i>
+                                ${PortalUtils.formatNumber(news.comentarios || 0)}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        `;
+        
+        return listCard;
+    }
+
     // Formata data para exibição
     formatDate(dateString) {
         return new Date(dateString).toLocaleDateString('pt-BR', {
@@ -795,7 +847,17 @@ class PortalNoticias {
         const container = document.querySelector('.news-list');
         if (!container) return;
 
-        const newsHtml = news.map(item => this.createNewsCard(item, 'col-12')).join('');
+        // Verifica se está na home (tem classe home-news-list)
+        const isHomePage = container.classList.contains('home-news-list');
+        
+        const newsHtml = news.map(item => {
+            if (isHomePage) {
+                return this.createHomeListCard(item);
+            } else {
+                return this.createNewsCard(item, 'col-12');
+            }
+        }).join('');
+        
         container.insertAdjacentHTML('beforeend', newsHtml);
         
         // Reinicializa lazy loading para novas imagens
