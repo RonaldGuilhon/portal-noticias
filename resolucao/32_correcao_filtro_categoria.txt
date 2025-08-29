@@ -1,0 +1,39 @@
+CORREÇÃO DO FILTRO POR CATEGORIA - RESOLVIDO
+===========================================
+
+Problema Identificado:
+- Todas as categorias listavam as 7 notícias existentes no banco sem filtrar por categoria
+- Havia dois contadores de notícias na página (elementos duplicados)
+
+Causa Raiz:
+- Frontend enviava parâmetro 'categoria' (slug) na URL
+- Backend esperava parâmetro 'categoria_id' (ID numérico)
+- Incompatibilidade entre os parâmetros causava falha no filtro
+
+Solução Implementada:
+1. Modificado NoticiaController.php método listar()
+   - Adicionada verificação para parâmetro 'categoria' (slug)
+   - Implementada conversão automática de slug para categoria_id
+   - Mantida compatibilidade com parâmetro categoria_id existente
+
+2. Removido contador duplicado em categoria.html
+   - Removido elemento 'category-count' da linha 228
+   - Mantido apenas elemento 'news-count'
+   - Limpadas referências JavaScript obsoletas
+
+Resultado:
+- Categoria 'economia': 2 notícias específicas
+- Categoria 'saude': 1 notícia específica
+- Contador único funcionando corretamente
+- Paginação adequada por categoria
+
+Arquivos Modificados:
+- backend/controllers/NoticiaController.php
+- frontend/categoria.html
+
+Teste Realizado:
+- curl "http://localhost:8001/noticias?categoria=economia&page=1&limit=6"
+- curl "http://localhost:8001/noticias?categoria=saude&page=1&limit=6"
+- Ambos retornando apenas notícias da categoria específica
+
+Status: ✅ RESOLVIDO

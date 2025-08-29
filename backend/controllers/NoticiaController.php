@@ -145,10 +145,21 @@ class NoticiaController {
      */
     private function listar() {
         try {
+            // Converter slug de categoria para categoria_id se necessário
+            $categoria_id = $_GET['categoria_id'] ?? null;
+            if (!$categoria_id && isset($_GET['categoria'])) {
+                // Buscar categoria pelo slug
+                require_once __DIR__ . '/../models/Categoria.php';
+                $categoria = new Categoria($this->db);
+                if ($categoria->buscarPorSlug($_GET['categoria'])) {
+                    $categoria_id = $categoria->id;
+                }
+            }
+            
             $filtros = [
                 'page' => (int)($_GET['page'] ?? 1),
                 'limit' => min((int)($_GET['limit'] ?? ITEMS_PER_PAGE), MAX_ITEMS_PER_PAGE),
-                'categoria_id' => $_GET['categoria_id'] ?? null,
+                'categoria_id' => $categoria_id,
                 'tag_id' => $_GET['tag_id'] ?? null,
                 'autor_id' => $_GET['autor_id'] ?? null,
                 'destaque' => $_GET['destaque'] ?? null,
@@ -504,6 +515,12 @@ class NoticiaController {
             if(!$categoria_data) {
                 jsonResponse(['success' => false, 'message' => 'Categoria não encontrada'], 404);
                 return;
+            }
+            
+            // Obter estatísticas da categoria (incluindo total_noticias)
+            $categoria_stats = $categoria->obterEstatisticas($categoria_data['id']);
+            if($categoria_stats) {
+                $categoria_data = array_merge($categoria_data, $categoria_stats);
             }
 
             $filtros = [

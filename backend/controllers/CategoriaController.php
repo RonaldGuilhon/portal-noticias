@@ -165,33 +165,35 @@ class CategoriaController {
             return;
         }
         
-        $encontrou = false;
+        $categoria_data = null;
         if($id) {
             $encontrou = $this->categoria->buscarPorId($id);
+            if($encontrou) {
+                $categoria_data = [
+                    'id' => $this->categoria->id,
+                    'nome' => $this->categoria->nome,
+                    'slug' => $this->categoria->slug,
+                    'descricao' => $this->categoria->descricao,
+                    'cor' => $this->categoria->cor,
+                    'icone' => $this->categoria->icone,
+                    'ativo' => $this->categoria->ativo,
+                    'ordem' => $this->categoria->ordem,
+                    'meta_title' => $this->categoria->meta_title,
+                    'meta_description' => $this->categoria->meta_description,
+                    'data_criacao' => $this->categoria->data_criacao,
+                    'data_atualizacao' => $this->categoria->data_atualizacao
+                ];
+            }
         } else {
-            $encontrou = $this->categoria->buscarPorSlug($slug);
+            $categoria_data = $this->categoria->buscarPorSlug($slug);
         }
         
-        if(!$encontrou) {
+        if(!$categoria_data) {
             jsonResponse(['erro' => 'Categoria não encontrada'], 404);
             return;
         }
         
-        // Montar array com os dados da categoria
-        $categoria_data = [
-            'id' => $this->categoria->id,
-            'nome' => $this->categoria->nome,
-            'slug' => $this->categoria->slug,
-            'descricao' => $this->categoria->descricao,
-            'cor' => $this->categoria->cor,
-            'icone' => $this->categoria->icone,
-            'ativa' => $this->categoria->ativo,
-            'ordem' => $this->categoria->ordem,
-            'meta_title' => $this->categoria->meta_title,
-            'meta_description' => $this->categoria->meta_description,
-            'data_criacao' => $this->categoria->data_criacao,
-            'data_atualizacao' => $this->categoria->data_atualizacao
-        ];
+        // Os dados da categoria já foram obtidos acima
         
         jsonResponse(['success' => true, 'data' => $categoria_data]);
     }

@@ -1,0 +1,67 @@
+CORREÇÃO: SyntaxError JSON Inválido na API de Notícias por Categoria
+=================================================================
+
+DATA: 28/01/2025
+PROBLEMA: Erro "SyntaxError: Unexpected token '<', \"<br /> <b>\"... is not valid JSON" ao carregar notícias nas páginas de categoria
+
+CAUSA RAIZ:
+- O método buscarPorSlug() na classe Categoria retornava true/false em vez dos dados da categoria
+- Isso causava um TypeError no NoticiaController.php na linha 512: "array_merge(): Argument #1 must be of type array, true given"
+- O erro resultava em HTML de erro sendo retornado em vez de JSON válido
+
+CORREÇÕES IMPLEMENTADAS:
+
+1. ARQUIVO: backend/models/Categoria.php
+   MÉTODO: buscarPorSlug()
+   ALTERAÇÃO:
+   - ANTES: return true; / return false;
+   - DEPOIS: return $row; / return null;
+   
+   JUSTIFICATIVA: Alinhamento com o padrão do método buscarPorNome() que retorna os dados ou null
+
+2. ARQUIVO: backend/controllers/CategoriaController.php
+   MÉTODO: obter()
+   ALTERAÇÃO:
+   - Ajustada a lógica de verificação para trabalhar com array/null em vez de boolean
+   - Removido código duplicado de montagem do array categoria_data
+   
+   ANTES:
+   ```php
+   $encontrou = $categoria->buscarPorSlug($slug);
+   if(!$encontrou) {
+       // erro
+   }
+   ```
+   
+   DEPOIS:
+   ```php
+   $categoria_data = $categoria->buscarPorSlug($slug);
+   if(!$categoria_data) {
+       // erro
+   }
+   ```
+
+TESTES REALIZADOS:
+- API /noticias/categoria/economia - ✓ Funcionando
+- API /noticias/categoria/esportes - ✓ Funcionando  
+- API /noticias/categoria/tecnologia - ✓ Funcionando
+- API /noticias/categoria/cultura - ✓ Funcionando
+
+RESULTADO:
+- Erro de JSON inválido corrigido
+- Filtro por categoria funcionando corretamente
+- APIs retornando JSON válido com dados da categoria e notícias relacionadas
+
+IMPACTO:
+- Todas as páginas de categoria agora carregam corretamente
+- Filtro por categoria funcional
+- Experiência do usuário melhorada
+
+ARQUIVOS MODIFICADOS:
+- backend/models/Categoria.php (método buscarPorSlug)
+- backend/controllers/CategoriaController.php (método obter)
+
+OBSERVAÇÕES:
+- Esta correção resolve definitivamente o problema reportado
+- O padrão de retorno agora é consistente entre os métodos da classe Categoria
+- Não há impacto em outras funcionalidades do sistema

@@ -647,11 +647,19 @@
                     loadRelatedNews(article.data.id, article.data.categoria_id);
                     incrementViews(article.data.id);
                 } else {
-                    showError('Notícia não encontrada.');
+                    if (window.portalApp) {
+                        window.portalApp.showError('Notícia não encontrada.');
+                    } else {
+                        showError('Notícia não encontrada.');
+                    }
                 }
             } catch (error) {
                 console.error('Erro ao carregar notícia:', error);
-                showError('Erro ao carregar notícia.');
+                if (window.portalApp) {
+                    window.portalApp.showError('Erro ao carregar notícia.');
+                } else {
+                    showError('Erro ao carregar notícia.');
+                }
             }
         }
         
@@ -893,9 +901,17 @@
         // Copia link para clipboard
         function copyToClipboard() {
             navigator.clipboard.writeText(window.location.href).then(() => {
-                showSuccess('Link copiado para a área de transferência!');
+                if (window.portalApp) {
+                    window.portalApp.showSuccess('Link copiado para a área de transferência!');
+                } else {
+                    showSuccess('Link copiado para a área de transferência!');
+                }
             }).catch(() => {
-                showError('Erro ao copiar link.');
+                if (window.portalApp) {
+                    window.portalApp.showError('Erro ao copiar link.');
+                } else {
+                    showError('Erro ao copiar link.');
+                }
             });
         }
         

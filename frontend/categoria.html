@@ -223,10 +223,6 @@
                     </div>
                     <div class="col-md-4 text-md-end">
                         <div class="category-stats">
-                            <span class="badge bg-primary me-2">
-                                <i class="fas fa-newspaper me-1"></i>
-                                <span id="category-count">0</span> notícias
-                            </span>
                             <button class="btn btn-outline-primary btn-sm" id="follow-category" style="display: none;">
                                 <i class="fas fa-plus me-1"></i>
                                 Seguir
@@ -260,52 +256,44 @@
                     
 
                     
-                    <!-- News List -->
-                    <section class="news-list">
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <h3 class="section-title mb-0">
+                    <!-- Seção de Notícias da Categoria -->
+                    <section class="category-news">
+                        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="section-title">
                                 <i class="fas fa-newspaper me-2"></i>
-                                Todas as Notícias
-                            </h3>
-                            <div class="results-info text-muted small">
-                                Mostrando <span id="showing-count">0</span> de <span id="total-count">0</span> notícias
+                                Notícias da Categoria
+                            </h2>
+                            <div class="news-count">
+                                <span class="badge bg-primary" id="news-count">0 notícias</span>
                             </div>
                         </div>
                         
-                        <div class="news-list-view" id="news-container">
-                            <!-- Notícias serão carregadas via JavaScript -->
-                            <div class="col-12 text-center py-5">
-                                <div class="loading"></div>
-                                <p class="mt-3 text-muted">Carregando notícias...</p>
-                            </div>
+                        <!-- Loading inicial -->
+                        <div id="category-news-loading" class="text-center py-5">
+                            <div class="loading mb-3"></div>
+                            <p class="text-muted">Carregando notícias...</p>
                         </div>
                         
-                        <!-- Load More Button -->
-                        <div class="text-center mt-4">
-                            <button class="btn btn-outline-primary load-more-btn" id="load-more-news" style="display: none;">
-                                <i class="fas fa-plus me-1"></i>
+                        <!-- Container das notícias -->
+                        <div id="category-news-container" class="news-list" style="display: none;">
+                            <!-- Notícias serão carregadas aqui via JavaScript -->
+                        </div>
+                        
+                        <!-- Mensagem quando não há notícias -->
+                        <div id="no-news-message" class="text-center py-5" style="display: none;">
+                            <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                            <h4 class="text-muted">Nenhuma notícia encontrada</h4>
+                            <p class="text-muted">Ainda não há notícias publicadas nesta categoria.</p>
+                        </div>
+                        
+                        <!-- Botão carregar mais -->
+                        <div class="text-center mt-4" id="load-more-container" style="display: none;">
+                            <button id="load-more-news" class="btn btn-outline-primary">
+                                <i class="fas fa-plus me-2"></i>
                                 Carregar mais notícias
                             </button>
                         </div>
-                        
-                        <!-- No Results -->
-                        <div class="no-results text-center py-5" id="no-results" style="display: none;">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">Nenhuma notícia encontrada</h4>
-                            <p class="text-muted">Não há notícias disponíveis nesta categoria no momento.</p>
-                            <a href="/" class="btn btn-primary mt-3">
-                                <i class="fas fa-home me-1"></i>
-                                Voltar ao Início
-                            </a>
-                        </div>
                     </section>
-                    
-                    <!-- Pagination -->
-                    <nav class="pagination-nav mt-4" id="pagination-nav" style="display: none;">
-                        <ul class="pagination justify-content-center" id="pagination">
-                            <!-- Paginação será gerada via JavaScript -->
-                        </ul>
-                    </nav>
                 </div>
                 
                 <!-- Sidebar -->
@@ -509,12 +497,10 @@
     
     <!-- Category Specific Scripts -->
     <script>
-        let currentPage = 1;
         let currentSort = 'newest';
         let currentView = 'list';
         let categorySlug = '';
         let categoryData = null;
-        let isLoading = false;
         let hasMoreNews = true;
         
         // Carrega dados da categoria
@@ -568,6 +554,15 @@
             
             loadCategoryData();
             setupEventListeners();
+            
+            // Event listener para botão "Carregar mais"
+            const loadMoreBtn = document.getElementById('load-more-news');
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    currentPage++;
+                    loadCategoryNews(currentPage, false);
+                });
+            }
         });
         
         // Configura event listeners
@@ -581,11 +576,7 @@
             
 
             
-            // Carregar mais
-            document.getElementById('load-more-news').addEventListener('click', function() {
-                currentPage++;
-                loadNews(false);
-            });
+            // Funcionalidade de categoria removida
             
             // Seguir categoria
             document.getElementById('follow-category').addEventListener('click', function() {
@@ -602,14 +593,13 @@
                 if (result.success) {
                     categoryData = result.data;
                     populateCategoryData(categoryData);
-                    loadNews(true);
-                    loadSidebarData();
+                    // Carrega notícias da categoria
+                    loadCategoryNews(1, true);
                 } else {
-                    showError('Categoria não encontrada.');
+                    console.error('Categoria não encontrada.');
                 }
             } catch (error) {
                 console.error('Erro ao carregar categoria:', error);
-                showError('Erro ao carregar categoria.');
             }
         }
         
@@ -642,8 +632,7 @@
                 document.getElementById('category-description').textContent = category.descricao;
             }
             
-            // Category stats
-            document.getElementById('category-count').textContent = category.total_noticias || 0;
+            // Category stats removido - usando apenas news-count na seção de notícias
             
             // Sidebar info
             if (category.descricao) {
@@ -681,98 +670,121 @@
             document.getElementById('category-schema').textContent = JSON.stringify(schema);
         }
         
-        // Carrega notícias
-        async function loadNews(reset = false) {
+        // Função de carregamento de notícias removida
+        
+        // Funções de exibição de notícias removidas
+        
+
+        
+        // Variáveis para paginação das notícias
+        let currentPage = 1;
+        let totalPages = 1;
+        let isLoading = false;
+        
+        // Carrega notícias da categoria
+        async function loadCategoryNews(page = 1, reset = false) {
             if (isLoading) return;
             
             isLoading = true;
+            const loadingElement = document.getElementById('category-news-loading');
+            const containerElement = document.getElementById('category-news-container');
+            const noNewsElement = document.getElementById('no-news-message');
+            const loadMoreContainer = document.getElementById('load-more-container');
+            const loadMoreBtn = document.getElementById('load-more-news');
             
             if (reset) {
                 currentPage = 1;
-                hasMoreNews = true;
+                containerElement.innerHTML = '';
+                containerElement.style.display = 'none';
+                noNewsElement.style.display = 'none';
+                loadMoreContainer.style.display = 'none';
+                loadingElement.style.display = 'block';
+            } else {
+                if (loadMoreBtn) {
+                    loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Carregando...';
+                    loadMoreBtn.disabled = true;
+                }
             }
             
             try {
-                const params = new URLSearchParams({
-                    page: currentPage,
-                    limit: 12,
-                    sort: currentSort
-                });
-                
-                const url = `http://localhost:8001/noticias/categoria/${categorySlug}?${params}`;
-                console.log('[DEBUG] Fazendo requisição para:', url);
-                console.log('[DEBUG] Category slug:', categorySlug);
-                
-                const response = await fetch(url);
+                const response = await fetch(`http://localhost:8001/noticias?categoria=${categorySlug}&page=${page}&limit=6`);
                 const result = await response.json();
+                console.log('Resposta da API:', result);
                 
-                console.log('[DEBUG] Resposta da API:', result);
-                
-                if (result.success) {
-                    displayNews(result.data.noticias, reset);
-                    updatePagination(result.data.paginacao);
+                if (result.noticias) {
+                    const news = result.noticias || [];
+                    totalPages = result.paginacao?.total_paginas || 1;
+                    const totalNews = result.paginacao?.total_itens || 0;
                     
-                    // Atualiza contadores
-                    const totalItens = result.data.paginacao.total_itens;
-                    const itensPorPagina = result.data.paginacao.itens_por_pagina;
-                    const paginaAtual = result.data.paginacao.pagina_atual;
-                    const showing = Math.min(paginaAtual * itensPorPagina, totalItens);
+                    // Atualiza contador
+                    document.getElementById('news-count').textContent = `${totalNews} notícias`;
                     
-                    document.getElementById('showing-count').textContent = showing;
-                    document.getElementById('total-count').textContent = totalItens;
-                    
-                    hasMoreNews = paginaAtual < result.data.paginacao.total_paginas;
-                    document.getElementById('load-more-news').style.display = hasMoreNews ? 'block' : 'none';
-                    
-
+                    if (news.length > 0) {
+                        displayCategoryNews(news, reset);
+                        
+                        // Mostra botão "carregar mais" se houver mais páginas
+                        if (currentPage < totalPages) {
+                            loadMoreContainer.style.display = 'block';
+                        } else {
+                            loadMoreContainer.style.display = 'none';
+                        }
+                    } else if (reset) {
+                        // Não há notícias
+                        loadingElement.style.display = 'none';
+                        noNewsElement.style.display = 'block';
+                    }
                 } else {
-                    if (currentPage === 1) {
-                        showNoResults();
+                    console.error('Erro ao carregar notícias:', result.message || 'Erro desconhecido');
+                    if (reset) {
+                        loadingElement.style.display = 'none';
+                        noNewsElement.style.display = 'block';
                     }
                 }
             } catch (error) {
-                console.error('Erro ao carregar notícias:', error);
-                showError('Erro ao carregar notícias.');
+                console.error('Erro ao carregar notícias da categoria:', error);
+                if (reset) {
+                    loadingElement.style.display = 'none';
+                    noNewsElement.style.display = 'block';
+                }
             } finally {
                 isLoading = false;
+                if (loadMoreBtn) {
+                    loadMoreBtn.innerHTML = '<i class="fas fa-plus me-2"></i>Carregar mais notícias';
+                    loadMoreBtn.disabled = false;
+                }
             }
         }
         
-        // Exibe notícias
-        function displayNews(news, reset = false) {
-            const container = document.getElementById('news-container');
+        // Exibe as notícias da categoria
+        function displayCategoryNews(news, reset = false) {
+            const container = document.getElementById('category-news-container');
+            const loadingElement = document.getElementById('category-news-loading');
             
             if (reset) {
                 container.innerHTML = '';
             }
             
-            if (news.length === 0 && reset) {
-                showNoResults();
-                return;
-            }
-            
-            const newsHTML = news.map(item => createNewsHTML(item, currentView)).join('');
+            const newsHTML = news.map(item => createCategoryNewsHTML(item)).join('');
             
             if (reset) {
                 container.innerHTML = newsHTML;
+                loadingElement.style.display = 'none';
+                container.style.display = 'block';
             } else {
                 container.insertAdjacentHTML('beforeend', newsHTML);
             }
             
-            // Aplica lazy loading
-            if (window.PortalNoticias) {
+            // Aplica lazy loading se disponível
+            if (window.PortalNoticias && window.PortalNoticias.initLazyLoading) {
                 window.PortalNoticias.initLazyLoading();
             }
         }
         
-        // Cria HTML da notícia
-        function createNewsHTML(news, view) {
-            const colClass = view === 'list' ? 'col-12' : 'col-md-6 col-lg-4';
-            const cardClass = view === 'list' ? 'news-card-horizontal' : 'news-card';
-            
+        // Cria HTML para uma notícia da categoria
+        function createCategoryNewsHTML(news) {
             return `
-                <div class="${colClass} mb-4">
-                    <div class="card ${cardClass}">
+                <div class="col-12 mb-4">
+                    <div class="card news-card news-card-horizontal h-100">
                         ${news.imagem ? `
                             <div class="news-card-image">
                                 <img src="${news.imagem}" alt="${news.titulo}" class="card-img lazy" loading="lazy">
@@ -784,34 +796,35 @@
                                 </div>
                             </div>
                         ` : ''}
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <div class="news-card-meta mb-2">
-                                <span class="badge bg-primary me-2">${news.categoria}</span>
                                 <small class="text-muted">
                                     <i class="fas fa-clock me-1"></i>
-                                    ${formatDate(news.data_publicacao)}
+                                    ${formatCategoryDate(news.data_publicacao)}
                                 </small>
                             </div>
-                            <h5 class="news-card-title">
+                            <h5 class="news-card-title mb-3">
                                 <a href="/noticia/${news.slug}">${news.titulo}</a>
                             </h5>
-                            ${view === 'list' && news.resumo ? `
-                                <p class="news-card-excerpt text-muted">${news.resumo}</p>
+                            ${news.resumo ? `
+                                <p class="news-card-excerpt text-muted mb-3 flex-grow-1">${news.resumo}</p>
                             ` : ''}
-                            <div class="news-card-footer d-flex align-items-center justify-content-between">
-                                <div class="author-info d-flex align-items-center">
-                                    <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor}" class="author-avatar-sm me-2">
-                                    <small class="text-muted">${news.autor}</small>
-                                </div>
-                                <div class="news-stats">
-                                    <small class="text-muted me-2">
-                                        <i class="fas fa-eye me-1"></i>
-                                        ${formatNumber(news.visualizacoes)}
-                                    </small>
-                                    <small class="text-muted">
-                                        <i class="fas fa-heart me-1"></i>
-                                        ${formatNumber(news.curtidas)}
-                                    </small>
+                            <div class="news-card-footer mt-auto">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="author-info d-flex align-items-center">
+                                        <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor}" class="author-avatar-sm me-2">
+                                        <small class="text-muted">${news.autor}</small>
+                                    </div>
+                                    <div class="news-stats">
+                                        <small class="text-muted me-2">
+                                            <i class="fas fa-eye me-1"></i>
+                                            ${formatCategoryNumber(news.visualizacoes)}
+                                        </small>
+                                        <small class="text-muted">
+                                            <i class="fas fa-heart me-1"></i>
+                                            ${formatCategoryNumber(news.curtidas)}
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -820,112 +833,23 @@
             `;
         }
         
-
-        
-        // Carrega dados da sidebar
-        async function loadSidebarData() {
-            loadRelatedCategories();
-            loadPopularNews();
-            loadPopularTags();
+        // Funções utilitárias para formatação
+        function formatCategoryDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         }
         
-        // Carrega categorias relacionadas
-        async function loadRelatedCategories() {
-            try {
-                const response = await fetch('http://localhost:8001/categorias');
-                const result = await response.json();
-                
-                if (result.success && result.data.categorias) {
-                    const categories = result.data.categorias.filter(cat => cat.slug !== categorySlug).slice(0, 8);
-                    displayRelatedCategories(categories);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar categorias:', error);
+        function formatCategoryNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
             }
-        }
-        
-        // Exibe categorias relacionadas
-        function displayRelatedCategories(categories) {
-            const container = document.getElementById('related-categories');
-            container.innerHTML = categories.map(category => `
-                <li>
-                    <a href="/categoria/${category.slug}" class="d-flex align-items-center justify-content-between">
-                        <span>
-                            <i class="${category.icone || 'fas fa-folder'} me-2"></i>
-                            ${category.nome}
-                        </span>
-                        <span class="badge bg-light text-dark">${category.total_noticias || 0}</span>
-                    </a>
-                </li>
-            `).join('');
-        }
-        
-        // Carrega notícias populares
-        async function loadPopularNews() {
-            try {
-                let url = 'http://localhost:8001/noticias?action=popular&limit=5';
-                
-                // Se temos dados da categoria, filtra por categoria
-                if (categoryData && categoryData.id) {
-                    url += `&categoria_id=${categoryData.id}`;
-                }
-                
-                const response = await fetch(url);
-                const result = await response.json();
-                
-                if (result.success) {
-                    displayPopularNews(result.data);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar notícias populares:', error);
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
             }
-        }
-        
-        // Exibe notícias populares
-        function displayPopularNews(news) {
-            const container = document.getElementById('popular-news');
-            container.innerHTML = news.map((item, index) => `
-                <div class="popular-item d-flex mb-3">
-                    <div class="popular-rank me-3">
-                        <span class="badge bg-primary">${index + 1}</span>
-                    </div>
-                    <div class="popular-content flex-grow-1">
-                        <h6 class="popular-title mb-1">
-                            <a href="/noticia/${item.slug}">${item.titulo}</a>
-                        </h6>
-                        <div class="popular-meta">
-                            <small class="text-muted">
-                                <i class="fas fa-eye me-1"></i>
-                                ${formatNumber(item.visualizacoes)}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-        
-        // Carrega tags populares
-        async function loadPopularTags() {
-            try {
-                const response = await fetch('http://localhost:8001/tags?action=popular&limit=20');
-                const result = await response.json();
-                
-                if (result.success) {
-                    displayPopularTags(result.data);
-                }
-            } catch (error) {
-                console.error('Erro ao carregar tags populares:', error);
-            }
-        }
-        
-        // Exibe tags populares
-        function displayPopularTags(tags) {
-            const container = document.getElementById('popular-tags');
-            container.innerHTML = tags.map(tag => `
-                <a href="/tag/${tag.slug}" class="tag" style="font-size: ${Math.min(1.2, 0.8 + (tag.total_noticias / 10))}em;">
-                    ${tag.nome}
-                </a>
-            `).join('');
+            return num.toString();
         }
         
 
@@ -991,38 +915,18 @@
         
         // Mostra resultado vazio
         function showNoResults() {
-            document.getElementById('news-container').innerHTML = '';
-            document.getElementById('no-results').style.display = 'block';
-        }
-        
-        // Utilitários
-        function formatDate(dateString) {
-            return new Date(dateString).toLocaleDateString('pt-BR', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-        }
-        
-        function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M';
+            const container = document.getElementById('news-container');
+            const noResults = document.getElementById('no-results');
+            
+            if (container) {
+                container.innerHTML = '';
             }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
+            if (noResults) {
+                noResults.style.display = 'block';
             }
-            return num.toString();
         }
         
-        function showSuccess(message) {
-            // Implementar notificação de sucesso
-            alert(message);
-        }
-        
-        function showError(message) {
-            // Implementar notificação de erro
-            alert(message);
-        }
+        // Funções utilitárias removidas
         
         // Atualiza data atual
         document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR', {

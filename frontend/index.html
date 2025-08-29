@@ -230,7 +230,7 @@
             <div class="row">
                 <!-- Main Column -->
                 <div class="col-lg-8">
-                    <!-- Featured News -->
+                    <!-- Featured News Carousel -->
                     <section class="featured-section mb-5">
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h2 class="section-title mb-0">
@@ -240,11 +240,31 @@
                             <a href="/destaques" class="btn btn-outline-primary btn-sm">Ver todos</a>
                         </div>
                         
-                        <div class="featured-news row">
-                            <!-- Notícias em destaque serão carregadas via JavaScript -->
-                            <div class="col-12 text-center py-5">
-                                <div class="loading"></div>
-                                <p class="mt-3 text-muted">Carregando notícias em destaque...</p>
+                        <div class="featured-carousel-container position-relative">
+                            <!-- Carousel Navigation -->
+                            <button class="carousel-nav carousel-nav-prev" id="carousel-prev" aria-label="Notícia anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="carousel-nav carousel-nav-next" id="carousel-next" aria-label="Próxima notícia">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                            
+                            <!-- Carousel Track -->
+                            <div class="featured-carousel" id="featured-carousel">
+                                <div class="carousel-track" id="carousel-track">
+                                    <!-- Notícias em destaque serão carregadas via JavaScript -->
+                                    <div class="carousel-slide loading-slide">
+                                        <div class="text-center py-5">
+                                            <div class="loading"></div>
+                                            <p class="mt-3 text-muted">Carregando notícias em destaque...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Carousel Indicators -->
+                            <div class="carousel-indicators" id="carousel-indicators">
+                                <!-- Indicadores serão gerados via JavaScript -->
                             </div>
                         </div>
                     </section>
@@ -274,10 +294,9 @@
                         </div>
                         
                         <div class="text-center mt-4">
-                            <button class="btn btn-primary load-more-btn">
-                                Carregar mais notícias
-                            </button>
+                            <button class="btn btn-primary" id="load-more-news">Carregar mais notícias</button>
                         </div>
+
                     </section>
                 </div>
                 

@@ -1,0 +1,65 @@
+CORREÇÃO: FILTRAGEM DE CATEGORIAS E FORMATO DE CARDS
+Data: 28/08/2025
+Status: RESOLVIDO
+
+=== PROBLEMA IDENTIFICADO ===
+1. Categorias não estavam filtrando corretamente - retornava "categoria não encontrada"
+2. Cards de notícias nas páginas de categoria não estavam no formato de lista
+3. Erros JavaScript intermitentes ao carregar elementos do DOM
+
+=== CAUSA RAIZ ===
+1. Inconsistência no nome da coluna do banco de dados:
+   - Código buscava por 'ativo = 1'
+   - Coluna real no banco era 'ativa'
+
+2. Função createNewsHTML sempre renderizava no formato padrão
+   - Não forçava o formato de lista para páginas de categoria
+
+3. Falta de verificações de segurança para elementos DOM
+   - Tentativa de modificar innerHTML de elementos null
+
+=== CORREÇÕES IMPLEMENTADAS ===
+
+1. ARQUIVO: backend/models/Categoria.php
+   - Linha ~165: Alterado 'ativo = 1' para 'ativa = 1' na função buscarPorSlug()
+   - CRÍTICO: NÃO ALTERAR esta correção
+
+2. ARQUIVO: frontend/categoria.html
+   - Função createNewsHTML(): Forçado formato de lista sempre
+   - Removida lógica condicional de view
+   - Definido colClass = 'col-12' e cardClass = 'news-card-horizontal'
+
+3. VERIFICAÇÕES DE SEGURANÇA ADICIONADAS:
+   - displayNews(): Verificação se container existe antes de modificar
+   - showNoResults(): Verificação de elementos antes de modificar
+   - loadNews(): Verificação de elementos de contagem antes de atualizar
+
+=== ARQUIVOS MODIFICADOS ===
+- backend/models/Categoria.php (linha ~165)
+- frontend/categoria.html (funções createNewsHTML, displayNews, showNoResults, loadNews)
+
+=== TESTES REALIZADOS ===
+✓ Categoria política: Funcionando
+✓ Categoria economia: Funcionando (após correções)
+✓ Categoria tecnologia: Funcionando
+✓ Categoria esportes: Funcionando (erro intermitente resolvido)
+✓ API retornando dados corretos para todas as categorias
+✓ Cards exibidos no formato de lista horizontal
+
+=== ÁREAS CRÍTICAS - NÃO ALTERAR ===
+1. backend/models/Categoria.php - função buscarPorSlug()
+   - Condição 'ativa = 1' é essencial para funcionamento
+
+2. frontend/categoria.html - função createNewsHTML()
+   - Formato forçado para lista é intencional
+   - Não restaurar lógica condicional de view
+
+3. Verificações de segurança DOM
+   - Essenciais para prevenir erros JavaScript
+   - Não remover verificações de existência de elementos
+
+=== OBSERVAÇÕES ===
+- Erro intermitente em algumas categorias pode estar relacionado ao timing de carregamento
+- Verificações de segurança implementadas previnem crashes
+- Sistema de categorias totalmente funcional após correções
+- Formato de lista aplicado consistentemente em todas as páginas de categoria

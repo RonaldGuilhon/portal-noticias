@@ -174,6 +174,20 @@ class PortalNoticias {
             this.loadPopularNews();
         }
 
+        // Carrega últimas notícias na home
+        const newsListContainer = document.querySelector('.news-list');
+        if (newsListContainer) {
+            console.log('Carregando últimas notícias...');
+            this.loadLatestNews();
+        }
+
+        // Carrega tags populares na home
+        const tagsContainer = document.getElementById('tags-cloud');
+        if (tagsContainer) {
+            console.log('Carregando tags populares...');
+            this.loadPopularTags();
+        }
+
         // Carrega categorias
         if (document.querySelector('.categories-list')) {
             this.loadCategories();
@@ -263,8 +277,16 @@ class PortalNoticias {
                 loadMoreBtn.innerHTML = '<span class="loading"></span> Carregando...';
             }
 
+            // Se temos notícias armazenadas localmente, usa elas primeiro
+            if (this.allLatestNews && this.currentNewsCount < this.allLatestNews.length) {
+                this.loadMoreFromLocal();
+                return;
+            }
+
+            // Caso contrário, faz requisição à API
             const page = parseInt(document.querySelector('.news-list').dataset.page || '1') + 1;
-            const news = await this.apiRequest(`/noticias?page=${page}`);
+            const response = await this.apiRequest(`/noticias?page=${page}`);
+            const news = response.noticias || response.data || response;
             
             if (news && news.length > 0) {
                 this.appendNews(news);
@@ -488,27 +510,84 @@ class PortalNoticias {
         }
     }
 
-    // Exibe notícias em destaque
+    // Carrega últimas notícias
+    async loadLatestNews() {
+        try {
+            console.log('Fazendo requisição para /noticias');
+            const response = await this.apiRequest('/noticias?limit=12');
+            console.log('Resposta da API últimas notícias:', response);
+            const news = response.noticias || response.data || response;
+            console.log('Notícias extraídas (últimas):', news);
+            this.displayLatestNews(news);
+        } catch (error) {
+            console.error('Erro ao carregar últimas notícias:', error);
+        }
+    }
+
+    // Carrega tags populares
+    async loadPopularTags() {
+        try {
+            console.log('Fazendo requisição para /tags?action=popular');
+            const response = await this.apiRequest('/tags?action=popular&limit=20');
+            console.log('Resposta da API tags populares:', response);
+            if (response.success) {
+                this.displayPopularTags(response.data);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar tags populares:', error);
+        }
+    }
+
+    // Exibe notícias em destaque no carrossel
     displayFeaturedNews(news) {
         console.log('displayFeaturedNews chamada com:', news);
-        const container = document.querySelector('.featured-news');
-        console.log('Container featured encontrado:', !!container);
-        if (!container) {
-            console.error('Container .featured-news não encontrado');
+        const track = document.getElementById('carousel-track');
+        const indicators = document.getElementById('carousel-indicators');
+        
+        if (!track || !indicators) {
+            console.error('Elementos do carrossel não encontrados');
             return;
         }
+        
         if (!news || !news.length) {
             console.error('News vazio ou sem length:', news);
             return;
         }
 
-        console.log('Criando', news.length, 'cards de notícias em destaque');
-        container.innerHTML = news.map(item => this.createNewsCard(item, 'featured')).join('');
-        container.classList.add('fade-in');
-        console.log('Cards de destaque criados com sucesso');
+        console.log('Criando carrossel com', news.length, 'notícias em destaque');
+        
+        // Limpa o conteúdo atual
+        track.innerHTML = '';
+        indicators.innerHTML = '';
+        
+        // Cria slides
+        news.forEach((item, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'carousel-slide';
+            slide.innerHTML = this.createNewsCard(item, 'featured');
+            track.appendChild(slide);
+            
+            // Cria indicador
+            const indicator = document.createElement('button');
+            indicator.className = `carousel-indicator ${index === 0 ? 'active' : ''}`;
+            indicator.setAttribute('data-slide', index);
+            indicator.setAttribute('aria-label', `Ir para notícia ${index + 1}`);
+            indicators.appendChild(indicator);
+        });
+        
+        // Atualiza variáveis do carrossel
+        this.totalSlides = news.length;
+        this.currentSlide = 0;
+        
+        // Inicializa carrossel
+        this.updateCarouselPosition();
+        this.updateCarouselControls();
+        this.startAutoPlay();
+        
+        console.log('Carrossel de destaque criado com sucesso');
     }
 
-    // Exibe notícias populares
+    // Exibe notícias populares (limitado a 3)
     displayPopularNews(news) {
         console.log('displayPopularNews chamada com:', news);
         const container = document.querySelector('.popular-news');
@@ -522,8 +601,27 @@ class PortalNoticias {
             return;
         }
 
-        console.log('Criando', news.length, 'cards de notícias populares');
-        container.innerHTML = news.map(item => this.createNewsCard(item, 'compact')).join('');
+        // Limita a apenas 3 notícias mais lidas
+        const limitedNews = news.slice(0, 3);
+        console.log('Criando', limitedNews.length, 'cards de notícias populares (limitado a 3)');
+        container.innerHTML = limitedNews.map((item, index) => `
+            <div class="popular-item d-flex mb-3">
+                <div class="popular-rank me-3">
+                    <span class="badge bg-primary">${index + 1}</span>
+                </div>
+                <div class="popular-content flex-grow-1">
+                    <h6 class="popular-title mb-1">
+                        <a href="/noticia/${item.slug}">${item.titulo}</a>
+                    </h6>
+                    <div class="popular-meta">
+                        <small class="text-muted">
+                            <i class="fas fa-eye me-1"></i>
+                            ${PortalUtils.formatNumber(item.visualizacoes)}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        `).join('');
         console.log('Cards populares criados com sucesso');
     }
 
@@ -540,6 +638,63 @@ class PortalNoticias {
                 </a>
             </li>
         `).join('');
+    }
+
+    // Exibe últimas notícias
+    displayLatestNews(news) {
+        console.log('displayLatestNews chamada com:', news);
+        const container = document.querySelector('.news-list');
+        console.log('Container news-list encontrado:', !!container);
+        if (!container) {
+            console.error('Container .news-list não encontrado');
+            return;
+        }
+        if (!news || !news.length) {
+            console.error('News vazio ou sem length:', news);
+            return;
+        }
+
+        // Armazena todas as notícias para uso posterior
+        this.allLatestNews = news;
+        this.currentNewsCount = 3;
+        
+        // Limitar a 3 notícias iniciais
+        const limitedNews = news.slice(0, this.currentNewsCount);
+        console.log('Criando', limitedNews.length, 'cards de últimas notícias (limitado a 3)');
+        
+        container.innerHTML = limitedNews.map(item => `
+            <div class="col-12 mb-3">
+                ${this.createNewsCard(item)}
+            </div>
+        `).join('');
+        
+        // Configura o botão "Carregar mais"
+        this.setupLoadMoreButton();
+        
+        console.log('Cards de últimas notícias criados com sucesso');
+    }
+
+    // Exibe tags populares
+    displayPopularTags(tags) {
+        console.log('displayPopularTags chamada com:', tags);
+        const container = document.getElementById('tags-cloud');
+        console.log('Container tags-cloud encontrado:', !!container);
+        if (!container) {
+            console.error('Container #tags-cloud não encontrado');
+            return;
+        }
+        if (!tags || !tags.length) {
+            console.error('Tags vazio ou sem length:', tags);
+            return;
+        }
+
+        console.log('Criando', tags.length, 'tags populares');
+        container.innerHTML = tags.map(tag => `
+            <a href="/tag/${tag.slug}" class="tag" style="font-size: ${Math.min(1.2, 0.8 + (tag.total_noticias / 10))}em;">
+                ${tag.nome}
+            </a>
+        `).join('');
+        console.log('Tags populares criadas com sucesso');
     }
 
     // Cria card de notícia
@@ -570,15 +725,15 @@ class PortalNoticias {
                         <div class="news-card-stats">
                             <span class="news-card-stat">
                                 <i class="icon-eye"></i>
-                                ${news.visualizacoes}
+                                ${PortalUtils.formatNumber(news.visualizacoes)}
                             </span>
                             <span class="news-card-stat">
                                 <i class="icon-heart"></i>
-                                ${news.curtidas}
+                                ${PortalUtils.formatNumber(news.curtidas)}
                             </span>
                             <span class="news-card-stat">
                                 <i class="icon-comment"></i>
-                                ${news.comentarios}
+                                ${PortalUtils.formatNumber(news.comentarios)}
                             </span>
                         </div>
                     </div>
@@ -589,12 +744,49 @@ class PortalNoticias {
         return baseCard;
     }
 
+    // Configura o botão "Carregar mais"
+    setupLoadMoreButton() {
+        const loadMoreBtn = document.querySelector('#load-more-news');
+        if (!loadMoreBtn) return;
+
+        // Mostra/esconde o botão baseado na disponibilidade de mais notícias
+        const hasMoreNews = this.allLatestNews && this.currentNewsCount < this.allLatestNews.length;
+        loadMoreBtn.style.display = hasMoreNews ? 'block' : 'none';
+
+        // Remove event listeners anteriores
+        const newBtn = loadMoreBtn.cloneNode(true);
+        loadMoreBtn.parentNode.replaceChild(newBtn, loadMoreBtn);
+
+        // Adiciona novo event listener
+        newBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.loadMoreFromLocal();
+        });
+    }
+
+    // Carrega mais notícias do cache local
+    loadMoreFromLocal() {
+        if (!this.allLatestNews) return;
+
+        const nextBatch = 3; // Carrega mais 3 notícias por vez
+        const startIndex = this.currentNewsCount;
+        const endIndex = Math.min(startIndex + nextBatch, this.allLatestNews.length);
+        
+        const moreNews = this.allLatestNews.slice(startIndex, endIndex);
+        this.appendNews(moreNews);
+        
+        this.currentNewsCount = endIndex;
+        
+        // Atualiza o botão "Carregar mais"
+        this.setupLoadMoreButton();
+    }
+
     // Adiciona notícias ao container
     appendNews(news) {
-        const container = document.querySelector('.news-list');
+        const container = document.querySelector('#news-list');
         if (!container) return;
 
-        const newsHtml = news.map(item => this.createNewsCard(item)).join('');
+        const newsHtml = news.map(item => this.createNewsCard(item, 'col-12')).join('');
         container.insertAdjacentHTML('beforeend', newsHtml);
         
         // Reinicializa lazy loading para novas imagens
@@ -750,7 +942,13 @@ class PortalNoticias {
 
     // Inicializa componentes específicos
     initCarousel() {
-        // Implementar carousel se necessário
+        this.currentSlide = 0;
+        this.totalSlides = 0;
+        this.autoPlayInterval = null;
+        this.isAutoPlaying = false;
+        
+        // Bind carousel events
+        this.bindCarouselEvents();
     }
 
     initModal() {
@@ -763,6 +961,171 @@ class PortalNoticias {
 
     initDropdowns() {
         // Implementar dropdowns se necessário
+    }
+
+    // Métodos do Carrossel
+    bindCarouselEvents() {
+        // Navegação com botões
+        const prevBtn = document.getElementById('carousel-prev');
+        const nextBtn = document.getElementById('carousel-next');
+        
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => this.prevSlide());
+        }
+        
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => this.nextSlide());
+        }
+        
+        // Navegação com indicadores
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.carousel-indicator')) {
+                const slideIndex = parseInt(e.target.dataset.slide);
+                this.goToSlide(slideIndex);
+            }
+        });
+        
+        // Pausa autoplay no hover
+        const carouselContainer = document.querySelector('.featured-carousel-container');
+        if (carouselContainer) {
+            carouselContainer.addEventListener('mouseenter', () => this.pauseAutoPlay());
+            carouselContainer.addEventListener('mouseleave', () => this.resumeAutoPlay());
+        }
+        
+        // Navegação por teclado
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement && document.activeElement.closest('.featured-carousel-container')) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    this.prevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    this.nextSlide();
+                }
+            }
+        });
+        
+        // Touch/Swipe support
+        this.initTouchSupport();
+    }
+    
+    initTouchSupport() {
+        const carousel = document.getElementById('featured-carousel');
+        if (!carousel) return;
+        
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+        
+        carousel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+            this.pauseAutoPlay();
+        });
+        
+        carousel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            currentX = e.touches[0].clientX;
+        });
+        
+        carousel.addEventListener('touchend', () => {
+            if (!isDragging) return;
+            
+            const diffX = startX - currentX;
+            const threshold = 50;
+            
+            if (Math.abs(diffX) > threshold) {
+                if (diffX > 0) {
+                    this.nextSlide();
+                } else {
+                    this.prevSlide();
+                }
+            }
+            
+            isDragging = false;
+            this.resumeAutoPlay();
+        });
+    }
+    
+    nextSlide() {
+        if (this.totalSlides <= 1) return;
+        
+        this.currentSlide = (this.currentSlide + 1) % this.totalSlides;
+        this.updateCarouselPosition();
+        this.updateCarouselControls();
+    }
+    
+    prevSlide() {
+        if (this.totalSlides <= 1) return;
+        
+        this.currentSlide = this.currentSlide === 0 ? this.totalSlides - 1 : this.currentSlide - 1;
+        this.updateCarouselPosition();
+        this.updateCarouselControls();
+    }
+    
+    goToSlide(index) {
+        if (index < 0 || index >= this.totalSlides) return;
+        
+        this.currentSlide = index;
+        this.updateCarouselPosition();
+        this.updateCarouselControls();
+    }
+    
+    updateCarouselPosition() {
+        const track = document.getElementById('carousel-track');
+        if (!track) return;
+        
+        const translateX = -this.currentSlide * 100;
+        track.style.transform = `translateX(${translateX}%)`;
+    }
+    
+    updateCarouselControls() {
+        // Atualiza indicadores
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        indicators.forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === this.currentSlide);
+        });
+        
+        // Atualiza botões de navegação
+        const prevBtn = document.getElementById('carousel-prev');
+        const nextBtn = document.getElementById('carousel-next');
+        
+        if (prevBtn && nextBtn) {
+            // Para carrossel infinito, sempre habilitado
+            prevBtn.disabled = false;
+            nextBtn.disabled = false;
+        }
+    }
+    
+    startAutoPlay() {
+        if (this.totalSlides <= 1) return;
+        
+        this.stopAutoPlay();
+        this.isAutoPlaying = true;
+        
+        this.autoPlayInterval = setInterval(() => {
+            if (this.isAutoPlaying) {
+                this.nextSlide();
+            }
+        }, 5000); // 5 segundos
+    }
+    
+    stopAutoPlay() {
+        if (this.autoPlayInterval) {
+            clearInterval(this.autoPlayInterval);
+            this.autoPlayInterval = null;
+        }
+        this.isAutoPlaying = false;
+    }
+    
+    pauseAutoPlay() {
+        this.isAutoPlaying = false;
+    }
+    
+    resumeAutoPlay() {
+        if (this.autoPlayInterval && this.totalSlides > 1) {
+            this.isAutoPlaying = true;
+        }
     }
 }
 
@@ -802,13 +1165,18 @@ window.PortalUtils = {
 
     // Formata números
     formatNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M';
+        // Verifica se o número é válido
+        if (num === null || num === undefined || isNaN(num)) {
+            return '0';
         }
-        if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K';
+        
+        const numValue = Number(num);
+        if (numValue >= 1000000) {
+            return (numValue / 1000000).toFixed(1) + 'M';
+        } else if (numValue >= 1000) {
+            return (numValue / 1000).toFixed(1) + 'K';
         }
-        return num.toString();
+        return numValue.toString();
     },
 
     // Trunca texto

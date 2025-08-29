@@ -178,7 +178,7 @@ class Categoria {
             if($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 $this->preencherPropriedades($row);
-                return $row; // Retorna os dados da categoria
+                return $row;
             }
             
             return null;

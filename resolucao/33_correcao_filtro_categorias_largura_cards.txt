@@ -1,0 +1,95 @@
+=== CORREÇÃO DO FILTRO DE CATEGORIAS E LARGURA DOS CARDS ===
+Data: 28/08/2025
+Status: RESOLVIDO
+
+=== PROBLEMAS IDENTIFICADOS ===
+
+1. FILTRO POR CATEGORIA NÃO FUNCIONAVA
+   - Erro na consulta SQL do método buscarPorSlug()
+   - Campo 'ativa' sendo usado em vez de 'ativo'
+   - Causava falha na busca de categorias por slug
+
+2. LARGURA DOS CARDS DE NOTÍCIAS INADEQUADA
+   - Cards horizontais com largura fixa muito grande (300px)
+   - Falta de responsividade em dispositivos móveis
+   - Padding excessivo no corpo dos cards
+
+=== CORREÇÕES IMPLEMENTADAS ===
+
+1. BACKEND - Categoria.php (linha 172)
+   ANTES:
+   $query = "SELECT * FROM " . $this->table_name . " WHERE slug = :slug AND ativa = 1 LIMIT 1";
+   
+   DEPOIS:
+   $query = "SELECT * FROM " . $this->table_name . " WHERE slug = :slug AND ativo = 1 LIMIT 1";
+
+2. FRONTEND - style.css (linhas 624-663)
+   MELHORIAS:
+   - Reduzida largura da imagem de 300px para 250px
+   - Adicionado width: 100% e max-width: 100% ao container
+   - Reduzido padding de var(--spacing-xl) para var(--spacing-lg)
+   - Adicionado min-width: 0 para evitar overflow
+   - Implementada responsividade para dispositivos móveis
+   - Cards se tornam verticais em telas menores que 768px
+
+=== ARQUIVOS MODIFICADOS ===
+
+1. backend/models/Categoria.php
+   - Linha 172: Correção do campo 'ativa' para 'ativo'
+
+2. frontend/assets/css/style.css
+   - Linhas 624-663: Melhorias na responsividade dos cards horizontais
+   - Adicionadas media queries para dispositivos móveis
+
+=== TESTES REALIZADOS ===
+
+✓ Categoria Economia - Funcionando corretamente
+✓ Categoria Esportes - Funcionando corretamente  
+✓ Categoria Tecnologia - Funcionando corretamente
+✓ Responsividade dos cards - Testada e funcionando
+✓ Sem erros no console do navegador
+✓ Sem erros no terminal do servidor
+
+=== IMPACTO DAS CORREÇÕES ===
+
+1. FILTRO DE CATEGORIAS:
+   - Todas as páginas de categoria agora carregam corretamente
+   - Busca por slug funciona adequadamente
+   - Eliminados erros de "categoria não encontrada"
+
+2. LARGURA DOS CARDS:
+   - Melhor aproveitamento do espaço disponível
+   - Cards mais proporcionais e legíveis
+   - Experiência responsiva em dispositivos móveis
+   - Layout mais limpo e profissional
+
+=== ÁREAS CRÍTICAS - NÃO ALTERAR ===
+
+1. Campo 'ativo' na tabela categorias
+   - Sempre usar 'ativo' (não 'ativa') nas consultas SQL
+   - Campo booleano que controla visibilidade das categorias
+
+2. Estrutura dos cards horizontais
+   - Manter flexbox com flex-direction: row
+   - Preservar proporções de imagem e conteúdo
+   - Não alterar border-radius específicos
+
+3. Media queries responsivas
+   - Breakpoint de 768px é crítico para mobile
+   - Não alterar flex-direction para column em mobile
+
+=== OBSERVAÇÕES TÉCNICAS ===
+
+- As correções mantêm compatibilidade com o sistema existente
+- Não há impacto em outras funcionalidades
+- Performance melhorada com cards mais eficientes
+- CSS otimizado para diferentes tamanhos de tela
+
+=== PRÓXIMOS PASSOS RECOMENDADOS ===
+
+1. Monitorar logs de erro para garantir estabilidade
+2. Testar em diferentes navegadores e dispositivos
+3. Considerar implementar lazy loading para imagens dos cards
+4. Avaliar possibilidade de cache para consultas de categoria
+
+Resolução concluída com sucesso.

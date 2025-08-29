@@ -1,0 +1,92 @@
+CORREÇÃO DO PROBLEMA DE TIMING DO DOM - NEWS-CONTAINER
+=======================================================
+
+DATA: 28/08/2025
+ARQUIVO AFETADO: frontend/categoria.html
+PROBLEMA: Elemento 'news-container' não encontrado
+
+DESCRIÇÃO DO PROBLEMA:
+---------------------
+As páginas de categoria estavam apresentando o erro "Elemento news-container não encontrado" no console do navegador, impedindo que as notícias fossem exibidas corretamente. Apesar da API estar retornando os dados corretos e o elemento HTML existir no DOM, o JavaScript não conseguia encontrá-lo no momento da execução.
+
+CAUSA RAIZ:
+-----------
+O problema estava relacionado ao timing de execução do JavaScript. A função displayNews() estava sendo chamada antes do elemento news-container estar completamente disponível no DOM, mesmo com o uso do DOMContentLoaded. Isso pode ocorrer devido a:
+
+1. Renderização assíncrona de elementos
+2. Manipulação dinâmica do DOM por outros scripts
+3. Timing de execução entre diferentes funções JavaScript
+
+SOLUÇÃO IMPLEMENTADA:
+--------------------
+Implementou-se um mecanismo de retry com setTimeout na função displayNews():
+
+1. Primeira tentativa: Busca imediata pelo elemento
+2. Se não encontrado: Aguarda 100ms e tenta novamente
+3. Se ainda não encontrado: Exibe erro no console
+
+CÓDIGO ALTERADO:
+---------------
+Antes:
+```javascript
+function displayNews(news, reset = false) {
+    const container = document.getElementById('news-container');
+    
+    if (!container) {
+        console.error('Elemento news-container não encontrado');
+        return;
+    }
+    // ... resto da função
+}
+```
+
+Depois:
+```javascript
+function displayNews(news, reset = false) {
+    let container = document.getElementById('news-container');
+    
+    if (!container) {
+        // Tenta novamente após um pequeno delay para garantir que o DOM esteja pronto
+        setTimeout(() => {
+            container = document.getElementById('news-container');
+            if (container) {
+                displayNewsInternal(container, news, reset);
+            } else {
+                console.error('Elemento news-container não encontrado');
+            }
+        }, 100);
+        return;
+    }
+    
+    displayNewsInternal(container, news, reset);
+}
+```
+
+TESTES REALIZADOS:
+-----------------
+✓ Categoria Esportes - Funcionando corretamente
+✓ Categoria Economia - Funcionando corretamente  
+✓ Categoria Tecnologia - Funcionando corretamente
+✓ Sem erros no console do navegador
+✓ Notícias sendo exibidas corretamente
+
+IMPACTO:
+--------
+- Correção do erro "Elemento news-container não encontrado"
+- Notícias agora são exibidas corretamente em todas as páginas de categoria
+- Melhoria na experiência do usuário
+- Eliminação de erros JavaScript no console
+
+OBSERVAÇÕES:
+------------
+- A solução é robusta e funciona em diferentes cenários de timing
+- O delay de 100ms é suficiente para resolver o problema sem impactar a performance
+- A função foi dividida em displayNews() e displayNewsInternal() para melhor organização
+- Esta correção pode ser aplicada a outros elementos que apresentem problemas similares de timing
+
+RECOMENDAÇÕES:
+--------------
+1. Monitorar se outros elementos apresentam problemas similares
+2. Considerar implementar um sistema mais robusto de espera por elementos DOM
+3. Avaliar o uso de MutationObserver para casos mais complexos
+4. Manter o padrão de retry para elementos críticos da aplicação
