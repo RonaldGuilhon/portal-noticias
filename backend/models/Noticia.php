@@ -282,11 +282,28 @@ class Noticia {
         
         // Ordenação
         $orderBy = "n.data_publicacao DESC";
-        if(!empty($filtros['ordem'])) {
-            switch($filtros['ordem']) {
+        $sort_param = $filtros['sort'] ?? $filtros['ordem'] ?? null;
+        if(!empty($sort_param)) {
+            switch($sort_param) {
+                case 'recent':
+                case 'recentes':
+                    $orderBy = "n.data_publicacao DESC";
+                    break;
+                case 'oldest':
+                case 'antigas':
+                    $orderBy = "n.data_publicacao ASC";
+                    break;
+                case 'popular':
+                case 'populares':
                 case 'mais_lidas':
                     $orderBy = "n.visualizacoes DESC";
                     break;
+                case 'views':
+                case 'visualizadas':
+                    $orderBy = "n.visualizacoes DESC";
+                    break;
+                case 'comments':
+                case 'comentadas':
                 case 'mais_curtidas':
                     $orderBy = "n.curtidas DESC";
                     break;

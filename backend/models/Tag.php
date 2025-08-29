@@ -372,7 +372,7 @@ class Tag {
                       FROM " . $this->table_name . " t
                       INNER JOIN noticia_tags nt ON t.id = nt.tag_id
                       INNER JOIN noticias n ON nt.noticia_id = n.id
-                      WHERE t.ativo = 1 AND n.status = 'publicado'
+                      WHERE n.status = 'publicado'
                       GROUP BY t.id
                       ORDER BY total_noticias DESC
                       LIMIT :limite";

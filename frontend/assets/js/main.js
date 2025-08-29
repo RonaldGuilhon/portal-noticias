@@ -479,8 +479,10 @@ class PortalNoticias {
     // Carrega categorias
     async loadCategories() {
         try {
-            const categories = await this.apiRequest('/categorias');
-            this.displayCategories(categories);
+            const result = await this.apiRequest('/categorias');
+            if (result.success && result.data && result.data.categorias) {
+                this.displayCategories(result.data.categorias);
+            }
         } catch (error) {
             console.error('Erro ao carregar categorias:', error);
         }

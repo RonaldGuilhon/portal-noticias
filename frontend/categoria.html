@@ -206,15 +206,7 @@
         </nav>
     </header>
     
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb-nav bg-light py-2">
-        <div class="container">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="/">Início</a></li>
-                <li class="breadcrumb-item active" id="breadcrumb-category">Categoria</li>
-            </ol>
-        </div>
-    </nav>
+
     
     <!-- Main Content -->
     <main class="main-content">
@@ -262,18 +254,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-6 text-md-end">
-                                <div class="view-toggle">
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-outline-secondary btn-sm active" data-view="grid" title="Visualização em grade">
-                                            <i class="fas fa-th"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary btn-sm" data-view="list" title="Visualização em lista">
-                                            <i class="fas fa-list"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                     
@@ -291,7 +272,7 @@
                             </div>
                         </div>
                         
-                        <div class="news-grid" id="news-container">
+                        <div class="news-list-view" id="news-container">
                             <!-- Notícias serão carregadas via JavaScript -->
                             <div class="col-12 text-center py-5">
                                 <div class="loading"></div>
@@ -530,7 +511,7 @@
     <script>
         let currentPage = 1;
         let currentSort = 'newest';
-        let currentView = 'grid';
+        let currentView = 'list';
         let categorySlug = '';
         let categoryData = null;
         let isLoading = false;
@@ -598,15 +579,7 @@
                 loadNews(true);
             });
             
-            // Visualização
-            document.querySelectorAll('[data-view]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('[data-view]').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    currentView = this.dataset.view;
-                    toggleView(currentView);
-                });
-            });
+
             
             // Carregar mais
             document.getElementById('load-more-news').addEventListener('click', function() {
@@ -656,8 +629,7 @@
             document.querySelector('meta[property="twitter:title"]').content = `${category.nome} - Portal de Notícias`;
             document.querySelector('meta[property="twitter:description"]').content = category.descricao || `Notícias de ${category.nome}`;
             
-            // Breadcrumb
-            document.getElementById('breadcrumb-category').textContent = category.nome;
+
             
             // Category header
             document.getElementById('category-title').innerHTML = `
@@ -956,16 +928,7 @@
             `).join('');
         }
         
-        // Alterna visualização
-        function toggleView(view) {
-            const container = document.getElementById('news-container');
-            container.className = view === 'list' ? 'news-list-view' : 'news-grid';
-            
-            // Recarrega notícias com nova visualização
-            if (container.children.length > 0) {
-                loadNews(true);
-            }
-        }
+
         
         // Atualiza paginação
         function updatePagination(pagination) {
