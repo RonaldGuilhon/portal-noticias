@@ -182,7 +182,7 @@
                     </div>
                     <div class="field-check">
                         <span>Avatar:</span>
-                        <img id="profile-avatar" src="assets/images/default-avatar.png" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+                        <img id="profile-avatar" src="assets/images/default-avatar.svg" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
                         <span class="status-icon missing" id="profile-avatar-status">❌</span>
                     </div>
                 </div>
@@ -415,7 +415,7 @@
                     updateFieldStatus('profile-avatar-status', userData.foto_perfil);
                     log('populateResult', `✅ Avatar atualizado: ${userData.foto_perfil}`, 'success');
                 } else {
-                    avatarElement.src = 'assets/images/default-avatar.png';
+                    avatarElement.src = 'assets/images/default-avatar.svg';
                     updateFieldStatus('profile-avatar-status', null);
                     log('populateResult', `⚠️ Avatar padrão usado (foto_perfil vazia)`, 'warning');
                 }

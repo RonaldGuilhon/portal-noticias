@@ -719,7 +719,7 @@ class PortalNoticias {
                     
                     <div class="news-card-meta">
                         <div class="news-card-author">
-                            <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor}">
+                            <img src="${news.autor_foto || '/assets/images/default-avatar.svg'}" alt="${news.autor}">
                             <span>${news.autor}</span>
                         </div>
                         
@@ -779,7 +779,7 @@ class PortalNoticias {
                     
                     <div class="news-card-meta">
                         <div class="news-card-author">
-                            <img src="${news.autor_foto || '/assets/images/default-avatar.png'}" alt="${news.autor || 'Autor'}">
+                            <img src="${news.autor_foto || '/assets/images/default-avatar.svg'}" alt="${news.autor || 'Autor'}">
                             <span>${news.autor || news.autor_nome || 'Autor desconhecido'}</span>
                         </div>
                         

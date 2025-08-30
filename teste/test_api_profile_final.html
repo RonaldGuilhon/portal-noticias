@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Final - API de Perfil</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Teste Final - API de Perfil</h1>
+    
+    <div class="test-section info">
+        <h3>Status do Teste</h3>
+        <div id="status">Iniciando testes...</div>
+    </div>
+
+    <div class="test-section">
+        <h3>1. Login do Usuário Admin</h3>
+        <button onclick="fazerLogin()">Fazer Login</button>
+        <div id="login-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Testar API de Perfil</h3>
+        <button onclick="testarAPIPerfil()">Testar API</button>
+        <div id="api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Verificar Formato de Resposta</h3>
+        <div id="format-check"></div>
+    </div>
+
+    <script>
+        let authToken = null;
+
+        async function fazerLogin() {
+            const loginResult = document.getElementById('login-result');
+            loginResult.innerHTML = 'Fazendo login...';
+
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'admin123'
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Resposta do login:', data);
+
+                if (data.sucesso && data.dados && data.dados.token) {
+                    authToken = data.dados.token;
+                    localStorage.setItem('portal-user', JSON.stringify(data.dados));
+                    loginResult.innerHTML = `
+                        <div class="success">
+                            <strong>✅ Login realizado com sucesso!</strong><br>
+                            Token: ${authToken.substring(0, 20)}...<br>
+                            Usuário: ${data.dados.nome}
+                        </div>
+                    `;
+                } else {
+                    loginResult.innerHTML = `
+                        <div class="error">
+                            <strong>❌ Erro no login:</strong><br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro no login:', error);
+                loginResult.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Erro de conexão:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function testarAPIPerfil() {
+            const apiResult = document.getElementById('api-result');
+            const formatCheck = document.getElementById('format-check');
+            
+            if (!authToken) {
+                apiResult.innerHTML = '<div class="error">❌ Faça login primeiro!</div>';
+                return;
+            }
+
+            apiResult.innerHTML = 'Testando API de perfil...';
+
+            try {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Resposta da API de perfil:', data);
+
+                // Verificar formato da resposta
+                const temSucesso = data.hasOwnProperty('sucesso');
+                const temDados = data.hasOwnProperty('dados');
+                const temSuccess = data.hasOwnProperty('success');
+                const temData = data.hasOwnProperty('data');
+
+                formatCheck.innerHTML = `
+                    <h4>Verificação do Formato:</h4>
+                    <ul>
+                        <li>Tem 'sucesso': ${temSucesso ? '✅' : '❌'}</li>
+                        <li>Tem 'dados': ${temDados ? '✅' : '❌'}</li>
+                        <li>Tem 'success' (antigo): ${temSuccess ? '⚠️' : '✅'}</li>
+                        <li>Tem 'data' (antigo): ${temData ? '⚠️' : '✅'}</li>
+                    </ul>
+                `;
+
+                if (response.ok && data.sucesso && data.dados) {
+                    apiResult.innerHTML = `
+                        <div class="success">
+                            <strong>✅ API de perfil funcionando corretamente!</strong><br>
+                            <strong>Dados do usuário:</strong><br>
+                            Nome: ${data.dados.nome}<br>
+                            Email: ${data.dados.email}<br>
+                            Tipo: ${data.dados.tipo}<br>
+                            <details>
+                                <summary>Ver resposta completa</summary>
+                                <pre>${JSON.stringify(data, null, 2)}</pre>
+                            </details>
+                        </div>
+                    `;
+                    
+                    document.getElementById('status').innerHTML = `
+                        <div class="success">
+                            <strong>🎉 TODOS OS TESTES PASSARAM!</strong><br>
+                            A API de perfil está retornando dados corretamente no formato esperado.
+                        </div>
+                    `;
+                } else {
+                    apiResult.innerHTML = `
+                        <div class="error">
+                            <strong>❌ Problema na API de perfil:</strong><br>
+                            Status: ${response.status}<br>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro na API de perfil:', error);
+                apiResult.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Erro de conexão com a API:</strong><br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Executar testes automaticamente
+        window.onload = async function() {
+            document.getElementById('status').innerHTML = 'Executando testes automaticamente...';
+            await fazerLogin();
+            setTimeout(async () => {
+                await testarAPIPerfil();
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

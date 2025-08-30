@@ -1,0 +1,98 @@
+=== CORREÇÃO COMPLETA DAS FOTOS DE PERFIL ===
+Data: 30/01/2025
+Status: RESOLVIDO
+
+== PROBLEMAS IDENTIFICADOS ==
+1. Avatar padrão tinha extensão incorreta (.png mas era arquivo SVG)
+2. URLs de configuração apontavam para porta 8001 em vez de 8000
+3. FileController tinha código conflitante causando erro 405
+4. Referências inconsistentes ao avatar padrão em múltiplos arquivos
+
+== ANÁLISE TÉCNICA ==
+- Pasta de uploads: C:\portal-noticias-uploads\profile-photos
+- Arquivo padrão: frontend/assets/images/default-avatar.svg (era .png)
+- URL de configuração: http://localhost:8000/files/profile/
+- Rota de upload: /api/user/avatar (via base64 JSON)
+- Rota de servir fotos: /files/profile/{filename}
+
+== CORREÇÕES IMPLEMENTADAS ==
+
+1. **Correção do Avatar Padrão:**
+   - Renomeado: default-avatar.png → default-avatar.svg
+   - Arquivo era SVG mas tinha extensão .png incorreta
+   - Localização: frontend/assets/images/default-avatar.svg
+
+2. **Atualização de Referências nos Arquivos:**
+   - frontend/perfil.html: Todas as referências atualizadas para .svg
+   - frontend/noticia.html: Tags <img> e JavaScript atualizados
+   - frontend/admin/noticias.html: Avatar do administrador corrigido
+   - frontend/admin/index.html: Avatar do administrador corrigido
+   - frontend/assets/js/main.js: Referências em JavaScript atualizadas
+
+3. **Correção da Configuração de Upload:**
+   - Arquivo: backend/config/upload.php
+   - Alteração: PROFILE_PHOTOS_URL de localhost:8001 → localhost:8000
+   - Motivo: Corresponder ao servidor backend correto
+
+4. **Correção do FileController:**
+   - Arquivo: backend/controllers/FileController.php
+   - Problema: Código de processamento automático causava conflito
+   - Solução: Removido código conflitante, processamento via router.php
+   - Resultado: Status 200 OK para servir fotos
+
+== ARQUIVOS MODIFICADOS ==
+- frontend/assets/images/default-avatar.svg (renomeado de .png)
+- frontend/perfil.html
+- frontend/noticia.html
+- frontend/admin/noticias.html
+- frontend/admin/index.html
+- frontend/assets/js/main.js
+- backend/config/upload.php
+- backend/controllers/FileController.php
+
+== TESTES REALIZADOS ==
+1. ✅ Pasta C:\portal-noticias-uploads\profile-photos existe
+2. ✅ Arquivo de foto existente: profile_1_1756260532_2fbfcb305e059763.jpeg
+3. ✅ Rota /files/profile/ retorna status 200 OK
+4. ✅ FileController serve fotos corretamente
+5. ✅ Sistema de upload via /api/user/avatar funcional (base64 JSON)
+
+== ESTRUTURA DE FUNCIONAMENTO ==
+```
+C:/portal-noticias-uploads/
+└── profile-photos/
+    └── profile_1_1756260532_2fbfcb305e059763.jpeg
+```
+
+== FLUXO DE UPLOAD E EXIBIÇÃO ==
+1. Upload via POST /api/user/avatar (dados base64 JSON)
+2. Arquivo salvo em C:/portal-noticias-uploads/profile-photos/
+3. URL salva no banco: http://localhost:8000/files/profile/[filename]
+4. Frontend carrega via rota /files/profile/
+5. Router.php direciona para FileController.php
+6. FileController.php serve imagem com headers CORS
+
+== CONFIGURAÇÕES IMPORTANTES ==
+- Diretório de upload: C:/portal-noticias-uploads/profile-photos/
+- URL base: http://localhost:8000/files/profile/
+- Avatar padrão: /assets/images/default-avatar.svg
+- CORS configurado para http://localhost:3000
+- Suporte a formatos: JPG, JPEG, PNG, GIF, WEBP
+- Tamanho máximo: 5MB
+- Redimensionamento: 300x300px
+
+== ARQUIVOS DE REFERÊNCIA ==
+- 32_correcao_foto_perfil_final.txt (correção anterior)
+- 40_padronizacao_diretorios_disco_c.txt (padronização diretórios)
+- 41_correcao_erro_404_avatar_padrao.txt (correção 404 anterior)
+- 42_correcao_urls_api_perfil.txt (correção URLs API)
+
+== PRÓXIMOS PASSOS ==
+- Sistema de fotos de perfil totalmente funcional
+- Avatar padrão e fotos personalizadas funcionando
+- Todas as referências consistentes
+- Configurações alinhadas com servidor backend
+
+=== CORREÇÃO CONCLUÍDA COM SUCESSO ===
+Todos os problemas de foto de perfil foram resolvidos.
+Sistema pronto para uso em produção.

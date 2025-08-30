@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Carregamento da Foto Padrão</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .avatar-test {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .avatar-test img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            display: block;
+            margin: 0 auto 10px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .path-test {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Teste de Carregamento da Foto Padrão</h1>
+        
+        <div class="test-section">
+            <h3>📍 Teste de Caminhos Diferentes</h3>
+            <p>Testando diferentes caminhos para a foto padrão:</p>
+            
+            <div class="avatar-test">
+                <img src="../frontend/assets/images/default-avatar.svg" 
+                     alt="Teste 1" 
+                     onload="markSuccess(this, 'Caminho 1: ../frontend/assets/images/')" 
+                     onerror="markError(this, 'Caminho 1: ../frontend/assets/images/')">
+                <div class="path-info">../frontend/assets/images/</div>
+            </div>
+            
+            <div class="avatar-test">
+                <img src="http://localhost:3000/assets/images/default-avatar.svg" 
+                     alt="Teste 2" 
+                     onload="markSuccess(this, 'Caminho 2: http://localhost:3000/assets/images/')" 
+                     onerror="markError(this, 'Caminho 2: http://localhost:3000/assets/images/')">
+                <div class="path-info">http://localhost:3000/assets/images/</div>
+            </div>
+            
+            <div class="avatar-test">
+                <img src="assets/images/default-avatar.svg" 
+                     alt="Teste 3" 
+                     onload="markSuccess(this, 'Caminho 3: assets/images/ (relativo)')" 
+                     onerror="markError(this, 'Caminho 3: assets/images/ (relativo)')">
+                <div class="path-info">assets/images/ (relativo)</div>
+            </div>
+            
+            <div class="avatar-test">
+                <img src="/assets/images/default-avatar.svg" 
+                     alt="Teste 4" 
+                     onload="markSuccess(this, 'Caminho 4: /assets/images/ (absoluto)')" 
+                     onerror="markError(this, 'Caminho 4: /assets/images/ (absoluto)')">
+                <div class="path-info">/assets/images/ (absoluto)</div>
+            </div>
+            
+            <div class="avatar-test">
+                <img src="../frontend/assets/img/default-avatar.jpg" 
+                     alt="Teste 5" 
+                     onload="markSuccess(this, 'Caminho 5: ../frontend/assets/img/ (JPG)')" 
+                     onerror="markError(this, 'Caminho 5: ../frontend/assets/img/ (JPG)')">
+                <div class="path-info">../frontend/assets/img/ (JPG)</div>
+            </div>
+            
+            <div class="avatar-test">
+                <img src="../frontend/assets/img/default-avatar.svg" 
+                     alt="Teste 6" 
+                     onload="markSuccess(this, 'Caminho 6: ../frontend/assets/img/ (SVG)')" 
+                     onerror="markError(this, 'Caminho 6: ../frontend/assets/img/ (SVG)')">
+                <div class="path-info">../frontend/assets/img/ (SVG)</div>
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Teste de Requisições HTTP</h3>
+            <button onclick="testHttpRequests()">Testar Requisições HTTP</button>
+            <div id="httpResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>📋 Resultados dos Testes</h3>
+            <div id="testResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔧 Teste de Perfil Simulado</h3>
+            <button onclick="simulateProfileLoad()">Simular Carregamento do Perfil</button>
+            <div id="profileSimulation">
+                <div class="avatar-test">
+                    <img id="simulated-avatar" src="" alt="Avatar Simulado" 
+                         onload="console.log('Avatar simulado carregado')" 
+                         onerror="console.log('Erro no avatar simulado')">
+                    <div class="path-info">Avatar Simulado</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const results = [];
+        
+        function markSuccess(img, description) {
+            console.log(`✅ ${description} - SUCESSO`);
+            results.push({ type: 'success', message: `${description} - SUCESSO` });
+            updateResults();
+        }
+        
+        function markError(img, description) {
+            console.log(`❌ ${description} - ERRO`);
+            results.push({ type: 'error', message: `${description} - ERRO` });
+            updateResults();
+        }
+        
+        function updateResults() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = results.map(result => 
+                `<div class="${result.type}">${result.message}</div>`
+            ).join('');
+        }
+        
+        async function testHttpRequests() {
+            const httpResultsDiv = document.getElementById('httpResults');
+            httpResultsDiv.innerHTML = '<div class="info">🔄 Testando requisições HTTP...</div>';
+            
+            const paths = [
+                'http://localhost:3000/assets/images/default-avatar.svg',
+                'http://localhost:3000/assets/img/default-avatar.jpg',
+                'http://localhost:3000/assets/img/default-avatar.svg',
+                'http://localhost:8000/uploadsimages/default-avatar.svg',
+                'http://localhost:3000/frontend/assets/images/default-avatar.svg'
+            ];
+            
+            let httpResults = [];
+            
+            for (const path of paths) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (response.ok) {
+                        httpResults.push(`<div class="success">✅ ${path} - Status: ${response.status}</div>`);
+                    } else {
+                        httpResults.push(`<div class="error">❌ ${path} - Status: ${response.status}</div>`);
+                    }
+                } catch (error) {
+                    httpResults.push(`<div class="error">❌ ${path} - Erro: ${error.message}</div>`);
+                }
+            }
+            
+            httpResultsDiv.innerHTML = httpResults.join('');
+        }
+        
+        function simulateProfileLoad() {
+            // Simular dados do usuário sem foto
+            const userData = {
+                id: 10,
+                nome: 'Usuário Teste',
+                email: 'teste@portal.com',
+                foto_perfil: null // Sem foto definida
+            };
+            
+            const avatarElement = document.getElementById('simulated-avatar');
+            
+            console.log('📋 Dados do usuário:', userData);
+            console.log('🖼️ Foto do perfil:', userData.foto_perfil);
+            
+            if (userData.foto_perfil) {
+                console.log('✅ Usuário tem foto, carregando:', userData.foto_perfil);
+                avatarElement.src = userData.foto_perfil;
+            } else {
+                console.log('⚠️ Usuário sem foto, carregando padrão');
+                // Testar diferentes caminhos para a foto padrão
+                const defaultPaths = [
+                    'assets/images/default-avatar.svg',
+                    '../frontend/assets/images/default-avatar.svg',
+                    'http://localhost:3000/assets/images/default-avatar.svg'
+                ];
+                
+                // Usar o primeiro caminho como teste
+                avatarElement.src = defaultPaths[2]; // URL completa
+                console.log('🔄 Tentando carregar:', defaultPaths[2]);
+            }
+        }
+        
+        // Executar teste automático ao carregar a página
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                console.log('🚀 Iniciando testes automáticos...');
+                testHttpRequests();
+                simulateProfileLoad();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

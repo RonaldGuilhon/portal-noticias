@@ -289,7 +289,7 @@
                         <div class="card">
                             <div class="card-body text-center">
                                 <div class="profile-avatar mb-3">
-                    <img src="assets/images/default-avatar.png" alt="Avatar" class="rounded-circle" id="profile-avatar">
+                    <img src="assets/images/default-avatar.svg" alt="Avatar" class="rounded-circle" id="profile-avatar">
                                     <div class="avatar-upload">
                                         <input type="file" id="avatar-input" accept="image/*" style="display: none;">
                                         <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('avatar-input').click()">
@@ -848,7 +848,7 @@
                 }
                 
                 console.log('📡 Fazendo requisição para API...');
-                const response = await fetch('http://localhost:8001/api/user/profile', {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
@@ -897,7 +897,7 @@
                 if (userData.foto_perfil) {
                     avatarElement.src = userData.foto_perfil;
                 } else {
-                    avatarElement.src = 'assets/images/default-avatar.png';
+                    avatarElement.src = 'assets/images/default-avatar.svg';
                 }
             }
             
@@ -976,7 +976,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/profile', {
+                const response = await fetch('http://localhost:8000/api/user/profile', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1042,7 +1042,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/change-password', {
+                const response = await fetch('http://localhost:8000/api/user/change-password', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1129,7 +1129,7 @@
                     favorite_categories: selectedCategories
                 };
                 
-                const response = await fetch('http://localhost:8001/api/user/preferences', {
+                const response = await fetch('http://localhost:8000/api/user/preferences', {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1194,7 +1194,7 @@
                     return;
                 }
                 
-                const response = await fetch('http://localhost:8001/api/user/avatar', {
+                const response = await fetch('http://localhost:8000/api/user/avatar', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,

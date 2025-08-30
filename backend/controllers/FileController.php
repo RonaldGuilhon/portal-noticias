@@ -68,22 +68,5 @@ class FileController {
     }
 }
 
-// Processar requisição
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $action = $_GET['action'] ?? 'serve_profile_photo';
-    $controller = new FileController();
-    
-    switch ($action) {
-        case 'serve_profile_photo':
-            $controller->serveProfilePhoto();
-            break;
-        default:
-            http_response_code(404);
-            echo json_encode(['error' => 'Ação não encontrada']);
-            break;
-    }
-} else {
-    http_response_code(405);
-    echo json_encode(['error' => 'Método não permitido']);
-}
+// O processamento da requisição é feito pelo router.php
 ?>

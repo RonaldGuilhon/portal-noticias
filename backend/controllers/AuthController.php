@@ -519,8 +519,8 @@ class AuthController {
             $this->usuario->buscarPorId($usuario['id']);
             
             jsonResponse([
-                'success' => true,
-                'data' => [
+                'sucesso' => true,
+                'dados' => [
                     'id' => $this->usuario->id,
                     'nome' => $this->usuario->nome,
                     'email' => $this->usuario->email,
@@ -528,7 +528,7 @@ class AuthController {
                     'foto_perfil' => $this->usuario->foto_perfil,
                     'tipo' => $this->usuario->tipo_usuario,
                     'data_criacao' => $this->usuario->data_criacao,
-                    'preferencias' => json_decode($this->usuario->preferencias, true),
+                    'preferencias' => json_decode($this->usuario->preferencias ?? '[]', true),
                     
                     // Informações pessoais
                     'data_nascimento' => $this->usuario->data_nascimento,
@@ -543,8 +543,6 @@ class AuthController {
                     'dark_mode' => (bool)$this->usuario->dark_mode,
                     
                     // Configurações de notificação
-                    'email_notifications' => (bool)$this->usuario->email_newsletter,
-                    'push_notifications' => (bool)$this->usuario->push_breaking,
                     'newsletter' => (bool)$this->usuario->email_marketing,
                     'email_newsletter' => (bool)$this->usuario->email_newsletter,
                     'email_breaking' => (bool)$this->usuario->email_breaking,
@@ -642,8 +640,8 @@ class AuthController {
                 $_SESSION['usuario_nome'] = $this->usuario->nome;
                 
                 jsonResponse([
-                    'success' => true,
-                    'mensagem' => 'Perfil atualizado com success'
+                    'sucesso' => true,
+                    'mensagem' => 'Perfil atualizado com sucesso'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Erro ao atualizar perfil'], 500);
@@ -685,8 +683,8 @@ class AuthController {
             
             if($this->usuario->alterarSenha($senha_atual, $nova_senha)) {
                 jsonResponse([
-                    'success' => true,
-                    'mensagem' => 'Senha alterada com success'
+                    'sucesso' => true,
+                    'mensagem' => 'Senha alterada com sucesso'
                 ]);
             } else {
                 jsonResponse(['erro' => 'Senha atual incorreta'], 400);
@@ -1035,8 +1033,8 @@ class AuthController {
             }
 
             jsonResponse([
-                'success' => true,
-                'message' => 'Preferências atualizadas com sucesso'
+                'sucesso' => true,
+                'mensagem' => 'Preferências atualizadas com sucesso'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar preferências: " . $e->getMessage());
@@ -1079,8 +1077,8 @@ class AuthController {
             ]);
 
             jsonResponse([
-                'success' => true,
-                'message' => 'Configurações de notificação atualizadas'
+                'sucesso' => true,
+                'mensagem' => 'Configurações de notificação atualizadas'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar notificações: " . $e->getMessage());
@@ -1151,8 +1149,8 @@ class AuthController {
             }
 
             jsonResponse([
-                'success' => true,
-                'message' => 'Preferência atualizada com sucesso'
+                'sucesso' => true,
+                'mensagem' => 'Preferência atualizada com sucesso'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar preferência individual: " . $e->getMessage());
@@ -1176,8 +1174,8 @@ class AuthController {
             $stmt->execute([json_encode($categories), $usuario['id']]);
 
             jsonResponse([
-                'success' => true,
-                'message' => 'Categorias favoritas atualizadas com sucesso'
+                'sucesso' => true,
+                'mensagem' => 'Categorias favoritas atualizadas com sucesso'
             ]);
         } catch (Exception $e) {
             logError("Erro ao atualizar categorias favoritas: " . $e->getMessage());

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Direto da API de Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log-area {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .data-display {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste Direto da API de Perfil</h1>
+        
+        <div class="container">
+            <h3>1️⃣ Login com Usuário de Teste</h3>
+            <button onclick="fazerLogin()">Login (teste@portal.com)</button>
+            <div id="loginLog" class="log-area"></div>
+        </div>
+        
+        <div class="container">
+            <h3>2️⃣ Testar API de Perfil</h3>
+            <button onclick="testarAPIPerfil()">Testar /api/user/profile</button>
+            <div id="perfilLog" class="log-area"></div>
+        </div>
+        
+        <div class="container">
+            <h3>3️⃣ Dados do Perfil</h3>
+            <div id="dadosPerfil" class="data-display"></div>
+        </div>
+        
+        <div class="container">
+            <h3>🚀 Teste Completo</h3>
+            <button onclick="testeCompleto()">Executar Teste Completo</button>
+            <div id="testeCompletoLog" class="log-area"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let authToken = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            element.scrollTop = element.scrollHeight;
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        async function fazerLogin() {
+            clearLog('loginLog');
+            log('loginLog', '🔄 Iniciando login...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'teste@portal.com',
+                        senha: '123456'
+                    })
+                });
+                
+                log('loginLog', `📡 Status da resposta: ${response.status}`);
+                
+                const data = await response.json();
+                log('loginLog', `📋 Resposta completa: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.sucesso && data.token) {
+                    authToken = data.token;
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('portal-user', JSON.stringify(data.usuario));
+                    
+                    log('loginLog', '✅ Login realizado com sucesso!', 'success');
+                    log('loginLog', `🔑 Token: ${authToken.substring(0, 20)}...`);
+                    log('loginLog', `👤 Usuário: ${data.usuario.nome}`);
+                } else {
+                    log('loginLog', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('loginLog', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testarAPIPerfil() {
+            clearLog('perfilLog');
+            log('perfilLog', '🔄 Testando API de perfil...');
+            
+            if (!authToken) {
+                authToken = localStorage.getItem('authToken');
+            }
+            
+            if (!authToken) {
+                log('perfilLog', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                return;
+            }
+            
+            log('perfilLog', `🔑 Usando token: ${authToken.substring(0, 20)}...`);
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log('perfilLog', `📡 Status da resposta: ${response.status}`);
+                log('perfilLog', `📡 Headers da resposta: ${JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2)}`);
+                
+                const responseText = await response.text();
+                log('perfilLog', `📋 Resposta bruta: ${responseText}`);
+                
+                try {
+                    const data = JSON.parse(responseText);
+                    log('perfilLog', `📋 Resposta JSON: ${JSON.stringify(data, null, 2)}`);
+                    
+                    if (data.sucesso && data.dados) {
+                        log('perfilLog', '✅ API de perfil funcionando!', 'success');
+                        mostrarDadosPerfil(data.dados);
+                    } else {
+                        log('perfilLog', `❌ Erro na API: ${data.mensagem || data.erro || 'Erro desconhecido'}`, 'error');
+                    }
+                } catch (parseError) {
+                    log('perfilLog', `❌ Erro ao parsear JSON: ${parseError.message}`, 'error');
+                }
+                
+            } catch (error) {
+                log('perfilLog', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        function mostrarDadosPerfil(dados) {
+            const container = document.getElementById('dadosPerfil');
+            
+            container.innerHTML = `
+                <h4>📋 Dados do Perfil Carregados:</h4>
+                <p><strong>ID:</strong> ${dados.id}</p>
+                <p><strong>Nome:</strong> ${dados.nome}</p>
+                <p><strong>Email:</strong> ${dados.email}</p>
+                <p><strong>Bio:</strong> ${dados.bio || 'Não informado'}</p>
+                <p><strong>Telefone:</strong> ${dados.telefone || 'Não informado'}</p>
+                <p><strong>Cidade:</strong> ${dados.cidade || 'Não informado'}</p>
+                <p><strong>Estado:</strong> ${dados.estado || 'Não informado'}</p>
+                <p><strong>Foto de Perfil:</strong> ${dados.foto_perfil || 'Não informado'}</p>
+                <p><strong>Data de Nascimento:</strong> ${dados.data_nascimento || 'Não informado'}</p>
+                <p><strong>Gênero:</strong> ${dados.genero || 'Não informado'}</p>
+                
+                <h5>🔧 Configurações:</h5>
+                <p><strong>Perfil Público:</strong> ${dados.profile_public ? 'Sim' : 'Não'}</p>
+                <p><strong>Mostrar Atividade:</strong> ${dados.show_activity ? 'Sim' : 'Não'}</p>
+                <p><strong>Permitir Mensagens:</strong> ${dados.allow_messages ? 'Sim' : 'Não'}</p>
+                
+                <h5>📧 Notificações:</h5>
+                <p><strong>Email Newsletter:</strong> ${dados.email_newsletter ? 'Sim' : 'Não'}</p>
+                <p><strong>Push Breaking:</strong> ${dados.push_breaking ? 'Sim' : 'Não'}</p>
+                
+                <h5>❤️ Preferências:</h5>
+                <p><strong>Categorias Favoritas:</strong> ${JSON.stringify(dados.favorite_categories)}</p>
+                <p><strong>Idioma:</strong> ${dados.language_preference}</p>
+            `;
+        }
+        
+        async function testeCompleto() {
+            clearLog('testeCompletoLog');
+            log('testeCompletoLog', '🚀 Iniciando teste completo...');
+            
+            // Passo 1: Login
+            log('testeCompletoLog', '1️⃣ Fazendo login...');
+            await fazerLogin();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 2: Testar API
+            log('testeCompletoLog', '2️⃣ Testando API de perfil...');
+            await testarAPIPerfil();
+            
+            log('testeCompletoLog', '✅ Teste completo finalizado!', 'success');
+        }
+        
+        // Verificar se já existe token ao carregar a página
+        window.onload = function() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                authToken = token;
+                log('loginLog', `🔑 Token encontrado no localStorage: ${token.substring(0, 20)}...`);
+            }
+        };
+    </script>
+</body>
+</html>

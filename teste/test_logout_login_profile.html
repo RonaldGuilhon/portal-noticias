@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Logout/Login e Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .profile-data {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .photo-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .profile-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Teste de Logout/Login e Carregamento do Perfil</h1>
+        
+        <div class="step">
+            <h3>Passo 1: Fazer Logout</h3>
+            <button onclick="doLogout()">Fazer Logout</button>
+            <div id="logoutResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Passo 2: Fazer Login com Usuário de Teste</h3>
+            <button onclick="doLogin()">Login (teste@portal.com)</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Passo 3: Carregar Dados do Perfil</h3>
+            <button onclick="loadProfile()">Carregar Perfil</button>
+            <div id="profileResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Passo 4: Verificar Foto Padrão</h3>
+            <button onclick="checkDefaultPhoto()">Verificar Foto Padrão</button>
+            <div id="photoResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>Teste Automático Completo</h3>
+            <button onclick="runFullTest()">Executar Teste Completo</button>
+            <div id="fullTestResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            element.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        async function doLogout() {
+            clearLog('logoutResult');
+            log('logoutResult', '🔄 Fazendo logout...');
+            
+            try {
+                // Limpar tokens do localStorage
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('portal-user');
+                sessionStorage.clear();
+                
+                log('logoutResult', '✅ Logout realizado com sucesso!', 'success');
+                log('logoutResult', '🗑️ Tokens removidos do localStorage');
+                
+            } catch (error) {
+                log('logoutResult', `❌ Erro no logout: ${error.message}`, 'error');
+            }
+        }
+        
+        async function doLogin() {
+            clearLog('loginResult');
+            log('loginResult', '🔄 Fazendo login com teste@portal.com...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'teste@portal.com',
+                        senha: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                log('loginResult', `📡 Resposta da API: ${JSON.stringify(data)}`);
+                
+                if (data.sucesso && data.token) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('portal-user', JSON.stringify(data.usuario));
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `👤 Usuário: ${data.usuario.nome}`);
+                    log('loginResult', `🔑 Token salvo no localStorage`);
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadProfile() {
+            clearLog('profileResult');
+            log('profileResult', '🔄 Carregando dados do perfil...');
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    log('profileResult', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                log('profileResult', `📡 Resposta da API: ${JSON.stringify(data, null, 2)}`);
+                
+                if (data.sucesso && data.dados) {
+                    const user = data.dados;
+                    log('profileResult', '✅ Dados do perfil carregados com sucesso!', 'success');
+                    
+                    const profileHtml = `
+                        <div class="profile-data">
+                            <h4>📋 Dados do Usuário:</h4>
+                            <p><strong>ID:</strong> ${user.id}</p>
+                            <p><strong>Nome:</strong> ${user.nome}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Bio:</strong> ${user.bio || 'Não informado'}</p>
+                            <p><strong>Telefone:</strong> ${user.telefone || 'Não informado'}</p>
+                            <p><strong>Cidade:</strong> ${user.cidade || 'Não informado'}</p>
+                            <p><strong>Estado:</strong> ${user.estado || 'Não informado'}</p>
+                            <p><strong>Foto:</strong> ${user.foto_perfil || 'Não definida'}</p>
+                            <p><strong>Ativo:</strong> ${user.ativo ? 'Sim' : 'Não'}</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('profileResult').innerHTML += profileHtml;
+                } else {
+                    log('profileResult', `❌ Erro ao carregar perfil: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('profileResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function checkDefaultPhoto() {
+            clearLog('photoResult');
+            log('photoResult', '🔄 Verificando foto padrão...');
+            
+            const defaultPaths = [
+                'http://localhost:3000/assets/images/default-avatar.svg',
+                'http://localhost:3000/assets/img/default-avatar.svg',
+                'http://localhost:8000/uploadsimages/default-avatar.svg',
+                'http://localhost:3000/frontend/assets/images/default-avatar.svg'
+            ];
+            
+            for (const path of defaultPaths) {
+                try {
+                    const response = await fetch(path, { method: 'HEAD' });
+                    if (response.ok) {
+                        log('photoResult', `✅ Foto padrão encontrada: ${path}`, 'success');
+                        
+                        const photoHtml = `
+                            <div class="photo-container">
+                                <h4>🖼️ Foto Padrão:</h4>
+                                <img src="${path}" alt="Foto Padrão" class="profile-photo" 
+                                     onload="console.log('Foto carregada com sucesso')" 
+                                     onerror="console.log('Erro ao carregar foto')">
+                                <p>Caminho: ${path}</p>
+                            </div>
+                        `;
+                        
+                        document.getElementById('photoResult').innerHTML += photoHtml;
+                        return;
+                    }
+                } catch (error) {
+                    log('photoResult', `❌ Erro ao verificar ${path}: ${error.message}`);
+                }
+            }
+            
+            log('photoResult', '❌ Nenhuma foto padrão encontrada nos caminhos testados', 'error');
+        }
+        
+        async function runFullTest() {
+            clearLog('fullTestResult');
+            log('fullTestResult', '🚀 Iniciando teste completo...');
+            
+            // Passo 1: Logout
+            log('fullTestResult', '1️⃣ Fazendo logout...');
+            await doLogout();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 2: Login
+            log('fullTestResult', '2️⃣ Fazendo login...');
+            await doLogin();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 3: Carregar perfil
+            log('fullTestResult', '3️⃣ Carregando perfil...');
+            await loadProfile();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 4: Verificar foto
+            log('fullTestResult', '4️⃣ Verificando foto padrão...');
+            await checkDefaultPhoto();
+            
+            log('fullTestResult', '✅ Teste completo finalizado!', 'success');
+        }
+    </script>
+</body>
+</html>

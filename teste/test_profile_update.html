@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Atualização do Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info {
+            color: #17a2b8;
+        }
+        .warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .data-display {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .before, .after {
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .before {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .after {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Teste de Atualização do Perfil</h1>
+        
+        <div class="test-section">
+            <h3>1️⃣ Login Automático</h3>
+            <button onclick="doAutoLogin()">Fazer Login (teste@portal.com)</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>2️⃣ Carregar Dados Atuais</h3>
+            <button onclick="loadCurrentData()">Carregar Dados do Perfil</button>
+            <div id="currentDataResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>3️⃣ Formulário de Atualização</h3>
+            <div class="form-group">
+                <label for="updateNome">Nome:</label>
+                <input type="text" id="updateNome" value="Usuário Teste Atualizado">
+            </div>
+            <div class="form-group">
+                <label for="updateBio">Biografia:</label>
+                <textarea id="updateBio" rows="3">Biografia atualizada para teste de funcionalidade do sistema de perfil.</textarea>
+            </div>
+            <div class="form-group">
+                <label for="updateTelefone">Telefone:</label>
+                <input type="text" id="updateTelefone" value="(11) 88888-8888">
+            </div>
+            <div class="form-group">
+                <label for="updateCidade">Cidade:</label>
+                <input type="text" id="updateCidade" value="Rio de Janeiro">
+            </div>
+            <div class="form-group">
+                <label for="updateEstado">Estado:</label>
+                <select id="updateEstado">
+                    <option value="SP">São Paulo</option>
+                    <option value="RJ" selected>Rio de Janeiro</option>
+                    <option value="MG">Minas Gerais</option>
+                </select>
+            </div>
+            <button onclick="updateProfile()">Atualizar Perfil</button>
+            <div id="updateResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>4️⃣ Verificar Alterações</h3>
+            <button onclick="verifyChanges()">Verificar se Dados Foram Salvos</button>
+            <div id="verificationResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>5️⃣ Comparação Antes/Depois</h3>
+            <div id="comparisonResult"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🚀 Teste Completo Automático</h3>
+            <button onclick="runFullUpdateTest()">Executar Teste Completo</button>
+            <div id="fullTestResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let originalData = null;
+        let updatedData = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            element.innerHTML += `<div class="${className}">${new Date().toLocaleTimeString()}: ${message}</div>`;
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        async function doAutoLogin() {
+            clearLog('loginResult');
+            log('loginResult', '🔄 Fazendo login automático...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'teste@portal.com',
+                        senha: '123456'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.sucesso && data.token) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('portal-user', JSON.stringify(data.usuario));
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `👤 Usuário: ${data.usuario.nome}`);
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadCurrentData() {
+            clearLog('currentDataResult');
+            log('currentDataResult', '🔄 Carregando dados atuais...');
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    log('currentDataResult', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.sucesso && data.dados) {
+                    originalData = data.dados;
+                    log('currentDataResult', '✅ Dados carregados com sucesso!', 'success');
+                    
+                    const dataHtml = `
+                        <div class="data-display">
+                            <h4>📋 Dados Atuais:</h4>
+                            <p><strong>Nome:</strong> ${originalData.nome}</p>
+                            <p><strong>Bio:</strong> ${originalData.bio || 'Não informado'}</p>
+                            <p><strong>Telefone:</strong> ${originalData.telefone || 'Não informado'}</p>
+                            <p><strong>Cidade:</strong> ${originalData.cidade || 'Não informado'}</p>
+                            <p><strong>Estado:</strong> ${originalData.estado || 'Não informado'}</p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('currentDataResult').innerHTML += dataHtml;
+                } else {
+                    log('currentDataResult', `❌ Erro ao carregar dados: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('currentDataResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function updateProfile() {
+            clearLog('updateResult');
+            log('updateResult', '🔄 Atualizando perfil...');
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    log('updateResult', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                    return;
+                }
+                
+                const updateData = {
+                    nome: document.getElementById('updateNome').value,
+                    bio: document.getElementById('updateBio').value,
+                    telefone: document.getElementById('updateTelefone').value,
+                    cidade: document.getElementById('updateCidade').value,
+                    estado: document.getElementById('updateEstado').value
+                };
+                
+                log('updateResult', `📤 Enviando dados: ${JSON.stringify(updateData, null, 2)}`);
+                
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updateData)
+                });
+                
+                const data = await response.json();
+                log('updateResult', `📡 Resposta da API: ${JSON.stringify(data)}`);
+                
+                if (data.sucesso) {
+                    log('updateResult', '✅ Perfil atualizado com sucesso!', 'success');
+                } else {
+                    log('updateResult', `❌ Erro na atualização: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('updateResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function verifyChanges() {
+            clearLog('verificationResult');
+            log('verificationResult', '🔄 Verificando se as alterações foram salvas...');
+            
+            try {
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    log('verificationResult', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                    return;
+                }
+                
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.sucesso && data.dados) {
+                    updatedData = data.dados;
+                    log('verificationResult', '✅ Dados recarregados com sucesso!', 'success');
+                    
+                    // Comparar dados
+                    const expectedNome = document.getElementById('updateNome').value;
+                    const expectedBio = document.getElementById('updateBio').value;
+                    const expectedTelefone = document.getElementById('updateTelefone').value;
+                    const expectedCidade = document.getElementById('updateCidade').value;
+                    const expectedEstado = document.getElementById('updateEstado').value;
+                    
+                    if (updatedData.nome === expectedNome) {
+                        log('verificationResult', '✅ Nome foi atualizado corretamente', 'success');
+                    } else {
+                        log('verificationResult', `❌ Nome não foi atualizado. Esperado: ${expectedNome}, Atual: ${updatedData.nome}`, 'error');
+                    }
+                    
+                    if (updatedData.bio === expectedBio) {
+                        log('verificationResult', '✅ Bio foi atualizada corretamente', 'success');
+                    } else {
+                        log('verificationResult', `❌ Bio não foi atualizada. Esperado: ${expectedBio}, Atual: ${updatedData.bio}`, 'error');
+                    }
+                    
+                    if (updatedData.telefone === expectedTelefone) {
+                        log('verificationResult', '✅ Telefone foi atualizado corretamente', 'success');
+                    } else {
+                        log('verificationResult', `❌ Telefone não foi atualizado. Esperado: ${expectedTelefone}, Atual: ${updatedData.telefone}`, 'error');
+                    }
+                    
+                    if (updatedData.cidade === expectedCidade) {
+                        log('verificationResult', '✅ Cidade foi atualizada corretamente', 'success');
+                    } else {
+                        log('verificationResult', `❌ Cidade não foi atualizada. Esperado: ${expectedCidade}, Atual: ${updatedData.cidade}`, 'error');
+                    }
+                    
+                    if (updatedData.estado === expectedEstado) {
+                        log('verificationResult', '✅ Estado foi atualizado corretamente', 'success');
+                    } else {
+                        log('verificationResult', `❌ Estado não foi atualizado. Esperado: ${expectedEstado}, Atual: ${updatedData.estado}`, 'error');
+                    }
+                    
+                    // Mostrar comparação
+                    showComparison();
+                    
+                } else {
+                    log('verificationResult', `❌ Erro ao recarregar dados: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+                
+            } catch (error) {
+                log('verificationResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        function showComparison() {
+            if (!originalData || !updatedData) {
+                document.getElementById('comparisonResult').innerHTML = '<div class="warning">⚠️ Dados insuficientes para comparação</div>';
+                return;
+            }
+            
+            const comparisonHtml = `
+                <div class="comparison">
+                    <div class="before">
+                        <h4>📋 Dados Originais</h4>
+                        <p><strong>Nome:</strong> ${originalData.nome}</p>
+                        <p><strong>Bio:</strong> ${originalData.bio || 'Não informado'}</p>
+                        <p><strong>Telefone:</strong> ${originalData.telefone || 'Não informado'}</p>
+                        <p><strong>Cidade:</strong> ${originalData.cidade || 'Não informado'}</p>
+                        <p><strong>Estado:</strong> ${originalData.estado || 'Não informado'}</p>
+                    </div>
+                    <div class="after">
+                        <h4>🔄 Dados Atualizados</h4>
+                        <p><strong>Nome:</strong> ${updatedData.nome}</p>
+                        <p><strong>Bio:</strong> ${updatedData.bio || 'Não informado'}</p>
+                        <p><strong>Telefone:</strong> ${updatedData.telefone || 'Não informado'}</p>
+                        <p><strong>Cidade:</strong> ${updatedData.cidade || 'Não informado'}</p>
+                        <p><strong>Estado:</strong> ${updatedData.estado || 'Não informado'}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('comparisonResult').innerHTML = comparisonHtml;
+        }
+        
+        async function runFullUpdateTest() {
+            clearLog('fullTestResult');
+            log('fullTestResult', '🚀 Iniciando teste completo de atualização...');
+            
+            // Passo 1: Login
+            log('fullTestResult', '1️⃣ Fazendo login...');
+            await doAutoLogin();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 2: Carregar dados atuais
+            log('fullTestResult', '2️⃣ Carregando dados atuais...');
+            await loadCurrentData();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 3: Atualizar perfil
+            log('fullTestResult', '3️⃣ Atualizando perfil...');
+            await updateProfile();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Passo 4: Verificar alterações
+            log('fullTestResult', '4️⃣ Verificando alterações...');
+            await verifyChanges();
+            
+            log('fullTestResult', '✅ Teste completo de atualização finalizado!', 'success');
+        }
+    </script>
+</body>
+</html>

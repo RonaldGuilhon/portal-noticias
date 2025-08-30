@@ -54,7 +54,7 @@
                 <!-- User Menu -->
                 <div class="dropdown">
                     <button class="btn btn-link text-dark p-0 d-flex align-items-center" type="button" data-bs-toggle="dropdown">
-                        <img id="admin-avatar" src="../assets/images/default-avatar.png" alt="Admin" class="rounded-circle me-2" width="32" height="32">
+                        <img id="admin-avatar" src="../assets/images/default-avatar.svg" alt="Admin" class="rounded-circle me-2" width="32" height="32">
                         <span id="admin-name">Admin</span>
                         <i class="fas fa-chevron-down ms-2 small"></i>
                     </button>
@@ -686,7 +686,7 @@
             container.innerHTML = authors.map((author, index) => `
                 <div class="list-group-item d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center">
-                        <img src="${author.avatar || '../assets/images/default-avatar.png'}" alt="${author.nome}" class="rounded-circle me-3" width="40" height="40">
+                        <img src="${author.avatar || '../assets/images/default-avatar.svg'}" alt="${author.nome}" class="rounded-circle me-3" width="40" height="40">
                         <div>
                             <div class="fw-bold">${index + 1}. ${author.nome}</div>
                             <small class="text-muted">${author.especialidade || 'Autor'}</small>
