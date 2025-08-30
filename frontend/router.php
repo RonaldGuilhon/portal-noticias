@@ -31,6 +31,20 @@ if (preg_match('/^noticia\/([^\/?]+)\/?$/', $uri, $matches)) {
     }
 }
 
+// Roteamento para notícia por slug direto (formato: slug.html)
+if (preg_match('/^([^\/?]+)\.html$/', $uri, $matches)) {
+    $noticia_slug = $matches[1];
+    
+    // Verificar se não é um arquivo que já existe
+    if (!file_exists(__DIR__ . '/' . $uri)) {
+        // Servir o arquivo noticia.html para slugs de notícias
+        if (file_exists(__DIR__ . '/noticia.html')) {
+            include __DIR__ . '/noticia.html';
+            return;
+        }
+    }
+}
+
 // Se não é uma rota especial, deixar o servidor built-in lidar com arquivos estáticos
 return false;
 ?>

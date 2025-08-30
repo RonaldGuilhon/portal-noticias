@@ -196,6 +196,15 @@ if (preg_match('/^noticias\/categoria\/([^\/\?]+)\/?$/', $uri, $matches)) {
     return;
 }
 
+if (preg_match('/^noticias\/slug\/([^\/\?]+)\/?$/', $uri, $matches)) {
+    $_GET['action'] = 'get';
+    $_GET['slug'] = $matches[1];
+    require_once 'controllers/NoticiaController.php';
+    $controller = new NoticiaController();
+    $controller->processarRequisicao();
+    return;
+}
+
 if (preg_match('/^noticias\/([^\/]+)\/?$/', $uri, $matches)) {
     $_GET['action'] = 'obter';
     $_GET['slug'] = $matches[1];

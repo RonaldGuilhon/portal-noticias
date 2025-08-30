@@ -644,10 +644,15 @@
                 const article = await response.json();
                 
                 if (article.success) {
+                    console.log('Dados do artigo:', article.data);
                     populateArticleData(article.data);
-                    loadComments(article.data.id);
-                    loadRelatedNews(article.data.id, article.data.categoria_id);
-                    incrementViews(article.data.id);
+                    if (article.data && article.data.id) {
+                        loadComments(article.data.id);
+                        loadRelatedNews(article.data.id, article.data.categoria_id);
+                        incrementViews(article.data.id);
+                    } else {
+                        console.error('ID do artigo não encontrado:', article.data);
+                    }
                 } else {
                     if (window.portalApp) {
                         window.portalApp.showError('Notícia não encontrada.');
@@ -667,31 +672,59 @@
         
         // Popula dados da notícia na página
         function populateArticleData(article) {
-            // Meta tags
-            document.title = article.titulo + ' - Portal de Notícias';
-            document.querySelector('meta[name="description"]').content = article.resumo;
-            document.querySelector('meta[name="keywords"]').content = article.tags.join(', ');
+            try {
+                
+                // Meta tags
+                document.title = article.titulo + ' - Portal de Notícias';
+                
+                const descMeta = document.querySelector('meta[name="description"]');
+                if (descMeta) descMeta.content = article.resumo || '';
+                
+                const keywordsMeta = document.querySelector('meta[name="keywords"]');
+                if (keywordsMeta) keywordsMeta.content = article.tags ? article.tags.map(tag => tag.nome || tag).join(', ') : '';
             
-            // Open Graph
-            document.querySelector('meta[property="og:title"]').content = article.titulo;
-            document.querySelector('meta[property="og:description"]').content = article.resumo;
-            document.querySelector('meta[property="og:image"]').content = article.imagem;
-            document.querySelector('meta[property="og:url"]').content = window.location.href;
-            
-            // Twitter
-            document.querySelector('meta[property="twitter:title"]').content = article.titulo;
-            document.querySelector('meta[property="twitter:description"]').content = article.resumo;
-            document.querySelector('meta[property="twitter:image"]').content = article.imagem;
-            
-            // Breadcrumb
-            document.getElementById('breadcrumb-category').textContent = article.categoria;
-            document.getElementById('breadcrumb-category').href = `/categoria/${article.categoria_slug}`;
-            document.getElementById('breadcrumb-title').textContent = article.titulo;
+                // Open Graph
+                const ogTitle = document.querySelector('meta[property="og:title"]');
+                if (ogTitle) ogTitle.content = article.titulo || '';
+                
+                const ogDesc = document.querySelector('meta[property="og:description"]');
+                if (ogDesc) ogDesc.content = article.resumo || '';
+                
+                const ogImage = document.querySelector('meta[property="og:image"]');
+                if (ogImage) ogImage.content = article.imagem || '';
+                
+                const ogUrl = document.querySelector('meta[property="og:url"]');
+                if (ogUrl) ogUrl.content = window.location.href;
+                
+                // Twitter
+                const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+                if (twitterTitle) twitterTitle.content = article.titulo || '';
+                
+                const twitterDesc = document.querySelector('meta[property="twitter:description"]');
+                if (twitterDesc) twitterDesc.content = article.resumo || '';
+                
+                const twitterImage = document.querySelector('meta[property="twitter:image"]');
+                if (twitterImage) twitterImage.content = article.imagem || '';
+                
+                // Breadcrumb
+                const breadcrumbCategory = document.getElementById('breadcrumb-category');
+                if (breadcrumbCategory) {
+                    breadcrumbCategory.textContent = article.categoria || '';
+                    breadcrumbCategory.href = `/categoria/${article.categoria_slug || ''}`;
+                }
+                
+                const breadcrumbTitle = document.getElementById('breadcrumb-title');
+                if (breadcrumbTitle) breadcrumbTitle.textContent = article.titulo || '';
             
             // Article header
-            document.getElementById('article-category').textContent = article.categoria;
-            document.getElementById('article-category').href = `/categoria/${article.categoria_slug}`;
-            document.getElementById('article-title').textContent = article.titulo;
+                const articleCategory = document.getElementById('article-category');
+                if (articleCategory) {
+                    articleCategory.textContent = article.categoria || '';
+                    articleCategory.href = `/categoria/${article.categoria_slug || ''}`;
+                }
+                
+                const articleTitle = document.getElementById('article-title');
+                if (articleTitle) articleTitle.textContent = article.titulo || '';
             
             if (article.subtitulo) {
                 document.getElementById('article-subtitle').style.display = 'block';
@@ -777,7 +810,13 @@
                 }
             };
             
-            document.getElementById('article-schema').textContent = JSON.stringify(schema);
+            const schemaElement = document.getElementById('article-schema');
+            if (schemaElement) {
+                schemaElement.textContent = JSON.stringify(schema);
+            }
+            } catch (error) {
+                console.error('Erro ao popular dados do artigo:', error);
+            }
         }
         
         // Configura links de compartilhamento social
@@ -929,13 +968,17 @@
         }
         
         function formatNumber(num) {
-            if (num >= 1000000) {
-                return (num / 1000000).toFixed(1) + 'M';
+            if (num === undefined || num === null || isNaN(num)) {
+                return '0';
             }
-            if (num >= 1000) {
-                return (num / 1000).toFixed(1) + 'K';
+            const number = parseInt(num);
+            if (number >= 1000000) {
+                return (number / 1000000).toFixed(1) + 'M';
             }
-            return num.toString();
+            if (number >= 1000) {
+                return (number / 1000).toFixed(1) + 'K';
+            }
+            return number.toString();
         }
         
         function showSuccess(message) {

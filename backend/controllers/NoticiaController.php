@@ -269,17 +269,22 @@ class NoticiaController {
                 $relacionadas = $this->noticia->obterRelacionadas(4);
                 
                 jsonResponse([
-                    'noticia' => [
+                    'success' => true,
+                    'data' => [
                         'id' => $this->noticia->id,
                         'titulo' => $this->noticia->titulo,
                         'slug' => $this->noticia->slug,
                         'subtitulo' => $this->noticia->subtitulo,
                         'conteudo' => $this->noticia->conteudo,
                         'resumo' => $this->noticia->resumo,
+                        'imagem' => $this->noticia->imagem_destaque,
                         'imagem_destaque' => $this->noticia->imagem_destaque,
                         'alt_imagem' => $this->noticia->alt_imagem,
+                        'autor' => $this->noticia->autor_nome,
                         'autor_nome' => $this->noticia->autor_nome,
+                        'categoria' => $this->noticia->categoria_nome,
                         'categoria_nome' => $this->noticia->categoria_nome,
+                        'categoria_id' => $this->noticia->categoria_id,
                         'categoria_slug' => $this->noticia->categoria_slug,
                         'visualizacoes' => $this->noticia->visualizacoes,
                         'curtidas' => $this->noticia->curtidas,
@@ -293,11 +298,11 @@ class NoticiaController {
                     'relacionadas' => $relacionadas
                 ]);
             } else {
-                jsonResponse(['erro' => 'Notícia não encontrada'], 404);
+                jsonResponse(['success' => false, 'erro' => 'Notícia não encontrada'], 404);
             }
         } catch(Exception $e) {
             logError('Erro ao obter notícia por slug: ' . $e->getMessage());
-            jsonResponse(['erro' => 'Erro interno do servidor'], 500);
+            jsonResponse(['success' => false, 'erro' => 'Erro interno do servidor'], 500);
         }
     }
 
