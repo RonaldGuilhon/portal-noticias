@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Final - Correção do Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .iframe-container {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Teste Final - Correção do Perfil</h1>
+        <div class="highlight">
+            <h3>🔧 Problema Identificado e Corrigido:</h3>
+            <p><strong>Erro:</strong> A função <code>loadUserData</code> estava verificando <code>result.success</code> e <code>result.data</code></p>
+            <p><strong>Correção:</strong> Alterado para <code>result.sucesso</code> e <code>result.dados</code> (padrão da API)</p>
+        </div>
+        
+        <div class="step info">
+            <h3>📋 Status do Teste</h3>
+            <div id="testStatus">Aguardando teste...</div>
+        </div>
+    </div>
+    
+    <div class="test-grid">
+        <div class="container">
+            <h2>🔧 Teste Automatizado</h2>
+            
+            <div class="step">
+                <h3>1️⃣ Login Automático</h3>
+                <button onclick="performLogin()">Login admin@portal.com</button>
+                <div id="loginResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>2️⃣ Verificar API</h3>
+                <button onclick="testAPI()">Testar API de Perfil</button>
+                <div id="apiResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>3️⃣ Teste Completo</h3>
+                <button onclick="runCompleteTest()">Executar Teste Completo</button>
+                <div id="completeResult"></div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <h2>🎭 Página Real de Perfil</h2>
+            
+            <div class="step">
+                <button onclick="loadProfilePage()">Carregar Página de Perfil</button>
+                <button onclick="checkProfileData()">Verificar Dados Carregados</button>
+                <div id="profileResult"></div>
+            </div>
+            
+            <div class="iframe-container">
+                <iframe id="profileFrame" src="about:blank"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let currentToken = null;
+        let userData = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('testStatus').innerHTML = `<strong>${message}</strong>`;
+        }
+        
+        async function performLogin() {
+            log('loginResult', '🔐 Fazendo login com admin@portal.com...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    currentToken = data.token;
+                    
+                    // Salvar no localStorage como a aplicação real faz
+                    localStorage.setItem('portal-user', JSON.stringify({
+                        token: data.token,
+                        user: data.dados
+                    }));
+                    localStorage.setItem('authToken', data.token);
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `🔑 Token salvo no localStorage`, 'success');
+                    log('loginResult', `👤 Usuário: ${data.dados.nome} (${data.dados.email})`, 'info');
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição de login: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testAPI() {
+            log('apiResult', '🌐 Testando API de perfil...', 'info');
+            
+            if (!currentToken) {
+                log('apiResult', '❌ Faça login primeiro!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    userData = data.dados;
+                    log('apiResult', '✅ API funcionando corretamente!', 'success');
+                    log('apiResult', `📊 Estrutura da resposta: sucesso=${data.sucesso}, dados=${!!data.dados}`, 'info');
+                    log('apiResult', `👤 Nome: ${userData.nome}`, 'info');
+                    log('apiResult', `📧 Email: ${userData.email}`, 'info');
+                    log('apiResult', `📱 Telefone: ${userData.telefone || 'N/A'}`, 'info');
+                    log('apiResult', `🏙️ Cidade: ${userData.cidade || 'N/A'}`, 'info');
+                    log('apiResult', `📝 Bio: ${userData.bio || 'N/A'}`, 'info');
+                    log('apiResult', `🖼️ Foto: ${userData.foto_perfil ? 'Sim' : 'Não'}`, 'info');
+                } else {
+                    log('apiResult', `❌ Erro na API: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                    log('apiResult', `📊 Estrutura da resposta: ${JSON.stringify(data)}`, 'warning');
+                }
+            } catch (error) {
+                log('apiResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        function loadProfilePage() {
+            log('profileResult', '📄 Carregando página de perfil corrigida...', 'info');
+            
+            if (!currentToken) {
+                log('profileResult', '❌ Faça login primeiro!', 'error');
+                return;
+            }
+            
+            const iframe = document.getElementById('profileFrame');
+            iframe.src = 'http://localhost:3000/perfil.html';
+            
+            iframe.onload = function() {
+                log('profileResult', '✅ Página de perfil carregada!', 'success');
+                log('profileResult', '⏳ Aguardando carregamento dos dados (3 segundos)...', 'info');
+                
+                setTimeout(() => {
+                    log('profileResult', '🔍 Pronto para verificar os dados. Clique em "Verificar Dados Carregados".', 'info');
+                }, 3000);
+            };
+            
+            iframe.onerror = function() {
+                log('profileResult', '❌ Erro ao carregar página de perfil', 'error');
+            };
+        }
+        
+        function checkProfileData() {
+            log('profileResult', '🔍 Verificando se os dados foram carregados na página...', 'info');
+            
+            const iframe = document.getElementById('profileFrame');
+            
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                if (!iframeDoc) {
+                    log('profileResult', '❌ Não foi possível acessar o conteúdo do iframe (CORS)', 'error');
+                    log('profileResult', '💡 Verifique manualmente se os dados aparecem na página acima', 'warning');
+                    log('profileResult', '🔍 Procure por: Nome, Email, Telefone, Bio, Cidade, Estado', 'info');
+                    return;
+                }
+                
+                // Verificar elementos específicos
+                const checks = [
+                    { id: 'profile-name', description: 'Nome do Perfil', expected: userData?.nome },
+                    { id: 'profile-email', description: 'Email do Perfil', expected: userData?.email },
+                    { id: 'user-name', description: 'Nome do Usuário', expected: userData?.nome },
+                    { id: 'edit-name', description: 'Campo Nome', expected: userData?.nome, isInput: true },
+                    { id: 'edit-email', description: 'Campo Email', expected: userData?.email, isInput: true },
+                    { id: 'edit-phone', description: 'Campo Telefone', expected: userData?.telefone, isInput: true },
+                    { id: 'edit-bio', description: 'Campo Bio', expected: userData?.bio, isInput: true }
+                ];
+                
+                let successCount = 0;
+                let foundElements = 0;
+                
+                checks.forEach(check => {
+                    const element = iframeDoc.getElementById(check.id);
+                    if (element) {
+                        foundElements++;
+                        const actualValue = check.isInput ? element.value : element.textContent;
+                        const expectedValue = check.expected || '';
+                        
+                        if (actualValue && actualValue !== 'Nome do Usuário' && actualValue !== 'usuario@email.com' && actualValue !== 'Usuário') {
+                            if (expectedValue && actualValue.includes(expectedValue)) {
+                                successCount++;
+                                log('profileResult', `✅ ${check.description}: "${actualValue}"`, 'success');
+                            } else {
+                                log('profileResult', `⚠️ ${check.description}: "${actualValue}" (esperado: "${expectedValue}")`, 'warning');
+                            }
+                        } else {
+                            log('profileResult', `❌ ${check.description}: Valor padrão ou vazio`, 'error');
+                        }
+                    } else {
+                        log('profileResult', `❌ ${check.description}: Elemento não encontrado`, 'error');
+                    }
+                });
+                
+                log('profileResult', `📊 Resumo: ${foundElements} elementos encontrados, ${successCount} preenchidos`, foundElements > 0 ? 'info' : 'error');
+                
+                if (successCount > 0) {
+                    log('profileResult', '🎉 SUCESSO! Os dados estão sendo carregados na página!', 'success');
+                    log('profileResult', '✅ A correção funcionou - o problema foi resolvido!', 'success');
+                } else if (foundElements > 0) {
+                    log('profileResult', '⚠️ Elementos encontrados mas não preenchidos. Verifique o console da página.', 'warning');
+                } else {
+                    log('profileResult', '❌ Nenhum elemento encontrado. Problema de CORS ou página não carregada.', 'error');
+                }
+                
+            } catch (error) {
+                log('profileResult', `❌ Erro ao verificar dados: ${error.message}`, 'error');
+                log('profileResult', '💡 Isso pode ser devido a restrições de CORS. Verifique manualmente.', 'warning');
+            }
+        }
+        
+        async function runCompleteTest() {
+            updateStatus('Executando teste completo...');
+            document.getElementById('completeResult').innerHTML = '';
+            
+            log('completeResult', '🚀 Iniciando teste completo da correção...', 'info');
+            
+            // 1. Limpar localStorage
+            localStorage.clear();
+            log('completeResult', '🧹 LocalStorage limpo', 'info');
+            
+            // 2. Fazer login
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await performLogin();
+            
+            if (!currentToken) {
+                log('completeResult', '❌ Login falhou. Teste interrompido.', 'error');
+                return;
+            }
+            
+            // 3. Testar API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testAPI();
+            
+            if (!userData) {
+                log('completeResult', '❌ API falhou. Teste interrompido.', 'error');
+                return;
+            }
+            
+            // 4. Carregar página de perfil
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            loadProfilePage();
+            
+            // 5. Aguardar carregamento e verificar dados
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            checkProfileData();
+            
+            log('completeResult', '✅ Teste completo finalizado!', 'success');
+            log('completeResult', '🔍 Verifique os resultados acima para confirmar se a correção funcionou.', 'info');
+            
+            updateStatus('Teste completo finalizado - Verifique os resultados');
+        }
+        
+        // Inicializar
+        window.onload = function() {
+            updateStatus('Página carregada - Execute o teste completo para verificar a correção');
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Perfil</title>
+</head>
+<body>
+    <h1>Debug do Perfil</h1>
+    <div id="debug-info"></div>
+    <button onclick="testProfile()">Testar API de Perfil</button>
+    <button onclick="clearStorage()">Limpar Storage</button>
+    <button onclick="setValidToken()">Definir Token Válido</button>
+    
+    <script>
+        function debugStorage() {
+            const debugDiv = document.getElementById('debug-info');
+            let html = '<h3>LocalStorage Debug:</h3>';
+            
+            // Verificar portal-user
+            const portalUser = localStorage.getItem('portal-user');
+            html += '<p><strong>portal-user:</strong> ' + (portalUser ? portalUser : 'NÃO ENCONTRADO') + '</p>';
+            
+            // Verificar authToken
+            const authToken = localStorage.getItem('authToken');
+            html += '<p><strong>authToken:</strong> ' + (authToken ? authToken : 'NÃO ENCONTRADO') + '</p>';
+            
+            // Verificar todos os itens do localStorage
+            html += '<h4>Todos os itens do localStorage:</h4>';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const value = localStorage.getItem(key);
+                html += '<p><strong>' + key + ':</strong> ' + value + '</p>';
+            }
+            
+            debugDiv.innerHTML = html;
+        }
+        
+        async function testProfile() {
+            // Verificar primeiro 'portal-user' (padrão do sistema)
+            let token = null;
+            const portalUser = localStorage.getItem('portal-user');
+            
+            if (portalUser) {
+                try {
+                    const userData = JSON.parse(portalUser);
+                    token = userData.token;
+                } catch (e) {
+                    console.log('Erro ao parsear portal-user:', e);
+                }
+            }
+            
+            // Fallback para 'authToken' (compatibilidade)
+            if (!token) {
+                token = localStorage.getItem('authToken');
+            }
+            
+            console.log('Token encontrado:', token ? 'SIM' : 'NÃO');
+            
+            if (!token) {
+                alert('Nenhum token encontrado!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:8001/api/user/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Status da resposta:', response.status);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Dados recebidos:', result);
+                    alert('Sucesso! Dados carregados. Veja o console.');
+                } else {
+                    const error = await response.text();
+                    console.error('Erro HTTP:', response.status, error);
+                    alert('Erro HTTP: ' + response.status);
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                alert('Erro na requisição: ' + error.message);
+            }
+        }
+        
+        function clearStorage() {
+            localStorage.clear();
+            alert('LocalStorage limpo!');
+            debugStorage();
+        }
+        
+        function setValidToken() {
+            // Token válido gerado no teste anterior
+            const validToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBwb3J0YWwuY29tIiwidGlwb191c3VhcmlvIjoiYWRtaW4iLCJpYXQiOjE3NTY1MTEwMzIsImV4cCI6MTc1NjUxNDYzMn0.fa4oTnu3zlXq_YrLmzYiAD-uW09yk3cPx_Pdo6LexgE';
+            
+            const userData = {
+                token: validToken,
+                user: {
+                    id: 1,
+                    nome: 'Administrador',
+                    email: 'admin@portal.com'
+                }
+            };
+            
+            localStorage.setItem('portal-user', JSON.stringify(userData));
+            alert('Token válido definido!');
+            debugStorage();
+        }
+        
+        // Executar debug ao carregar a página
+        window.onload = debugStorage;
+    </script>
+</body>
+</html>

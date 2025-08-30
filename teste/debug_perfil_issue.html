@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Problema do Perfil Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .profile-data {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .profile-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .comparison-item {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .field-check {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .field-check:last-child {
+            border-bottom: none;
+        }
+        .status-icon {
+            font-weight: bold;
+        }
+        .ok { color: green; }
+        .missing { color: red; }
+        .empty { color: orange; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug - Problema do Perfil Admin</h1>
+        <p>Este teste identifica exatamente onde está o problema com os dados do usuário admin@portal.com</p>
+        
+        <div class="step info">
+            <h3>📋 Status do Diagnóstico</h3>
+            <div id="diagnosticStatus">Aguardando início do diagnóstico...</div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🔧 Testes Automatizados</h2>
+        
+        <div class="step">
+            <h3>1️⃣ Verificar Estado do LocalStorage</h3>
+            <button onclick="checkLocalStorage()">Verificar LocalStorage</button>
+            <div id="localStorageResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>2️⃣ Fazer Login e Verificar Token</h3>
+            <button onclick="performLogin()">Login admin@portal.com</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>3️⃣ Testar API de Perfil</h3>
+            <button onclick="testProfileAPI()">Testar API /api/user/profile</button>
+            <div id="apiResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>4️⃣ Simular Função populateUserData</h3>
+            <button onclick="simulatePopulateUserData()">Simular Preenchimento dos Dados</button>
+            <div id="populateResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>5️⃣ Verificar Elementos HTML</h3>
+            <button onclick="checkHTMLElements()">Verificar Elementos da Página</button>
+            <div id="elementsResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🔄 Diagnóstico Completo</h3>
+            <button onclick="runFullDiagnostic()">Executar Diagnóstico Completo</button>
+            <div id="fullDiagnosticResult"></div>
+        </div>
+    </div>
+    
+    <!-- Elementos simulados da página de perfil -->
+    <div class="container">
+        <h2>🎭 Simulação da Página de Perfil</h2>
+        <div class="profile-data">
+            <h4>Elementos que deveriam ser preenchidos:</h4>
+            <div class="comparison">
+                <div class="comparison-item">
+                    <h5>📊 Informações Básicas</h5>
+                    <div class="field-check">
+                        <span>Nome do Perfil:</span>
+                        <span id="profile-name">Nome do Usuário</span>
+                        <span class="status-icon missing" id="profile-name-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Email do Perfil:</span>
+                        <span id="profile-email">usuario@email.com</span>
+                        <span class="status-icon missing" id="profile-email-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Nome do Usuário:</span>
+                        <span id="user-name">Usuário</span>
+                        <span class="status-icon missing" id="user-name-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Avatar:</span>
+                        <img id="profile-avatar" src="assets/images/default-avatar.png" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+                        <span class="status-icon missing" id="profile-avatar-status">❌</span>
+                    </div>
+                </div>
+                
+                <div class="comparison-item">
+                    <h5>📝 Campos de Formulário</h5>
+                    <div class="field-check">
+                        <span>Nome:</span>
+                        <input type="text" id="edit-name" value="" readonly style="width: 150px;">
+                        <span class="status-icon missing" id="edit-name-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Email:</span>
+                        <input type="email" id="edit-email" value="" readonly style="width: 150px;">
+                        <span class="status-icon missing" id="edit-email-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Telefone:</span>
+                        <input type="text" id="edit-phone" value="" readonly style="width: 150px;">
+                        <span class="status-icon missing" id="edit-phone-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Bio:</span>
+                        <textarea id="edit-bio" readonly style="width: 150px; height: 60px;"></textarea>
+                        <span class="status-icon missing" id="edit-bio-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Cidade:</span>
+                        <input type="text" id="edit-city" value="" readonly style="width: 150px;">
+                        <span class="status-icon missing" id="edit-city-status">❌</span>
+                    </div>
+                    <div class="field-check">
+                        <span>Estado:</span>
+                        <input type="text" id="edit-state" value="" readonly style="width: 150px;">
+                        <span class="status-icon missing" id="edit-state-status">❌</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let currentToken = null;
+        let profileData = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('diagnosticStatus').innerHTML = `<strong>${message}</strong>`;
+        }
+        
+        function checkLocalStorage() {
+            log('localStorageResult', '🔍 Verificando LocalStorage...', 'info');
+            
+            const portalUser = localStorage.getItem('portal-user');
+            const authToken = localStorage.getItem('authToken');
+            const userData = localStorage.getItem('userData');
+            
+            if (portalUser) {
+                try {
+                    const parsed = JSON.parse(portalUser);
+                    log('localStorageResult', `✅ portal-user encontrado: ${JSON.stringify(parsed, null, 2)}`, 'success');
+                    if (parsed.token) {
+                        currentToken = parsed.token;
+                        log('localStorageResult', `🔑 Token extraído: ${currentToken.substring(0, 50)}...`, 'success');
+                    }
+                } catch (e) {
+                    log('localStorageResult', `❌ Erro ao parsear portal-user: ${e.message}`, 'error');
+                }
+            } else {
+                log('localStorageResult', '❌ portal-user não encontrado', 'error');
+            }
+            
+            if (authToken) {
+                log('localStorageResult', `✅ authToken encontrado: ${authToken.substring(0, 50)}...`, 'success');
+                if (!currentToken) currentToken = authToken;
+            } else {
+                log('localStorageResult', '❌ authToken não encontrado', 'error');
+            }
+            
+            if (userData) {
+                log('localStorageResult', `✅ userData encontrado: ${userData}`, 'success');
+            } else {
+                log('localStorageResult', '❌ userData não encontrado', 'error');
+            }
+        }
+        
+        async function performLogin() {
+            log('loginResult', '🔐 Iniciando login...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    currentToken = data.token;
+                    localStorage.setItem('portal-user', JSON.stringify({
+                        token: data.token,
+                        user: data.dados
+                    }));
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `🔑 Token: ${data.token.substring(0, 50)}...`, 'success');
+                    log('loginResult', `👤 Dados do usuário: ${JSON.stringify(data.dados, null, 2)}`, 'success');
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição de login: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testProfileAPI() {
+            log('apiResult', '📡 Testando API de perfil...', 'info');
+            
+            if (!currentToken) {
+                log('apiResult', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    profileData = data.data;
+                    log('apiResult', '✅ API de perfil funcionando!', 'success');
+                    log('apiResult', `📊 Dados recebidos: ${JSON.stringify(data.data, null, 2)}`, 'success');
+                    
+                    // Verificar campos específicos
+                    const fields = ['id', 'nome', 'email', 'bio', 'foto_perfil', 'telefone', 'cidade', 'estado'];
+                    fields.forEach(field => {
+                        const value = data.data[field];
+                        const status = value ? '✅' : '❌';
+                        const displayValue = value || 'VAZIO/NULL';
+                        log('apiResult', `${status} ${field}: ${displayValue}`, value ? 'success' : 'warning');
+                    });
+                } else {
+                    log('apiResult', `❌ Erro na API: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                    log('apiResult', `📋 Resposta completa: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                log('apiResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        function simulatePopulateUserData() {
+            log('populateResult', '🎭 Simulando populateUserData...', 'info');
+            
+            if (!profileData) {
+                log('populateResult', '❌ Dados do perfil não disponíveis. Execute o teste da API primeiro.', 'error');
+                return;
+            }
+            
+            log('populateResult', '📝 Preenchendo elementos da página...', 'info');
+            
+            // Simular a função populateUserData
+            const userData = profileData;
+            
+            // Update profile info
+            const profileName = document.getElementById('profile-name');
+            const profileEmail = document.getElementById('profile-email');
+            const userName = document.getElementById('user-name');
+            
+            if (profileName) {
+                profileName.textContent = userData.nome || 'Nome do Usuário';
+                updateFieldStatus('profile-name-status', userData.nome);
+                log('populateResult', `✅ profile-name atualizado: ${userData.nome}`, 'success');
+            }
+            
+            if (profileEmail) {
+                profileEmail.textContent = userData.email || 'usuario@email.com';
+                updateFieldStatus('profile-email-status', userData.email);
+                log('populateResult', `✅ profile-email atualizado: ${userData.email}`, 'success');
+            }
+            
+            if (userName) {
+                userName.textContent = userData.nome || 'Usuário';
+                updateFieldStatus('user-name-status', userData.nome);
+                log('populateResult', `✅ user-name atualizado: ${userData.nome}`, 'success');
+            }
+            
+            // Update form fields
+            const formFields = [
+                { id: 'edit-name', value: userData.nome },
+                { id: 'edit-email', value: userData.email },
+                { id: 'edit-phone', value: userData.telefone },
+                { id: 'edit-bio', value: userData.bio },
+                { id: 'edit-city', value: userData.cidade },
+                { id: 'edit-state', value: userData.estado }
+            ];
+            
+            formFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                if (element) {
+                    element.value = field.value || '';
+                    updateFieldStatus(`${field.id}-status`, field.value);
+                    log('populateResult', `✅ ${field.id} atualizado: ${field.value || 'VAZIO'}`, field.value ? 'success' : 'warning');
+                }
+            });
+            
+            // Update avatar
+            const avatarElement = document.getElementById('profile-avatar');
+            if (avatarElement) {
+                if (userData.foto_perfil) {
+                    avatarElement.src = userData.foto_perfil;
+                    updateFieldStatus('profile-avatar-status', userData.foto_perfil);
+                    log('populateResult', `✅ Avatar atualizado: ${userData.foto_perfil}`, 'success');
+                } else {
+                    avatarElement.src = 'assets/images/default-avatar.png';
+                    updateFieldStatus('profile-avatar-status', null);
+                    log('populateResult', `⚠️ Avatar padrão usado (foto_perfil vazia)`, 'warning');
+                }
+            }
+            
+            log('populateResult', '✅ Simulação de populateUserData concluída!', 'success');
+        }
+        
+        function updateFieldStatus(statusId, value) {
+            const statusElement = document.getElementById(statusId);
+            if (statusElement) {
+                if (value) {
+                    statusElement.textContent = '✅';
+                    statusElement.className = 'status-icon ok';
+                } else {
+                    statusElement.textContent = '❌';
+                    statusElement.className = 'status-icon empty';
+                }
+            }
+        }
+        
+        function checkHTMLElements() {
+            log('elementsResult', '🔍 Verificando elementos HTML...', 'info');
+            
+            const requiredElements = [
+                'profile-name', 'profile-email', 'user-name', 'profile-avatar',
+                'edit-name', 'edit-email', 'edit-phone', 'edit-bio', 'edit-city', 'edit-state'
+            ];
+            
+            let allElementsFound = true;
+            
+            requiredElements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    log('elementsResult', `✅ Elemento '${elementId}' encontrado`, 'success');
+                } else {
+                    log('elementsResult', `❌ Elemento '${elementId}' NÃO encontrado`, 'error');
+                    allElementsFound = false;
+                }
+            });
+            
+            if (allElementsFound) {
+                log('elementsResult', '✅ Todos os elementos HTML necessários foram encontrados!', 'success');
+            } else {
+                log('elementsResult', '❌ Alguns elementos HTML estão faltando na página real!', 'error');
+            }
+        }
+        
+        async function runFullDiagnostic() {
+            updateStatus('Executando diagnóstico completo...');
+            document.getElementById('fullDiagnosticResult').innerHTML = '';
+            
+            log('fullDiagnosticResult', '🚀 Iniciando diagnóstico completo...', 'info');
+            
+            // 1. Limpar localStorage
+            localStorage.clear();
+            log('fullDiagnosticResult', '🧹 LocalStorage limpo', 'info');
+            
+            // 2. Verificar localStorage
+            await new Promise(resolve => setTimeout(resolve, 500));
+            checkLocalStorage();
+            
+            // 3. Fazer login
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await performLogin();
+            
+            // 4. Testar API
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await testProfileAPI();
+            
+            // 5. Simular preenchimento
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            simulatePopulateUserData();
+            
+            // 6. Verificar elementos
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            checkHTMLElements();
+            
+            log('fullDiagnosticResult', '✅ Diagnóstico completo finalizado!', 'success');
+            
+            // Conclusão
+            if (profileData && currentToken) {
+                log('fullDiagnosticResult', '🎯 CONCLUSÃO: A API está funcionando e retornando dados corretos.', 'success');
+                log('fullDiagnosticResult', '💡 O problema pode estar na página perfil.html real ou no carregamento dos dados.', 'warning');
+                log('fullDiagnosticResult', '🔧 Recomendação: Verificar console do navegador na página real e comparar com este teste.', 'info');
+            } else {
+                log('fullDiagnosticResult', '❌ PROBLEMA IDENTIFICADO: Login ou API não estão funcionando.', 'error');
+            }
+            
+            updateStatus('Diagnóstico completo finalizado');
+        }
+        
+        // Inicializar página
+        window.onload = function() {
+            updateStatus('Página carregada - Pronto para diagnóstico');
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>

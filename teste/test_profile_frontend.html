@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Perfil Frontend - Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .profile-data {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .profile-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            margin: 10px 0;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste de Perfil Frontend - Admin</h1>
+        <p>Este teste simula exatamente o que o frontend faz para carregar o perfil do usuário.</p>
+        
+        <div class="step info">
+            <h3>📋 Status Atual</h3>
+            <div id="currentStatus">Aguardando início do teste...</div>
+        </div>
+        
+        <div class="step">
+            <h3>1️⃣ Verificar Token Atual</h3>
+            <button onclick="checkCurrentToken()">Verificar Token no LocalStorage</button>
+            <div id="tokenStatus"></div>
+        </div>
+        
+        <div class="step">
+            <h3>2️⃣ Fazer Login</h3>
+            <button onclick="doLogin()">Login como admin@portal.com</button>
+            <div id="loginStatus"></div>
+        </div>
+        
+        <div class="step">
+            <h3>3️⃣ Carregar Perfil</h3>
+            <button onclick="loadProfile()">Carregar Dados do Perfil</button>
+            <div id="profileStatus"></div>
+        </div>
+        
+        <div class="step">
+            <h3>4️⃣ Simular Carregamento da Página de Perfil</h3>
+            <button onclick="simulateProfilePage()">Simular Página de Perfil</button>
+            <div id="pageSimulation"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🔄 Teste Completo</h3>
+            <button onclick="runFullTest()">Executar Teste Completo</button>
+            <div id="fullTestResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let currentToken = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('currentStatus').innerHTML = `<strong>${message}</strong>`;
+        }
+        
+        async function checkCurrentToken() {
+            updateStatus('Verificando token atual...');
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('userData');
+            
+            if (token) {
+                log('tokenStatus', `✅ Token encontrado: ${token.substring(0, 50)}...`, 'success');
+                currentToken = token;
+                
+                if (userData) {
+                    log('tokenStatus', `✅ Dados do usuário encontrados: ${userData}`, 'success');
+                } else {
+                    log('tokenStatus', `⚠️ Token existe mas dados do usuário não encontrados`, 'error');
+                }
+            } else {
+                log('tokenStatus', '❌ Nenhum token encontrado no localStorage', 'error');
+            }
+        }
+        
+        async function doLogin() {
+            updateStatus('Fazendo login...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    currentToken = data.token;
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.dados));
+                    
+                    log('loginStatus', '✅ Login realizado com sucesso!', 'success');
+                    log('loginStatus', `Token: ${data.token.substring(0, 50)}...`, 'success');
+                    log('loginStatus', `Dados do usuário: ${JSON.stringify(data.dados, null, 2)}`, 'success');
+                } else {
+                    log('loginStatus', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('loginStatus', `❌ Erro na requisição de login: ${error.message}`, 'error');
+            }
+        }
+        
+        async function loadProfile() {
+            updateStatus('Carregando perfil...');
+            
+            if (!currentToken) {
+                log('profileStatus', '❌ Token não encontrado. Faça login primeiro.', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    log('profileStatus', '✅ Perfil carregado com sucesso!', 'success');
+                    
+                    const profileData = data.dados;
+                    let profileHtml = '<div class="profile-data">';
+                    profileHtml += `<h4>📊 Dados do Perfil:</h4>`;
+                    profileHtml += `<p><strong>ID:</strong> ${profileData.id || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Nome:</strong> ${profileData.nome || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Email:</strong> ${profileData.email || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Bio:</strong> ${profileData.bio || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Telefone:</strong> ${profileData.telefone || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Cidade:</strong> ${profileData.cidade || 'N/A'}</p>`;
+                    profileHtml += `<p><strong>Estado:</strong> ${profileData.estado || 'N/A'}</p>`;
+                    
+                    if (profileData.foto_perfil) {
+                        profileHtml += `<p><strong>Foto de Perfil:</strong></p>`;
+                        profileHtml += `<img src="${profileData.foto_perfil}" alt="Foto de Perfil" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">`;
+                        profileHtml += `<div style="display:none; color:red;">❌ Erro ao carregar imagem: ${profileData.foto_perfil}</div>`;
+                    } else {
+                        profileHtml += `<p><strong>Foto de Perfil:</strong> ❌ Não definida</p>`;
+                    }
+                    
+                    profileHtml += `<p><strong>Preferências:</strong> ${JSON.stringify(profileData.preferencias) || 'N/A'}</p>`;
+                    profileHtml += '</div>';
+                    
+                    log('profileStatus', profileHtml, 'success');
+                    
+                    // Mostrar resposta completa
+                    log('profileStatus', `<pre>Resposta completa da API:\n${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                } else {
+                    log('profileStatus', `❌ Erro ao carregar perfil: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                    log('profileStatus', `<pre>Resposta da API:\n${JSON.stringify(data, null, 2)}</pre>`, 'error');
+                }
+            } catch (error) {
+                log('profileStatus', `❌ Erro na requisição do perfil: ${error.message}`, 'error');
+            }
+        }
+        
+        async function simulateProfilePage() {
+            updateStatus('Simulando carregamento da página de perfil...');
+            
+            // Simular o que acontece quando a página de perfil é carregada
+            const token = localStorage.getItem('token');
+            const userData = localStorage.getItem('userData');
+            
+            let simulationHtml = '<div class="profile-data">';
+            simulationHtml += '<h4>🎭 Simulação da Página de Perfil:</h4>';
+            
+            if (!token) {
+                simulationHtml += '<p style="color:red;">❌ Usuário não está logado (sem token)</p>';
+                simulationHtml += '<p>➡️ Redirecionaria para página de login</p>';
+            } else {
+                simulationHtml += '<p style="color:green;">✅ Token encontrado, usuário está logado</p>';
+                
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    simulationHtml += '<p style="color:green;">✅ Dados do usuário encontrados no localStorage:</p>';
+                    simulationHtml += `<pre>${JSON.stringify(user, null, 2)}</pre>`;
+                } else {
+                    simulationHtml += '<p style="color:orange;">⚠️ Dados do usuário não encontrados no localStorage</p>';
+                }
+                
+                simulationHtml += '<p>➡️ Carregaria a API de perfil para obter dados atualizados...</p>';
+            }
+            
+            simulationHtml += '</div>';
+            
+            log('pageSimulation', simulationHtml, 'info');
+        }
+        
+        async function runFullTest() {
+            updateStatus('Executando teste completo...');
+            document.getElementById('fullTestResult').innerHTML = '';
+            
+            log('fullTestResult', '🚀 Iniciando teste completo...', 'info');
+            
+            // 1. Limpar localStorage
+            localStorage.clear();
+            log('fullTestResult', '🧹 LocalStorage limpo', 'info');
+            
+            // 2. Verificar token (deve estar vazio)
+            await checkCurrentToken();
+            
+            // 3. Fazer login
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await doLogin();
+            
+            // 4. Carregar perfil
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await loadProfile();
+            
+            // 5. Simular página
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await simulateProfilePage();
+            
+            log('fullTestResult', '✅ Teste completo finalizado!', 'success');
+            updateStatus('Teste completo finalizado');
+        }
+        
+        // Verificar token ao carregar a página
+        window.onload = function() {
+            checkCurrentToken();
+        };
+    </script>
+</body>
+</html>

@@ -3,6 +3,34 @@
    Arquivo isolado com todos os estilos de cards
    ======================================== */
 
+/* Enhanced Typography */
+.news-card-title {
+    font-family: var(--font-family-secondary);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-rendering: optimizeLegibility;
+}
+
+.news-card-excerpt {
+    font-family: var(--font-family-primary);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    text-rendering: optimizeLegibility;
+}
+
+.news-card-meta {
+    font-family: var(--font-family-primary);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+}
+
+.news-card-meta .badge {
+    font-family: var(--font-family-primary);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
 /* Cards Base */
 .card {
     background-color: var(--bg-primary);

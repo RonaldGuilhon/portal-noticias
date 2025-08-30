@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da Função populateUserData</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .element-check {
+            padding: 5px;
+            margin: 2px 0;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste da Função populateUserData</h1>
+        <p>Este teste verifica se a função populateUserData está funcionando corretamente na página perfil.html</p>
+        
+        <div class="step info">
+            <h3>📋 Status do Teste</h3>
+            <div id="testStatus">Aguardando início do teste...</div>
+        </div>
+    </div>
+    
+    <div class="test-grid">
+        <div class="container">
+            <h2>🔧 Preparação</h2>
+            
+            <div class="step">
+                <h3>1️⃣ Login</h3>
+                <button onclick="performLogin()">Login admin@portal.com</button>
+                <div id="loginResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>2️⃣ Testar API</h3>
+                <button onclick="testProfileAPI()">Testar API de Perfil</button>
+                <div id="apiResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>3️⃣ Simular populateUserData</h3>
+                <button onclick="simulatePopulateUserData()">Simular Função</button>
+                <div id="simulateResult"></div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <h2>🎯 Verificação de Elementos</h2>
+            
+            <div class="step">
+                <h3>4️⃣ Verificar Elementos HTML</h3>
+                <button onclick="checkHTMLElements()">Verificar Elementos</button>
+                <div id="elementsResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>5️⃣ Criar Elementos de Teste</h3>
+                <button onclick="createTestElements()">Criar Elementos</button>
+                <div id="createResult"></div>
+            </div>
+            
+            <div class="step">
+                <h3>6️⃣ Testar Preenchimento</h3>
+                <button onclick="testDataPopulation()">Testar Preenchimento</button>
+                <div id="populationResult"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🧪 Elementos de Teste</h2>
+        <div id="testElementsContainer"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let currentToken = null;
+        let userData = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('testStatus').innerHTML = `<strong>${message}</strong>`;
+        }
+        
+        async function performLogin() {
+            log('loginResult', '🔐 Fazendo login...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    currentToken = data.token;
+                    localStorage.setItem('portal-user', JSON.stringify({
+                        token: data.token,
+                        user: data.dados
+                    }));
+                    localStorage.setItem('authToken', data.token);
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `🔑 Token: ${data.token.substring(0, 20)}...`, 'info');
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testProfileAPI() {
+            log('apiResult', '🌐 Testando API de perfil...', 'info');
+            
+            if (!currentToken) {
+                log('apiResult', '❌ Faça login primeiro!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/user/profile`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    userData = data.dados;
+                    log('apiResult', '✅ API funcionando corretamente!', 'success');
+                    log('apiResult', `👤 Nome: ${userData.nome}`, 'info');
+                    log('apiResult', `📧 Email: ${userData.email}`, 'info');
+                    log('apiResult', `📱 Telefone: ${userData.telefone || 'N/A'}`, 'info');
+                    log('apiResult', `🏙️ Cidade: ${userData.cidade || 'N/A'}`, 'info');
+                    log('apiResult', `📝 Bio: ${userData.bio || 'N/A'}`, 'info');
+                    log('apiResult', `🖼️ Foto: ${userData.foto_perfil || 'N/A'}`, 'info');
+                } else {
+                    log('apiResult', `❌ Erro na API: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('apiResult', `❌ Erro na requisição: ${error.message}`, 'error');
+            }
+        }
+        
+        function checkHTMLElements() {
+            log('elementsResult', '🔍 Verificando elementos HTML necessários...', 'info');
+            
+            const requiredElements = {
+                'profile-name': 'Nome do Perfil (exibição)',
+                'profile-email': 'Email do Perfil (exibição)',
+                'user-name': 'Nome do Usuário (cabeçalho)',
+                'profile-avatar': 'Avatar do Perfil',
+                'edit-name': 'Campo Nome (edição)',
+                'edit-email': 'Campo Email (edição)',
+                'edit-phone': 'Campo Telefone (edição)',
+                'edit-birthdate': 'Campo Data Nascimento (edição)',
+                'edit-bio': 'Campo Bio (edição)',
+                'edit-city': 'Campo Cidade (edição)',
+                'edit-state': 'Campo Estado (edição)',
+                'edit-gender': 'Campo Gênero (edição)',
+                'email-notifications': 'Checkbox Email Notifications',
+                'push-notifications': 'Checkbox Push Notifications',
+                'newsletter': 'Checkbox Newsletter',
+                'profile-public': 'Checkbox Perfil Público',
+                'show-activity': 'Checkbox Mostrar Atividade',
+                'allow-messages': 'Checkbox Permitir Mensagens',
+                'language-preference': 'Select Idioma'
+            };
+            
+            let foundElements = 0;
+            let totalElements = Object.keys(requiredElements).length;
+            
+            for (const [id, description] of Object.entries(requiredElements)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    foundElements++;
+                    log('elementsResult', `✅ ${description}`, 'success');
+                } else {
+                    log('elementsResult', `❌ ${description} (ID: ${id})`, 'error');
+                }
+            }
+            
+            log('elementsResult', `📊 Resumo: ${foundElements}/${totalElements} elementos encontrados`, foundElements === totalElements ? 'success' : 'warning');
+            
+            if (foundElements === 0) {
+                log('elementsResult', '💡 Nenhum elemento encontrado. Isso é normal pois estamos em uma página de teste.', 'info');
+                log('elementsResult', '🔧 Vamos criar elementos de teste para simular a função.', 'info');
+            }
+        }
+        
+        function createTestElements() {
+            log('createResult', '🏗️ Criando elementos de teste...', 'info');
+            
+            const container = document.getElementById('testElementsContainer');
+            
+            const elementsHTML = `
+                <h3>Elementos de Teste Criados</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <div>
+                        <h4>Elementos de Exibição:</h4>
+                        <p>Nome: <span id="profile-name">Nome Padrão</span></p>
+                        <p>Email: <span id="profile-email">email@padrao.com</span></p>
+                        <p>Usuário: <span id="user-name">Usuário Padrão</span></p>
+                        <p>Avatar: <img id="profile-avatar" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNjY2MiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiNjY2MiLz4KPC9zdmc+" style="width: 40px; height: 40px; border-radius: 50%;"></p>
+                    </div>
+                    <div>
+                        <h4>Campos de Edição:</h4>
+                        <p>Nome: <input type="text" id="edit-name" value="Nome Padrão" style="width: 100%;"></p>
+                        <p>Email: <input type="email" id="edit-email" value="email@padrao.com" style="width: 100%;"></p>
+                        <p>Telefone: <input type="tel" id="edit-phone" value="" style="width: 100%;"></p>
+                        <p>Data Nasc.: <input type="date" id="edit-birthdate" value="" style="width: 100%;"></p>
+                        <p>Bio: <textarea id="edit-bio" style="width: 100%; height: 60px;">Bio padrão</textarea></p>
+                        <p>Cidade: <input type="text" id="edit-city" value="" style="width: 100%;"></p>
+                        <p>Estado: <input type="text" id="edit-state" value="" style="width: 100%;"></p>
+                        <p>Gênero: <select id="edit-gender" style="width: 100%;"><option value="">Selecione</option><option value="M">Masculino</option><option value="F">Feminino</option></select></p>
+                    </div>
+                    <div>
+                        <h4>Preferências de Notificação:</h4>
+                        <p><input type="checkbox" id="email-notifications"> Email Notifications</p>
+                        <p><input type="checkbox" id="push-notifications"> Push Notifications</p>
+                        <p><input type="checkbox" id="newsletter"> Newsletter</p>
+                    </div>
+                    <div>
+                        <h4>Preferências de Privacidade:</h4>
+                        <p><input type="checkbox" id="profile-public"> Perfil Público</p>
+                        <p><input type="checkbox" id="show-activity"> Mostrar Atividade</p>
+                        <p><input type="checkbox" id="allow-messages"> Permitir Mensagens</p>
+                        <p>Idioma: <select id="language-preference"><option value="pt-BR">Português</option><option value="en-US">English</option></select></p>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = elementsHTML;
+            
+            log('createResult', '✅ Elementos de teste criados com sucesso!', 'success');
+            log('createResult', '🎯 Agora você pode testar a função populateUserData.', 'info');
+        }
+        
+        function simulatePopulateUserData() {
+            log('simulateResult', '🎭 Simulando função populateUserData...', 'info');
+            
+            if (!userData) {
+                log('simulateResult', '❌ Execute o teste da API primeiro!', 'error');
+                return;
+            }
+            
+            // Copiar a função populateUserData da página original
+            function populateUserData(userData) {
+                // Update profile info
+                const profileName = document.getElementById('profile-name');
+                if (profileName) profileName.textContent = userData.nome || 'Nome do Usuário';
+                
+                const profileEmail = document.getElementById('profile-email');
+                if (profileEmail) profileEmail.textContent = userData.email || 'usuario@email.com';
+                
+                const userName = document.getElementById('user-name');
+                if (userName) userName.textContent = userData.nome || 'Usuário';
+                
+                // Update form fields
+                const editName = document.getElementById('edit-name');
+                if (editName) editName.value = userData.nome || '';
+                
+                const editEmail = document.getElementById('edit-email');
+                if (editEmail) editEmail.value = userData.email || '';
+                
+                const editPhone = document.getElementById('edit-phone');
+                if (editPhone) editPhone.value = userData.telefone || '';
+                
+                const editBirthdate = document.getElementById('edit-birthdate');
+                if (editBirthdate) editBirthdate.value = userData.data_nascimento || '';
+                
+                const editBio = document.getElementById('edit-bio');
+                if (editBio) editBio.value = userData.bio || '';
+                
+                const editCity = document.getElementById('edit-city');
+                if (editCity) editCity.value = userData.cidade || '';
+                
+                const editState = document.getElementById('edit-state');
+                if (editState) editState.value = userData.estado || '';
+                
+                const editGender = document.getElementById('edit-gender');
+                if (editGender) editGender.value = userData.genero || '';
+                
+                // Update avatar if available
+                const avatarElement = document.getElementById('profile-avatar');
+                if (avatarElement) {
+                    if (userData.foto_perfil) {
+                        avatarElement.src = userData.foto_perfil;
+                    } else {
+                        avatarElement.src = 'assets/images/default-avatar.png';
+                    }
+                }
+                
+                // Update notification preferences
+                const emailNotifications = document.getElementById('email-notifications');
+                if (emailNotifications) {
+                    emailNotifications.checked = userData.email_newsletter || false;
+                }
+                
+                const pushNotifications = document.getElementById('push-notifications');
+                if (pushNotifications) {
+                    pushNotifications.checked = userData.push_breaking || false;
+                }
+                
+                const newsletter = document.getElementById('newsletter');
+                if (newsletter) {
+                    newsletter.checked = userData.email_newsletter || false;
+                }
+                
+                // Update privacy preferences
+                const profilePublic = document.getElementById('profile-public');
+                if (profilePublic) {
+                    profilePublic.checked = userData.profile_public !== undefined ? userData.profile_public : true;
+                }
+                
+                const showActivity = document.getElementById('show-activity');
+                if (showActivity) {
+                    showActivity.checked = userData.show_activity !== undefined ? userData.show_activity : true;
+                }
+                
+                const allowMessages = document.getElementById('allow-messages');
+                if (allowMessages) {
+                    allowMessages.checked = userData.allow_messages !== undefined ? userData.allow_messages : true;
+                }
+                
+                const languagePreference = document.getElementById('language-preference');
+                if (languagePreference && userData.language_preference) {
+                    languagePreference.value = userData.language_preference;
+                }
+            }
+            
+            try {
+                populateUserData(userData);
+                log('simulateResult', '✅ Função populateUserData executada com sucesso!', 'success');
+                log('simulateResult', '🔍 Verifique os elementos de teste abaixo para ver se foram preenchidos.', 'info');
+            } catch (error) {
+                log('simulateResult', `❌ Erro ao executar populateUserData: ${error.message}`, 'error');
+            }
+        }
+        
+        function testDataPopulation() {
+            log('populationResult', '🧪 Verificando se os dados foram preenchidos...', 'info');
+            
+            const checks = [
+                { id: 'profile-name', expected: userData?.nome, description: 'Nome do Perfil' },
+                { id: 'profile-email', expected: userData?.email, description: 'Email do Perfil' },
+                { id: 'user-name', expected: userData?.nome, description: 'Nome do Usuário' },
+                { id: 'edit-name', expected: userData?.nome, description: 'Campo Nome', isInput: true },
+                { id: 'edit-email', expected: userData?.email, description: 'Campo Email', isInput: true },
+                { id: 'edit-phone', expected: userData?.telefone, description: 'Campo Telefone', isInput: true },
+                { id: 'edit-bio', expected: userData?.bio, description: 'Campo Bio', isInput: true },
+                { id: 'edit-city', expected: userData?.cidade, description: 'Campo Cidade', isInput: true },
+                { id: 'edit-state', expected: userData?.estado, description: 'Campo Estado', isInput: true }
+            ];
+            
+            let successCount = 0;
+            
+            checks.forEach(check => {
+                const element = document.getElementById(check.id);
+                if (element) {
+                    const actualValue = check.isInput ? element.value : element.textContent;
+                    const expectedValue = check.expected || '';
+                    
+                    if (actualValue === expectedValue || (expectedValue && actualValue.includes(expectedValue))) {
+                        successCount++;
+                        log('populationResult', `✅ ${check.description}: "${actualValue}"`, 'success');
+                    } else {
+                        log('populationResult', `❌ ${check.description}: Esperado "${expectedValue}", Atual "${actualValue}"`, 'error');
+                    }
+                } else {
+                    log('populationResult', `❌ ${check.description}: Elemento não encontrado`, 'error');
+                }
+            });
+            
+            log('populationResult', `📊 Resultado: ${successCount}/${checks.length} campos preenchidos corretamente`, successCount === checks.length ? 'success' : 'warning');
+            
+            if (successCount > 0) {
+                log('populationResult', '✅ A função populateUserData está funcionando!', 'success');
+                log('populationResult', '💡 O problema pode estar na página perfil.html real - elementos não existem ou função não é chamada.', 'warning');
+            } else {
+                log('populationResult', '❌ A função populateUserData não está funcionando corretamente.', 'error');
+            }
+        }
+        
+        // Inicializar
+        window.onload = function() {
+            updateStatus('Página carregada - Execute os testes em sequência');
+        };
+    </script>
+</body>
+</html>

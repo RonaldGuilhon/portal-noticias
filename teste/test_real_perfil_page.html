@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da Página Real de Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .iframe-container {
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Teste da Página Real de Perfil</h1>
+        <p>Este teste verifica se a página perfil.html real está funcionando corretamente com o usuário admin@portal.com</p>
+        
+        <div class="step info">
+            <h3>📋 Status do Teste</h3>
+            <div id="testStatus">Aguardando início do teste...</div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🔧 Preparação do Teste</h2>
+        
+        <div class="step">
+            <h3>1️⃣ Fazer Login</h3>
+            <button onclick="performLogin()">Login admin@portal.com</button>
+            <div id="loginResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>2️⃣ Abrir Página de Perfil</h3>
+            <button onclick="openProfilePage()">Abrir perfil.html</button>
+            <div id="profilePageResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>3️⃣ Verificar Dados na Página</h3>
+            <button onclick="checkProfileData()">Verificar Dados Carregados</button>
+            <div id="dataCheckResult"></div>
+        </div>
+        
+        <div class="step">
+            <h3>🔄 Teste Completo</h3>
+            <button onclick="runCompleteTest()">Executar Teste Completo</button>
+            <div id="completeTestResult"></div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🎭 Página de Perfil (Iframe)</h2>
+        <div class="iframe-container">
+            <iframe id="profileFrame" src="about:blank"></iframe>
+        </div>
+        <div class="step">
+            <button onclick="injectTestScript()">Injetar Script de Teste no Iframe</button>
+            <div id="injectionResult"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        let currentToken = null;
+        
+        function log(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            element.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('testStatus').innerHTML = `<strong>${message}</strong>`;
+        }
+        
+        async function performLogin() {
+            log('loginResult', '🔐 Fazendo login...', 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@portal.com',
+                        senha: 'Rede@@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.sucesso) {
+                    currentToken = data.token;
+                    
+                    // Salvar no localStorage como a aplicação real faz
+                    localStorage.setItem('portal-user', JSON.stringify({
+                        token: data.token,
+                        user: data.dados
+                    }));
+                    
+                    // Também salvar no formato alternativo
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('userData', JSON.stringify(data.dados));
+                    
+                    log('loginResult', '✅ Login realizado com sucesso!', 'success');
+                    log('loginResult', `🔑 Token salvo no localStorage`, 'success');
+                    log('loginResult', `👤 Dados do usuário salvos`, 'success');
+                } else {
+                    log('loginResult', `❌ Erro no login: ${data.mensagem || 'Erro desconhecido'}`, 'error');
+                }
+            } catch (error) {
+                log('loginResult', `❌ Erro na requisição de login: ${error.message}`, 'error');
+            }
+        }
+        
+        function openProfilePage() {
+            log('profilePageResult', '📄 Carregando página de perfil...', 'info');
+            
+            if (!currentToken) {
+                log('profilePageResult', '❌ Faça login primeiro!', 'error');
+                return;
+            }
+            
+            const iframe = document.getElementById('profileFrame');
+            iframe.src = 'http://localhost:8000/frontend/perfil.html';
+            
+            iframe.onload = function() {
+                log('profilePageResult', '✅ Página de perfil carregada no iframe', 'success');
+                
+                // Aguardar um pouco para a página carregar completamente
+                setTimeout(() => {
+                    log('profilePageResult', '🔍 Página deve estar carregada. Verifique visualmente os dados.', 'info');
+                }, 2000);
+            };
+            
+            iframe.onerror = function() {
+                log('profilePageResult', '❌ Erro ao carregar página de perfil', 'error');
+            };
+        }
+        
+        function checkProfileData() {
+            log('dataCheckResult', '🔍 Verificando dados na página...', 'info');
+            
+            const iframe = document.getElementById('profileFrame');
+            
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                if (!iframeDoc) {
+                    log('dataCheckResult', '❌ Não foi possível acessar o conteúdo do iframe (CORS)', 'error');
+                    log('dataCheckResult', '💡 Verifique manualmente se os dados aparecem na página acima', 'warning');
+                    return;
+                }
+                
+                // Verificar elementos específicos
+                const elements = {
+                    'profile-name': 'Nome do Perfil',
+                    'profile-email': 'Email do Perfil',
+                    'user-name': 'Nome do Usuário',
+                    'edit-name': 'Campo Nome',
+                    'edit-email': 'Campo Email',
+                    'edit-phone': 'Campo Telefone',
+                    'edit-bio': 'Campo Bio'
+                };
+                
+                let foundElements = 0;
+                let populatedElements = 0;
+                
+                for (const [id, description] of Object.entries(elements)) {
+                    const element = iframeDoc.getElementById(id);
+                    if (element) {
+                        foundElements++;
+                        const value = element.textContent || element.value || '';
+                        
+                        if (value && value !== 'Nome do Usuário' && value !== 'usuario@email.com' && value !== 'Usuário') {
+                            populatedElements++;
+                            log('dataCheckResult', `✅ ${description}: ${value}`, 'success');
+                        } else {
+                            log('dataCheckResult', `❌ ${description}: Vazio ou valor padrão`, 'warning');
+                        }
+                    } else {
+                        log('dataCheckResult', `❌ ${description}: Elemento não encontrado`, 'error');
+                    }
+                }
+                
+                log('dataCheckResult', `📊 Resumo: ${foundElements} elementos encontrados, ${populatedElements} preenchidos`, 'info');
+                
+                if (populatedElements > 0) {
+                    log('dataCheckResult', '✅ Alguns dados foram carregados!', 'success');
+                } else {
+                    log('dataCheckResult', '❌ Nenhum dado foi carregado na página', 'error');
+                }
+                
+            } catch (error) {
+                log('dataCheckResult', `❌ Erro ao verificar dados: ${error.message}`, 'error');
+                log('dataCheckResult', '💡 Isso pode ser devido a restrições de CORS. Verifique manualmente.', 'warning');
+            }
+        }
+        
+        function injectTestScript() {
+            log('injectionResult', '💉 Tentando injetar script de teste...', 'info');
+            
+            const iframe = document.getElementById('profileFrame');
+            
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const iframeWindow = iframe.contentWindow;
+                
+                if (!iframeDoc || !iframeWindow) {
+                    log('injectionResult', '❌ Não foi possível acessar o iframe (CORS)', 'error');
+                    return;
+                }
+                
+                // Injetar script para verificar o estado da página
+                const script = iframeDoc.createElement('script');
+                script.textContent = `
+                    console.log('🔍 Script de teste injetado!');
+                    
+                    // Verificar localStorage
+                    const portalUser = localStorage.getItem('portal-user');
+                    const authToken = localStorage.getItem('authToken');
+                    
+                    console.log('portal-user:', portalUser);
+                    console.log('authToken:', authToken);
+                    
+                    // Verificar se loadUserData foi chamada
+                    if (typeof loadUserData === 'function') {
+                        console.log('✅ Função loadUserData existe');
+                        
+                        // Chamar loadUserData manualmente
+                        console.log('🔄 Chamando loadUserData manualmente...');
+                        loadUserData();
+                    } else {
+                        console.log('❌ Função loadUserData não encontrada');
+                    }
+                    
+                    // Verificar elementos da página
+                    const profileName = document.getElementById('profile-name');
+                    const profileEmail = document.getElementById('profile-email');
+                    
+                    console.log('profile-name element:', profileName);
+                    console.log('profile-name content:', profileName ? profileName.textContent : 'N/A');
+                    console.log('profile-email element:', profileEmail);
+                    console.log('profile-email content:', profileEmail ? profileEmail.textContent : 'N/A');
+                `;
+                
+                iframeDoc.head.appendChild(script);
+                
+                log('injectionResult', '✅ Script injetado! Verifique o console do navegador.', 'success');
+                log('injectionResult', '💡 Abra as ferramentas de desenvolvedor (F12) para ver os logs.', 'info');
+                
+            } catch (error) {
+                log('injectionResult', `❌ Erro ao injetar script: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runCompleteTest() {
+            updateStatus('Executando teste completo...');
+            document.getElementById('completeTestResult').innerHTML = '';
+            
+            log('completeTestResult', '🚀 Iniciando teste completo...', 'info');
+            
+            // 1. Limpar localStorage
+            localStorage.clear();
+            log('completeTestResult', '🧹 LocalStorage limpo', 'info');
+            
+            // 2. Fazer login
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await performLogin();
+            
+            if (!currentToken) {
+                log('completeTestResult', '❌ Login falhou. Teste interrompido.', 'error');
+                return;
+            }
+            
+            // 3. Abrir página de perfil
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            openProfilePage();
+            
+            // 4. Aguardar carregamento e verificar dados
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            checkProfileData();
+            
+            // 5. Injetar script de teste
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            injectTestScript();
+            
+            log('completeTestResult', '✅ Teste completo finalizado!', 'success');
+            log('completeTestResult', '🔍 Verifique visualmente se os dados aparecem na página acima.', 'info');
+            log('completeTestResult', '💡 Se os dados não aparecem, o problema está na página perfil.html.', 'warning');
+            
+            updateStatus('Teste completo finalizado');
+        }
+        
+        // Inicializar
+        window.onload = function() {
+            updateStatus('Página carregada - Pronto para teste');
+        };
+    </script>
+</body>
+</html>
