@@ -1,0 +1,49 @@
+IMPLEMENTAÇÃO DE IMAGENS PADRÃO PARA CARDS DE CATEGORIA
+=======================================================
+
+DATA: 29/08/2025
+TARefa: Aplicar imagens padrão para cards de categorias
+
+PROBLEMA IDENTIFICADO:
+- Cards de categoria não exibiam imagem quando a notícia não possuía imagem_destaque
+- Experiência visual inconsistente nas páginas de categoria
+
+SOLUÇÃO IMPLEMENTADA:
+1. Modificação da função createCategoryNewsHTML em categoria.html
+2. Implementação de fallback para default-news.svg quando imagem_destaque não existe
+3. Manutenção da estrutura do overlay com botão "Ler mais"
+
+ARQUIVOS MODIFICADOS:
+- frontend/categoria.html (linha ~789)
+  * Função createCategoryNewsHTML atualizada
+  * Adicionado fallback para /assets/images/default-news.svg
+  * Mantida funcionalidade do overlay
+
+IMPLEMENTAÇÃO TÉCNICA:
+- Estrutura sempre exibe div news-card-image
+- Condicional ternária para escolher entre imagem real ou padrão
+- Imagem padrão usa classe card-img para consistência visual
+- Preservadas todas as funcionalidades existentes (lazy loading, overlay)
+
+ARQUIVOS DE IMAGEM UTILIZADOS:
+- /assets/images/default-news.svg (imagem padrão para cards)
+- /assets/images/default-avatar.svg (avatar padrão para autores)
+
+TESTE REALIZADO:
+- Servidor frontend rodando em localhost:3000
+- Verificação de logs sem erros 404 para imagens padrão
+- Confirmação visual no navegador
+
+RESULTADO:
+✅ Cards de categoria agora exibem imagem consistente
+✅ Experiência visual melhorada
+✅ Sem erros de carregamento de imagem
+✅ Funcionalidades preservadas
+
+OBSERVAÇÕES:
+- Implementação compatível com estrutura existente
+- Não afeta outras páginas do sistema
+- Mantém responsividade e acessibilidade
+- Facilita manutenção futura
+
+STATUS: CONCLUÍDO ✅

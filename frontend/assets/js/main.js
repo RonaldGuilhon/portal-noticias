@@ -703,7 +703,7 @@ class PortalNoticias {
         const baseCard = `
             <article class="card news-card ${type === 'featured' ? 'news-card-featured' : ''}">
                 ${news.imagem ? `
-                    <img src="${news.imagem}" alt="${news.titulo}" class="card-img-top lazy" data-src="${news.imagem}">
+                    <img src="${news.imagem}" alt="${news.titulo}" class="card-img-top lazy" data-src="${news.imagem}" onerror="this.src='/assets/images/default-news.svg'; this.onerror=null;">
                 ` : `
                     <img src="/assets/images/default-news.svg" alt="${news.titulo}" class="card-img-top">
                 `}
@@ -753,7 +753,7 @@ class PortalNoticias {
             <article class="card news-card news-card-horizontal">
                 <div class="news-card-image">
                     ${news.imagem ? `
-                        <img src="${news.imagem}" alt="${news.titulo || 'Notícia'}" class="lazy" data-src="${news.imagem}">
+                        <img src="${news.imagem}" alt="${news.titulo || 'Notícia'}" class="lazy" data-src="${news.imagem}" onerror="this.src='/assets/images/default-news.svg'; this.onerror=null;">
                     ` : `
                         <img src="/assets/images/default-news.svg" alt="${news.titulo || 'Notícia'}">
                     `}
