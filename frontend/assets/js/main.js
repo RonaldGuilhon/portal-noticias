@@ -704,7 +704,9 @@ class PortalNoticias {
             <article class="card news-card ${type === 'featured' ? 'news-card-featured' : ''}">
                 ${news.imagem ? `
                     <img src="${news.imagem}" alt="${news.titulo}" class="card-img-top lazy" data-src="${news.imagem}">
-                ` : ''}
+                ` : `
+                    <img src="/assets/images/default-news.svg" alt="${news.titulo}" class="card-img-top">
+                `}
                 
                 <div class="news-card-category">${news.categoria}</div>
                 
@@ -753,7 +755,7 @@ class PortalNoticias {
                     ${news.imagem ? `
                         <img src="${news.imagem}" alt="${news.titulo || 'Notícia'}" class="lazy" data-src="${news.imagem}">
                     ` : `
-                        <img src="/assets/images/default-news.jpg" alt="${news.titulo || 'Notícia'}">
+                        <img src="/assets/images/default-news.svg" alt="${news.titulo || 'Notícia'}">
                     `}
                     <div class="news-card-overlay">
                         <a href="/noticia/${news.slug || '#'}" class="btn btn-primary btn-sm">
